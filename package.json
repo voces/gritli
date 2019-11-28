@@ -1,0 +1,19 @@
+{
+  "name": "gritli",
+  "version": "1.0.0",
+  "description": "Browser-based SQL tool",
+  "main": "index.js",
+  "devDependencies": {
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.16.0",
+    "eslint-config-mdcs": "^4.2.3",
+    "eslint-config-verit": "^1.0.2"
+  },
+  "scripts": {
+    "start": "npx http-server src",
+    "dev": "npx http-server -c-1 src"
+  },
+  "author": "verit",
+  "license": "ISC",
+  "type": "module"
+}
