@@ -11,8 +11,9 @@ const fieldClasses = ( field, firstRow ) => classMap( {
 } );
 
 const fieldTypeMap = {
-	string: String,
+	boolean: Boolean,
 	number: Number,
+	string: String,
 };
 
 customElements.define( "gritli-table", class extends LitElement {
@@ -100,7 +101,7 @@ customElements.define( "gritli-table", class extends LitElement {
 				dispatch(
 					this,
 					"rowchange",
-					{ row: target.row, changes: target.row.__changes, fields: this.data.fields }
+					{ row: target.row, changes: target.row.__changes, fields: this.data.fields },
 				);
 				target.row.__changes = undefined;
 

@@ -1,5 +1,6 @@
 
 import { css, html, LitElement } from "../lib/lit-element.min.js";
+import "./BooleanInput.js";
 import "./NumberInput.js";
 import "./StringInput.js";
 
@@ -67,6 +68,13 @@ customElements.define( "gritli-value", class extends LitElement {
 				.disabled=${this.disabled}
 				.index=${this.index}
 				.nullable=${this.nullable}
+				.value=${this.value}
+			/>`;
+
+		if ( this.type === Boolean )
+			return html`<gritli-boolean-input
+				.disabled=${this.disabled}
+				.index=${this.index}
 				.value=${this.value}
 			/>`;
 

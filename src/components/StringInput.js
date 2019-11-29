@@ -55,6 +55,8 @@ customElements.define( "gritli-string-input", class extends LitElement {
 
 		if ( e.key !== "Backspace" || ! this.nullable || this.value !== "" ) {
 
+			if ( this.value === null ) return;
+
 			if ( e.target.value === "" )
 				this.shadowRoot.firstElementChild.setAttribute( "placeholder", "''" );
 
@@ -74,7 +76,7 @@ customElements.define( "gritli-string-input", class extends LitElement {
 			{
 				newValue: this.value,
 				oldValue,
-			}
+			},
 		);
 
 	}
@@ -92,7 +94,7 @@ customElements.define( "gritli-string-input", class extends LitElement {
 			{
 				newValue: this.value,
 				oldValue,
-			}
+			},
 		);
 
 	}

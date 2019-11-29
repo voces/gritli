@@ -72,7 +72,7 @@ customElements.define( "gritli-number-input", class extends LitElement {
 			{
 				newValue: this.value,
 				oldValue,
-			}
+			},
 		);
 
 	}

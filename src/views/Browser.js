@@ -1,6 +1,6 @@
 
 import { css, html, LitElement } from "../lib/lit-element.min.js";
-import query from "../query.js";
+import query from "../drivers/web.js";
 import "./DivisibleArea.js";
 import "./Panel.js";
 import "./Results.js";
@@ -14,7 +14,7 @@ const isQueryDocument = document => isQueryTitle( document.title );
 const saveDocuments = documents =>
 	localStorage.setItem(
 		"queries",
-		JSON.stringify( documents.filter( isQueryDocument ) )
+		JSON.stringify( documents.filter( isQueryDocument ) ),
 	);
 
 const documentSave = ( browser, document ) => async content => {
@@ -28,6 +28,7 @@ const documentSave = ( browser, document ) => async content => {
 		browser.handleResult( results, content );
 
 };
+
 const createQueryDocument = ( index, browser, content = "" ) => ( {
 	title: `# Query #${index}`,
 	content,
@@ -37,6 +38,20 @@ const createQueryDocument = ( index, browser, content = "" ) => ( {
 
 	},
 } );
+
+const loadConnectionSettings = () => {
+
+	let stored = localStorage.getItem( "connectionSettings" );
+	if ( stored === null ) {
+
+		stored = [ {} ];
+		localStorage.setItem( "connectionSettings", JSON.stringify( stored ) );
+
+	} else stored = eval( stored );
+
+	return stored;
+
+};
 
 // only used in the browser, handles panes
 customElements.define( "gritli-browser", class extends LitElement {
@@ -81,12 +96,14 @@ customElements.define( "gritli-browser", class extends LitElement {
 			this.documents = [ createQueryDocument( 1, this ) ];
 
 		}
-		this.connections = eval( localStorage.getItem( "connectionSettings" ) );
+		this.connections = loadConnectionSettings();
 		this.selectedDocument = Math.min( parseInt( localStorage.getItem( "selectedDocument" ) ) || 0, this.documents.length - 1 );
 
 	}
 
 	handleEditConnections() {
+
+		const element = this;
 
 		this.documents = [
 			...this.documents,
@@ -97,11 +114,13 @@ customElements.define( "gritli-browser", class extends LitElement {
 
 					this.content = content;
 					localStorage.setItem( "connectionSettings", content );
-					this.connections = eval( content );
+					element.connections = eval( content );
 
 				},
 			},
 		];
+
+		this.selectedDocument = this.documents.length - 1;
 
 	}
 

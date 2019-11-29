@@ -1,6 +1,6 @@
 
 import { html, LitElement } from "../lib/lit-element.min.js";
-import query from "../query.js";
+import query from "../drivers/web.js";
 import "./Table.js";
 import "./Tabs.js";
 
@@ -101,8 +101,8 @@ customElements.define( "gritli-results", class extends LitElement {
 				<gritli-tabs
 					.tabs=${this.results.map( ( r, i ) => ( { title: `Results #${i + 1}`, content: html`
 						<gritli-table
-							?editable=${true}
 							.data=${r}
+							.editable=${true}
 							@rowchange=${this.handleRowChange}
 							@rownew=${this.handleRowNew}
 						></gritli-table>
@@ -112,8 +112,8 @@ customElements.define( "gritli-results", class extends LitElement {
 
 		return html`
 			<gritli-table
-				?editable=${true}
 				.data=${this.results[ 0 ]}
+				.editable=${true}
 				@rowchange=${this.handleRowChange}
 				@rownew=${this.handleRowNew}
 			></gritli-table>`;

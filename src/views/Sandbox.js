@@ -29,6 +29,11 @@ customElements.define( "gritli-sandbox", class extends LitElement {
 				.nullable=${false}
 				@change=${e => console.log( { 4: e.detail.newValue } )}
 			></gritli-value>
+			<gritli-value
+				.value=${false}
+				.type=${Boolean}
+				@change=${e => console.log( { 5: e.detail.newValue } )}
+			></gritli-value>
         `;
 
 	}

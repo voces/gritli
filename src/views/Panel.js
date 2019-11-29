@@ -1,6 +1,6 @@
 
 import { css, html, LitElement } from "../lib/lit-element.min.js";
-import query, { setConnection } from "../query.js";
+import query, { setConnection } from "../drivers/web.js";
 import { dispatcher } from "../util.js";
 import "./Accordion.js";
 
@@ -117,7 +117,7 @@ customElements.define( "gritli-panel", class extends LitElement {
 
 		this.databasesMap.set(
 			connection,
-			await query( connection, "SHOW DATABASES;" ).then( r => r.results[ 0 ].rows )
+			await query( connection, "SHOW DATABASES;" ).then( r => r.results[ 0 ].rows ),
 		);
 		this.requestUpdate();
 
@@ -129,7 +129,7 @@ customElements.define( "gritli-panel", class extends LitElement {
 
 		this.tablesMap.set(
 			database,
-			await query( "SHOW TABLES;" ).then( r => r.results[ 0 ].rows )
+			await query( "SHOW TABLES;" ).then( r => r.results[ 0 ].rows ),
 		);
 		this.requestUpdate();
 

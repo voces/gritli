@@ -1,7 +1,7 @@
 
 import { css, html, LitElement } from "../lib/lit-element.min.js";
 
-import { queryPrehook, setQueryPrehook, queryPosthook, setQueryPosthook } from "../query.js";
+import { queryPrehook, setQueryPrehook, queryPosthook, setQueryPosthook } from "../drivers/web.js";
 
 customElements.define( "gritli-log", class extends LitElement {
 
