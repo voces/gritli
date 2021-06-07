@@ -1,6 +1,10 @@
+import { React } from "./deps.ts";
+
 const urlTheme = new URLSearchParams(location.search).get("theme");
 const isDarkMode = urlTheme
-  ? (urlTheme === "dark" ? true : false)
+  ? urlTheme === "dark"
+    ? true
+    : false
   : window.matchMedia?.("(prefers-color-scheme: dark)").matches;
 
 type Theme = {
@@ -220,8 +224,5 @@ const deepAssign = <T>(base: T, ...sources: T[]): T => {
 };
 
 export const theme: Theme = isDarkMode
-  ? deepAssign(
-    commonTheme,
-    darkTheme,
-  )
+  ? deepAssign(commonTheme, darkTheme)
   : commonTheme;

@@ -2,6 +2,7 @@ import { types } from "../constants.ts";
 import { React } from "../deps.ts";
 import { theme } from "../theme.ts";
 import { ContextMenu } from "./ContextMenu.tsx";
+import type { Option } from "./ContextMenu.tsx";
 
 type FieldDef = {
   catalog: "def";
@@ -25,43 +26,96 @@ export type Results = {
   fields?: FieldDef[];
 };
 
-const QueryContextMenu = (
-  { shown, x, y }: {
-    shown: boolean;
-    x: number | undefined;
-    y: number | undefined;
-  },
-) =>
-  <ContextMenu
-    shown={shown}
-    left={x}
-    top={y}
-    options={[{
-      type: "option",
-      label: "Option 1",
-      onClick: () => console.log("clicked option 1"),
-    }, {
-      type: "option",
-      label: "Option 2",
-      onClick: () => console.log("clicked option 2"),
-    }, {
-      type: "option-separator",
-    }, {
-      type: "option",
-      label: "Option 3",
-      onClick: () => console.log("clicked option 3s"),
-    }]}
-  />;
+const QueryContextMenu = ({
+  shown,
+  x,
+  y,
+  rows,
+  handleHide,
+}: {
+  shown: boolean;
+  x: number | undefined;
+  y: number | undefined;
+  rows?: Results["rows"];
+  handleHide: () => void;
+}) => {
+  const options: Option[] = [];
+  if (rows)
+    options.push(
+      {
+        type: "option" as const,
+        label: "Copy as TSV",
+        onClick: () => {
+          navigator.clipboard.writeText(
+            [
+              Object.keys(rows[0]).join("\t"),
+              ...rows.map((row) => Object.values(row).join("\t")),
+            ].join("\n")
+          );
+          handleHide();
+        },
+      },
+      {
+        type: "option" as const,
+        label: "Copy as markdown",
+        onClick: () => {
+          if (!rows) return;
 
-const ResultTable = (
-  { handleContextMenu, handleClick, error, rows, fields }: {
-    handleContextMenu: (value: { x: number; y: number }) => void;
-    handleClick: () => boolean;
-    error: Results["error"];
-    rows: Results["rows"];
-    fields: Results["fields"];
-  },
-) =>
+          const columns = Object.keys(rows[0]);
+          const stringRows: string[][] = [columns];
+          const columnWidths = columns.map((k) => k.length);
+          const columnTypes = Object.values(rows[0]).map((v) => typeof v);
+
+          for (let i = 0; i < rows.length; i++) {
+            const row: string[] = [];
+            stringRows.push(row);
+            for (let n = 0; n < columns.length; n++) {
+              const str = rows[i][columns[n]].toString();
+              row.push(str);
+              if (columnWidths[n] < str.length) columnWidths[n] = str.length;
+            }
+          }
+
+          // Separate table head from body
+          stringRows.splice(
+            1,
+            0,
+            columnWidths.map((w) => "-".repeat(w))
+          );
+
+          navigator.clipboard.writeText(
+            stringRows
+              .map((row) =>
+                row
+                  .map((v, i) =>
+                    columnTypes[i] === "number"
+                      ? v.padStart(columnWidths[i], " ")
+                      : v.padEnd(columnWidths[i], " ")
+                  )
+                  .join(" | ")
+              )
+              .join("\n")
+          );
+          handleHide();
+        },
+      }
+    );
+  return <ContextMenu shown={shown} left={x} top={y} options={options} />;
+};
+
+const ResultTable = ({
+  handleContextMenu,
+  handleClick,
+  error,
+  rows,
+  fields,
+}: {
+  handleContextMenu: (value: { x: number; y: number }) => void;
+  handleClick: () => boolean;
+  error: Results["error"];
+  rows: Results["rows"];
+  fields: Results["fields"];
+}) => (
   <table
     style={{
       borderCollapse: "collapse",
@@ -113,30 +167,23 @@ const ResultTable = (
 
       {error && (
         <tr>
-          <td style={{ color: "red", ...theme.table?.cell }}>
-            {error}
-          </td>
+          <td style={{ color: "red", ...theme.table?.cell }}>{error}</td>
           <td style={{ width: "99%" }}></td>
         </tr>
       )}
       <tr>
-        {(fields ? Object.keys(fields) : ["placeholder"])
-          .map(
-            (
-              i,
-            ) => (
-              <td key={i} style={{ height: "99%" }}></td>
-            ),
-          )}
+        {(fields ? Object.keys(fields) : ["placeholder"]).map((i) => (
+          <td key={i} style={{ height: "99%" }}></td>
+        ))}
         <td style={{ height: "99%", width: "99%" }}></td>
       </tr>
     </tbody>
-  </table>;
+  </table>
+);
 
 export const QueryResults = ({ results }: { results: Results }) => {
-  const [contextMenu, setContextMenu] = React.useState<
-    { x: number; y: number } | undefined
-  >();
+  const [contextMenu, setContextMenu] =
+    React.useState<{ x: number; y: number } | undefined>();
 
   return (
     <>
@@ -144,6 +191,8 @@ export const QueryResults = ({ results }: { results: Results }) => {
         shown={!!contextMenu}
         x={contextMenu?.x}
         y={contextMenu?.y}
+        rows={results.rows}
+        handleHide={() => setContextMenu(undefined)}
       />
       <ResultTable
         rows={results.rows}
