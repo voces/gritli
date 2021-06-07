@@ -2,6 +2,7 @@ import { TreeNode } from "../components/TreeNode.tsx";
 import { Connection, QueryContext } from "../contexts/QueryContext.ts";
 import { React } from "../deps.ts";
 import { useQuery } from "../hooks/useQuery.tsx";
+import { theme } from "../theme.ts";
 
 const Database = ({
   database,
@@ -17,11 +18,13 @@ const Database = ({
     <TreeNode
       label={database}
       onExpand={() => {
+        query(`USE \`${database}\`;`);
         query(`SHOW TABLES FROM \`${database}\`;`).then((result) => {
-          if (result.rows)
+          if (result.rows) {
             setTables(
-              result.rows.map((r) => r[`Tables_in_${database}`].toString())
+              result.rows.map((r) => r[`Tables_in_${database}`].toString()),
             );
+          }
         });
       }}
       nodes={tables}
@@ -41,8 +44,9 @@ const ConnectionComponent = ({
 
   const retrieveDatabases = React.useCallback(() => {
     query("SHOW DATABASES;").then((result) => {
-      if (result.rows)
+      if (result.rows) {
         setDatabases(result.rows.map((r) => r.Database.toString()));
+      }
     });
   }, []);
 
@@ -52,12 +56,10 @@ const ConnectionComponent = ({
 
   return (
     <TreeNode
-      label={
-        <span style={{ fontWeight: "bold" }}>
-          {connection.username ?? "root"}@{connection.hostname ?? "localhost"}:
-          {connection.port ?? 3306}
-        </span>
-      }
+      label={<span style={{ fontWeight: "bold" }}>
+        {connection.username ?? "root"}@{connection.hostname ?? "localhost"}:
+        {connection.port ?? 3306}
+      </span>}
       onExpand={retrieveDatabases}
       nodes={databases?.map((d) => (
         <Database connection={connection} database={d} />
@@ -72,7 +74,14 @@ export const Nav = () => {
   const { connections, selected } = React.useContext(QueryContext);
 
   return (
-    <nav style={{ padding: "2px 4px", maxWidth: "100%", overflow: "auto" }}>
+    <nav
+      style={{
+        padding: "2px 4px",
+        width: "100%",
+        overflow: "auto",
+        ...theme.nav?.container,
+      }}
+    >
       {connections.map((c) => (
         <ConnectionComponent
           key={JSON.stringify(c)}

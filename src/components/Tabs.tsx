@@ -15,7 +15,7 @@ export const Tabs = ({
   // We need an array to index into
   const childrenArr = React.useMemo(
     () => React.Children.toArray(children),
-    [children]
+    [children],
   );
 
   React.useEffect(() => {
@@ -24,7 +24,7 @@ export const Tabs = ({
         e.preventDefault();
         const key = Math.min(
           childrenArr.length,
-          parseInt(e.code[e.code.length - 1]) - 1
+          parseInt(e.code[e.code.length - 1]) - 1,
         );
         if (key === childrenArr.length) {
           onNewTab();
@@ -47,7 +47,7 @@ export const Tabs = ({
   const labels = React.useMemo(() => {
     const labels: React.ReactNodeArray = [];
     childrenArr.forEach((child, i) => {
-      if (React.isValidElement(child) && child.props.label)
+      if (React.isValidElement(child) && child.props.label) {
         labels.push(
           <span
             onClick={() => setSelectedTab(i)}
@@ -58,7 +58,7 @@ export const Tabs = ({
                 : undefined),
             }}
           >
-            <span>{child.props.label} </span>
+            <span>{child.props.label}</span>
             <span
               style={theme.tabs?.label?.close}
               onClick={() => {
@@ -67,8 +67,9 @@ export const Tabs = ({
             >
               ✕
             </span>
-          </span>
+          </span>,
         );
+      }
     });
     return labels;
   }, [childrenArr, actualSelectedTab]);
@@ -89,8 +90,9 @@ export const Tabs = ({
           +
         </span>
         <span
-          style={{ flexGrow: 1, ...theme.tabs?.label?.base, cursor: undefined }}
-        ></span>
+          style={{ flexGrow: 1, cursor: undefined }}
+        >
+        </span>
       </div>
       <div style={theme.tabs?.content}>{childrenArr[actualSelectedTab]}</div>
     </div>

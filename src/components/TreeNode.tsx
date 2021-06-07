@@ -1,4 +1,5 @@
 import { React } from "../deps.ts";
+import { theme } from "../theme.ts";
 
 export const TreeNode = ({
   label,
@@ -39,6 +40,7 @@ export const TreeNode = ({
                   position: "absolute",
                   height: i < arr.length - 1 ? (i === 0 ? 17 : 20) : 11,
                   marginTop: i === 0 ? 3 : 0,
+                  ...theme.tree?.guides?.base,
                 }}
               />
             )}
@@ -50,6 +52,7 @@ export const TreeNode = ({
                   marginLeft: 4,
                   position: "absolute",
                   height: 10,
+                  ...theme.tree?.guides?.base,
                 }}
               />
             )}
