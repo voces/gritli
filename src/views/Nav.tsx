@@ -22,7 +22,7 @@ const Database = ({
         query(`SHOW TABLES FROM \`${database}\`;`).then((result) => {
           if (result.rows) {
             setTables(
-              result.rows.map((r) => r[`Tables_in_${database}`].toString()),
+              result.rows.map((r) => r[`Tables_in_${database}`].toString())
             );
           }
         });
@@ -56,10 +56,12 @@ const ConnectionComponent = ({
 
   return (
     <TreeNode
-      label={<span style={{ fontWeight: "bold" }}>
-        {connection.username ?? "root"}@{connection.hostname ?? "localhost"}:
-        {connection.port ?? 3306}
-      </span>}
+      label={
+        <span style={{ fontWeight: "bold" }}>
+          {connection.username ?? "root"}@{connection.hostname ?? "localhost"}:
+          {connection.port ?? 3306}
+        </span>
+      }
       onExpand={retrieveDatabases}
       nodes={databases?.map((d) => (
         <Database connection={connection} database={d} />
@@ -79,6 +81,7 @@ export const Nav = () => {
         padding: "2px 4px",
         width: "100%",
         overflow: "auto",
+        fontSize: 14,
         ...theme.nav?.container,
       }}
     >

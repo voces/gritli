@@ -16,7 +16,7 @@ export const TreeNode = ({
 }) => {
   const [expanded, setExpanded] = React.useState(initialExpanded);
   return (
-    <div>
+    <div style={{ fontSize: 13 }}>
       <span
         onClick={(e) => {
           e.preventDefault();

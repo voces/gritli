@@ -15,15 +15,20 @@ const OptionComponent = ({ option }: { option: Option }) => {
   const [hovered, setHovered] = React.useState(false);
 
   if (option.type === "option-separator") {
-    return <div style={theme.contextMenu?.separator}></div>;
+    return (
+      <div style={{ margin: "4px 8px", ...theme.contextMenu.separator }}></div>
+    );
   }
 
   return (
     <div
       onClick={() => option.onClick()}
       style={{
-        ...theme.contextMenu?.option,
-        ...(hovered ? theme.contextMenu?.optionHovered : undefined),
+        fontSize: 14,
+        padding: "4px 32px",
+        cursor: "pointer",
+        ...theme.contextMenu.option,
+        ...(hovered ? theme.contextMenu.optionHovered : undefined),
       }}
       onMouseOver={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
@@ -53,7 +58,9 @@ export const ContextMenu = ({
             top,
             left,
             zIndex: 100,
-            ...theme.contextMenu?.container,
+            boxShadow: "0px 2px 4px 1px rgba(0, 0, 0, 0.2)",
+            padding: "6px 0",
+            ...theme.contextMenu.container,
           }}
         >
           {options.map((o, i) => (

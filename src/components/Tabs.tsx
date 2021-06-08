@@ -15,7 +15,7 @@ export const Tabs = ({
   // We need an array to index into
   const childrenArr = React.useMemo(
     () => React.Children.toArray(children),
-    [children],
+    [children]
   );
 
   React.useEffect(() => {
@@ -24,7 +24,7 @@ export const Tabs = ({
         e.preventDefault();
         const key = Math.min(
           childrenArr.length,
-          parseInt(e.code[e.code.length - 1]) - 1,
+          parseInt(e.code[e.code.length - 1]) - 1
         );
         if (key === childrenArr.length) {
           onNewTab();
@@ -43,6 +43,8 @@ export const Tabs = ({
 
   const actualSelectedTab = Math.min(selectedTab, childrenArr.length - 1);
 
+  const tabLabelBase = { padding: 8, fontSize: 14, cursor: "pointer" };
+
   // Extract labels from children
   const labels = React.useMemo(() => {
     const labels: React.ReactNodeArray = [];
@@ -52,22 +54,28 @@ export const Tabs = ({
           <span
             onClick={() => setSelectedTab(i)}
             style={{
-              ...theme.tabs?.label?.base,
+              ...tabLabelBase,
+              ...theme.tabs.label.base,
               ...(i === actualSelectedTab
-                ? theme.tabs?.label?.selected
+                ? theme.tabs.label.selected
                 : undefined),
             }}
           >
             <span>{child.props.label}</span>
             <span
-              style={theme.tabs?.label?.close}
+              style={{
+                fontSize: 10,
+                opacity: 0.6,
+                padding: 4,
+                ...theme.tabs.label.close,
+              }}
               onClick={() => {
                 onCloseTab(i);
               }}
             >
               ✕
             </span>
-          </span>,
+          </span>
         );
       }
     });
@@ -75,13 +83,27 @@ export const Tabs = ({
   }, [childrenArr, actualSelectedTab]);
 
   return (
-    <div style={theme.tabs?.container}>
+    <div
+      style={{
+        display: "flex",
+        flexGrow: 1,
+        flexDirection: "column",
+        ...theme.tabs.container,
+      }}
+    >
       <div style={{ display: "flex" }}>
         {labels.map((l, i) => (
           <React.Fragment key={i}>{l}</React.Fragment>
         ))}
         <span
-          style={{ ...theme.tabs?.label?.base, ...theme.tabs?.newTab }}
+          style={{
+            ...tabLabelBase,
+            ...theme.tabs.label.base,
+            borderRightWidth: 0,
+            fontWeight: "bold",
+            backgroundColor: "transparent",
+            ...theme.tabs.newTab,
+          }}
           onClick={() => {
             onNewTab();
             setSelectedTab(childrenArr.length);
@@ -89,12 +111,11 @@ export const Tabs = ({
         >
           +
         </span>
-        <span
-          style={{ flexGrow: 1, cursor: undefined }}
-        >
-        </span>
+        <span style={{ flexGrow: 1, cursor: undefined }}></span>
       </div>
-      <div style={theme.tabs?.content}>{childrenArr[actualSelectedTab]}</div>
+      <div style={{ flexGrow: 1, ...theme.tabs.content }}>
+        {childrenArr[actualSelectedTab]}
+      </div>
     </div>
   );
 };

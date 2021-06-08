@@ -103,6 +103,14 @@ const QueryContextMenu = ({
   return <ContextMenu shown={shown} left={x} top={y} options={options} />;
 };
 
+const tableCellStyle: React.CSSProperties = {
+  whiteSpace: "pre",
+  padding: "2px 4px",
+  maxWidth: 300,
+  maxHeight: 200,
+  overflow: "auto",
+};
+
 const ResultTable = ({
   handleContextMenu,
   handleClick,
@@ -123,7 +131,7 @@ const ResultTable = ({
       minHeight: "100%",
       minWidth: "100%",
       fontSize: 12,
-      ...theme.table?.container,
+      ...theme.table.container,
     }}
     onContextMenu={(e) => {
       handleContextMenu({ x: e.pageX, y: e.pageY });
@@ -136,10 +144,13 @@ const ResultTable = ({
     }}
   >
     {fields && (
-      <thead style={theme.table?.head}>
+      <thead style={theme.table.head}>
         <tr>
           {fields.map((f, i) => (
-            <th key={`${f.name}-${i}`} style={theme.table?.cell}>
+            <th
+              key={`${f.name}-${i}`}
+              style={{ ...tableCellStyle, ...theme.table.cell }}
+            >
               {f.name}
             </th>
           ))}
@@ -154,8 +165,13 @@ const ResultTable = ({
             <td
               key={i}
               style={{
-                ...theme.table?.cell,
-                ...theme.table?.[types[fields?.[i].fieldType ?? 0]],
+                ...tableCellStyle,
+                ...theme.table.cell,
+                textAlign:
+                  types[fields?.[i].fieldType ?? 0] === "number"
+                    ? "right"
+                    : "inherit",
+                ...theme.table[types[fields?.[i].fieldType ?? 0]],
               }}
             >
               {d}
@@ -167,7 +183,9 @@ const ResultTable = ({
 
       {error && (
         <tr>
-          <td style={{ color: "red", ...theme.table?.cell }}>{error}</td>
+          <td style={{ ...tableCellStyle, color: "red", ...theme.table.cell }}>
+            {error}
+          </td>
           <td style={{ width: "99%" }}></td>
         </tr>
       )}
