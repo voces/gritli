@@ -82,7 +82,7 @@ export const Nav = () => {
         width: "100%",
         overflow: "auto",
         fontSize: 14,
-        ...theme.nav?.container,
+        ...theme.nav.container,
       }}
     >
       {connections.map((c) => (

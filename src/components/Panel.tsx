@@ -162,7 +162,7 @@ export const Panel = ({
     >
       {!!title && (
         <div
-          style={{ fontWeight: "bold", padding: "4 8", ...theme.panel?.title }}
+          style={{ fontWeight: "bold", padding: "4 8", ...theme.panel.title }}
         >
           {title}
         </div>
@@ -173,7 +173,7 @@ export const Panel = ({
           display: "flex",
           flexDirection: direction === "vertical" ? "column" : "row",
           overflow: "auto",
-          ...theme.panel?.content,
+          ...theme.panel.content,
         }}
       >
         {newChildren}
