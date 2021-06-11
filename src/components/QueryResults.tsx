@@ -3,6 +3,7 @@ import { React } from "../deps.ts";
 import { theme } from "../theme.ts";
 import { ContextMenu } from "./ContextMenu.tsx";
 import type { Option } from "./ContextMenu.tsx";
+import { LineChart } from "./viz/LineChart.tsx";
 
 type FieldDef = {
   catalog: "def";
@@ -199,6 +200,44 @@ const ResultTable = ({
   </table>
 );
 
+const ResultsComponent = ({
+  results,
+  handleContextMenu,
+  handleClick,
+}: {
+  results: Results;
+  handleContextMenu: (value: { x: number; y: number }) => void;
+  handleClick: () => boolean;
+}) => {
+  const [display, setDisplay] = React.useState<"table" | "line">("line");
+
+  if (display === "table")
+    return (
+      <ResultTable
+        rows={results.rows}
+        fields={results.fields}
+        error={results.error}
+        handleContextMenu={handleContextMenu}
+        handleClick={handleClick}
+      />
+    );
+
+  const rows = results.rows?.map((r) =>
+    Object.fromEntries(
+      Object.entries(r).map(([column, value], i) => {
+        if (types[results?.fields?.[i].fieldType ?? 0] === "date")
+          return [column, new Date(value).getTime()];
+        return [column, value];
+      })
+    )
+  );
+  if (display === "line" && rows) {
+    return <LineChart data={rows} />;
+  }
+
+  return <>Other</>;
+};
+
 export const QueryResults = ({ results }: { results: Results }) => {
   const [contextMenu, setContextMenu] =
     React.useState<{ x: number; y: number } | undefined>();
@@ -212,10 +251,8 @@ export const QueryResults = ({ results }: { results: Results }) => {
         rows={results.rows}
         handleHide={() => setContextMenu(undefined)}
       />
-      <ResultTable
-        rows={results.rows}
-        fields={results.fields}
-        error={results.error}
+      <ResultsComponent
+        results={results}
         handleContextMenu={({ x, y }) => {
           setContextMenu({ x, y });
         }}

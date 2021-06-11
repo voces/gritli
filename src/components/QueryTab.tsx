@@ -7,7 +7,7 @@ import { theme } from "../theme.ts";
 
 export const QueryTab = ({ id }: { id: number; label: React.ReactNode }) => {
   const [query, setQuery] = React.useState(
-    localStorage.getItem(`query-${id}`) ?? "",
+    localStorage.getItem(`query-${id}`) ?? ""
   );
   const [results, setResults] = React.useState<Results | undefined>();
 
@@ -32,7 +32,7 @@ export const QueryTab = ({ id }: { id: number; label: React.ReactNode }) => {
 
   return (
     <Panel direction="vertical" style={{ height: "100%" }}>
-      <Panel id="query" basis={1}>
+      <Panel id="query" basis={"40%"}>
         <div
           style={{
             overflow: "hidden",
@@ -61,7 +61,7 @@ export const QueryTab = ({ id }: { id: number; label: React.ReactNode }) => {
           </ErrorBoundary>
         </div>
       </Panel>
-      <Panel id="results" basis={2} style={{ overflow: "auto" }}>
+      <Panel id="results" basis={"60%"} style={{ overflow: "auto" }}>
         {results && <QueryResults results={results} />}
       </Panel>
     </Panel>
