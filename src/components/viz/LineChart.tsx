@@ -22,6 +22,7 @@ export const LineChart = ({ data }: { data: Rows }) => {
   const svgRef = React.useRef<SVGSVGElement>(null);
 
   React.useEffect(() => {
+    if (!data[0]) return;
     if (!svgRef.current) return;
     const parent = svgRef.current.parentElement?.parentElement;
     if (!parent) return;

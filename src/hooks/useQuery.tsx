@@ -17,20 +17,43 @@ export const useQuery = (
 ) => Promise<Results>) => {
   const queryContext = React.useContext(QueryContext);
   const log = React.useContext(LogContext);
+  const [lastResults, setLastResults] = React.useState<Results | Error>();
   const usedConnection = connection ?? queryContext.selected;
 
   if (usedConnection)
     return async (query, cache = "no-cache") => {
+      console.log(usedConnection, query);
       log.append(query);
 
       const start = Date.now();
 
-      const results: Results = await fetch(
+      const results: Results | Error = await fetch(
         `http://localhost:3000/?config=${encodeURIComponent(
           JSON.stringify(usedConnection)
         )}&query=${encodeURIComponent(query)}`,
-        { cache: cache }
-      ).then((r) => r.json());
+        {
+          cache:
+            !lastResults || lastResults instanceof Error || lastResults.error
+              ? "reload"
+              : cache,
+        }
+      )
+        .then((r) => r.json())
+        .catch((err) => err);
+
+      setLastResults(results);
+
+      console.log(results);
+
+      if (results instanceof Error) {
+        log.append(
+          <span style={{ color: "red" }}>
+            {"-- "}
+            {results.message}
+          </span>
+        );
+        throw results;
+      }
 
       const totalDuration = Date.now() - start;
 
@@ -45,9 +68,11 @@ export const useQuery = (
       if (results.rows)
         log.append(
           <span style={{ color: "#666" }}>
-            -- completed with {results.rows.length} results in{" "}
-            {formatDuration(totalDuration)} ({formatDuration(results.duration)}{" "}
-            query time)
+            {`-- completed with ${
+              results.rows.length
+            } results in ${formatDuration(totalDuration)} (${formatDuration(
+              results.duration
+            )} query time)`}
           </span>
         );
 

@@ -23,7 +23,7 @@ export const App = () => {
   const [tabCount, setTabCount] = React.useState(getQueryCount());
   const connections = useLazyRef(() => {
     const json = JSON.parse(
-      localStorage.getItem("connections") ?? '[{"driver":"mysql","port":3307}]',
+      localStorage.getItem("connections") ?? '[{"driver":"mysql","port":3307}]'
     );
     return json as Connection[];
   }).current;
@@ -50,7 +50,7 @@ export const App = () => {
             <Panel id="nav" basis={100} direction="horizontal">
               <Nav />
             </Panel>
-            <Panel id="content" basis={900} direction="vertical">
+            <Panel id="content" basis={800} direction="vertical">
               <Tabs
                 onNewTab={() => {
                   setTabCount((count) => {
@@ -65,7 +65,7 @@ export const App = () => {
                     for (let i = index; i < newCount; i++) {
                       localStorage.setItem(
                         `query-${i}`,
-                        localStorage.getItem(`query-${i + 1}`) ?? "",
+                        localStorage.getItem(`query-${i + 1}`) ?? ""
                       );
                     }
                     localStorage.removeItem(`query-${newCount}`);

@@ -88,6 +88,7 @@ export const Tabs = ({
         display: "flex",
         flexGrow: 1,
         flexDirection: "column",
+        maxHeight: "100%",
         ...theme.tabs.container,
       }}
     >
@@ -113,7 +114,7 @@ export const Tabs = ({
         </span>
         <span style={{ flexGrow: 1, cursor: undefined }}></span>
       </div>
-      <div style={{ flexGrow: 1, ...theme.tabs.content }}>
+      <div style={{ flexGrow: 1, overflow: "auto", ...theme.tabs.content }}>
         {childrenArr[actualSelectedTab]}
       </div>
     </div>

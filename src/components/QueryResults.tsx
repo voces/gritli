@@ -209,7 +209,7 @@ const ResultsComponent = ({
   handleContextMenu: (value: { x: number; y: number }) => void;
   handleClick: () => boolean;
 }) => {
-  const [display, setDisplay] = React.useState<"table" | "line">("line");
+  const [display, setDisplay] = React.useState<"table" | "line">("table");
 
   if (display === "table")
     return (
@@ -239,8 +239,9 @@ const ResultsComponent = ({
 };
 
 export const QueryResults = ({ results }: { results: Results }) => {
-  const [contextMenu, setContextMenu] =
-    React.useState<{ x: number; y: number } | undefined>();
+  const [contextMenu, setContextMenu] = React.useState<
+    { x: number; y: number } | undefined
+  >();
 
   return (
     <>
