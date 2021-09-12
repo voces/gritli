@@ -11,13 +11,39 @@ const Database = ({
   database: string;
   connection: Connection;
 }) => {
+  const {
+    selected: selectedConnection,
+    database: selectedDatabase,
+    patchState,
+  } = React.useContext(QueryContext);
   const query = useQuery(connection);
   const [tables, setTables] = React.useState<string[]>([]);
+  const selected =
+    connection === selectedConnection && database === selectedDatabase;
 
   return (
     <TreeNode
-      label={database}
+      label={
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <img
+            src="https://raw.githubusercontent.com/icons8/flat-color-icons/master/svg/database.svg"
+            width={16}
+          ></img>
+          <span style={{ fontWeight: selected ? "bold" : "inherit" }}>
+            {database}
+          </span>
+        </div>
+      }
+      onClick={(_: React.MouseEvent, expanded: boolean) => {
+        if (!selected && expanded) {
+          patchState({ database });
+          query(`USE \`${database}\`;`);
+          return false;
+        }
+        return true;
+      }}
       onExpand={() => {
+        patchState({ database });
         query(`USE \`${database}\`;`);
         query(`SHOW TABLES FROM \`${database}\`;`).then((result) => {
           if (result.rows) {
@@ -27,7 +53,15 @@ const Database = ({
           }
         });
       }}
-      nodes={tables}
+      nodes={tables.map((table) => (
+        <div key={table} style={{ display: "flex", alignItems: "center" }}>
+          <img
+            src="https://icons8.github.io/flat-color-icons/svg/data_sheet.svg"
+            width={16}
+          ></img>
+          {table}
+        </div>
+      ))}
     />
   );
 };
@@ -73,7 +107,7 @@ const ConnectionComponent = ({
 };
 
 export const Nav = () => {
-  const { connections, selected } = React.useContext(QueryContext);
+  const { connections, selected, database } = React.useContext(QueryContext);
 
   return (
     <nav

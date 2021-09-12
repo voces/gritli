@@ -7,7 +7,25 @@ export type Connection = {
   hostname?: string;
 };
 
-export const QueryContext = React.createContext<{
+type ContextData = {
   connections: Connection[];
   selected: Connection | undefined;
-}>({ connections: [], selected: undefined });
+  database: string | undefined;
+};
+
+type FullContextData = ContextData & {
+  patchState: (state: Partial<ContextData>) => void;
+};
+
+let globalState: ContextData = {
+  connections: [],
+  selected: undefined,
+  database: undefined,
+};
+
+export const QueryContext = React.createContext<FullContextData>({
+  ...globalState,
+  patchState: (state) => {
+    globalState = { ...globalState, ...state };
+  },
+});

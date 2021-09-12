@@ -7,18 +7,23 @@ export const TreeNode = ({
   onExpand,
   showGuides = true,
   initialExpanded = false,
+  onClick,
 }: {
   label: React.ReactNode;
   nodes?: React.ReactNode[];
   onExpand?: () => void;
   showGuides?: boolean;
   initialExpanded?: boolean;
+  onClick?: (event: React.MouseEvent, expanded: boolean) => boolean;
 }) => {
   const [expanded, setExpanded] = React.useState(initialExpanded);
   return (
     <div style={{ fontSize: 13 }}>
       <span
         onClick={(e) => {
+          if (onClick) {
+            if (!onClick(e, expanded)) return;
+          }
           e.preventDefault();
           e.stopPropagation();
           setExpanded(!expanded);
