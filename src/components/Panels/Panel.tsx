@@ -1,5 +1,5 @@
 import { React } from "../../deps.ts";
-import { randomUUID } from "../helpers/uuid.ts";
+import { randomUUID } from "../../helpers/uuid.ts";
 
 export type Node = {
   id?: string;
@@ -153,7 +153,6 @@ const TabPanelBody = ({ children }: { children: Node[] }) => {
 const moveNode = (node: Node, newParent: Node, index?: number): boolean => {
   // Only do something if newParent can receieve node
   if (!Array.isArray(newParent.children)) {
-    console.log(newParent);
     console.warn("New parent does not have array children");
     return false;
   }

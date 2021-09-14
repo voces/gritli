@@ -5,12 +5,16 @@ export const Tabs = ({
   children,
   onNewTab,
   onCloseTab,
+  selectedTabState,
+  style,
 }: {
   children: React.ReactNode;
-  onNewTab: () => void;
-  onCloseTab: (index: number) => void;
+  onNewTab?: () => void;
+  onCloseTab?: (index: number) => void;
+  selectedTabState?: [number, React.Dispatch<React.SetStateAction<number>>];
+  style?: React.CSSProperties;
 }) => {
-  const [selectedTab, setSelectedTab] = React.useState(0);
+  const [selectedTab, setSelectedTab] = selectedTabState ?? React.useState(0);
 
   // We need an array to index into
   const childrenArr = React.useMemo(
@@ -27,13 +31,15 @@ export const Tabs = ({
           parseInt(e.code[e.code.length - 1]) - 1
         );
         if (key === childrenArr.length) {
-          onNewTab();
+          onNewTab?.();
         }
         setSelectedTab(key);
       } else if (e.code === "KeyW" && e.altKey) {
         e.preventDefault();
-        onCloseTab(selectedTab);
-        setSelectedTab(selectedTab);
+        if (onCloseTab) {
+          onCloseTab(selectedTab);
+          setSelectedTab(selectedTab);
+        }
       }
     };
     window.addEventListener("keydown", listener);
@@ -62,19 +68,21 @@ export const Tabs = ({
             }}
           >
             <span>{child.props.label}</span>
-            <span
-              style={{
-                fontSize: 10,
-                opacity: 0.6,
-                padding: 4,
-                ...theme.tabs.label.close,
-              }}
-              onClick={() => {
-                onCloseTab(i);
-              }}
-            >
-              ✕
-            </span>
+            {onCloseTab && (
+              <span
+                style={{
+                  fontSize: 10,
+                  opacity: 0.6,
+                  padding: 4,
+                  ...theme.tabs.label.close,
+                }}
+                onClick={() => {
+                  onCloseTab(i);
+                }}
+              >
+                ✕
+              </span>
+            )}
           </span>
         );
       }
@@ -90,28 +98,31 @@ export const Tabs = ({
         flexDirection: "column",
         maxHeight: "100%",
         ...theme.tabs.container,
+        ...style,
       }}
     >
       <div style={{ display: "flex" }}>
         {labels.map((l, i) => (
           <React.Fragment key={i}>{l}</React.Fragment>
         ))}
-        <span
-          style={{
-            ...tabLabelBase,
-            ...theme.tabs.label.base,
-            borderRightWidth: 0,
-            fontWeight: "bold",
-            backgroundColor: "transparent",
-            ...theme.tabs.newTab,
-          }}
-          onClick={() => {
-            onNewTab();
-            setSelectedTab(childrenArr.length);
-          }}
-        >
-          +
-        </span>
+        {onNewTab && (
+          <span
+            style={{
+              ...tabLabelBase,
+              ...theme.tabs.label.base,
+              borderRightWidth: 0,
+              fontWeight: "bold",
+              backgroundColor: "transparent",
+              ...theme.tabs.newTab,
+            }}
+            onClick={() => {
+              onNewTab();
+              setSelectedTab(childrenArr.length);
+            }}
+          >
+            +
+          </span>
+        )}
         <span style={{ flexGrow: 1, cursor: undefined }}></span>
       </div>
       <div style={{ flexGrow: 1, overflow: "auto", ...theme.tabs.content }}>

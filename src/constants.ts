@@ -1,8 +1,7 @@
-
 const MYSQL_TYPE_DECIMAL = 0x00;
 const MYSQL_TYPE_TINY = 0x01;
-const MYSQL_TYPE_SHORT = 0x02;
-const MYSQL_TYPE_LONG = 0x03;
+export const MYSQL_TYPE_SHORT = 0x02;
+export const MYSQL_TYPE_LONG = 0x03;
 const MYSQL_TYPE_FLOAT = 0x04;
 const MYSQL_TYPE_DOUBLE = 0x05;
 const MYSQL_TYPE_NULL = 0x06;
@@ -14,7 +13,7 @@ const MYSQL_TYPE_TIME = 0x0b;
 const MYSQL_TYPE_DATETIME = 0x0c;
 const MYSQL_TYPE_YEAR = 0x0d;
 const MYSQL_TYPE_NEWDATE = 0x0e;
-const MYSQL_TYPE_VARCHAR = 0x0f;
+export const MYSQL_TYPE_VARCHAR = 0x0f;
 const MYSQL_TYPE_BIT = 0x10;
 const MYSQL_TYPE_TIMESTAMP2 = 0x11;
 const MYSQL_TYPE_DATETIME2 = 0x12;
@@ -29,8 +28,12 @@ const MYSQL_TYPE_BLOB = 0xfc;
 const MYSQL_TYPE_VAR_STRING = 0xfd;
 const MYSQL_TYPE_STRING = 0xfe;
 const MYSQL_TYPE_GEOMETRY = 0xff;
+export const EDITOR_TYPE_BOOLEAN = 0x100;
 
-export const types: Record<number, "number" | "date" | "string" | "other"> = {
+export const types: Record<
+  number,
+  "number" | "date" | "string" | "boolean" | "other"
+> = {
   [MYSQL_TYPE_DECIMAL]: "number",
   [MYSQL_TYPE_TINY]: "number",
   [MYSQL_TYPE_SHORT]: "number",
@@ -61,5 +64,5 @@ export const types: Record<number, "number" | "date" | "string" | "other"> = {
   [MYSQL_TYPE_VAR_STRING]: "string",
   [MYSQL_TYPE_STRING]: "string",
   [MYSQL_TYPE_GEOMETRY]: "other",
+  [EDITOR_TYPE_BOOLEAN]: "boolean",
 };
-

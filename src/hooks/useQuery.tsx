@@ -22,7 +22,6 @@ export const useQuery = (
 
   if (usedConnection)
     return async (query, cache = "no-cache") => {
-      console.log(usedConnection, query);
       log.append(query);
 
       const start = Date.now();
@@ -42,8 +41,6 @@ export const useQuery = (
         .catch((err) => err);
 
       setLastResults(results);
-
-      console.log(results);
 
       if (results instanceof Error) {
         log.append(

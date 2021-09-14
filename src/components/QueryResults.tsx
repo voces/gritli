@@ -6,24 +6,26 @@ import type { Option } from "./ContextMenu.tsx";
 import { LineChart } from "./viz/LineChart.tsx";
 
 type FieldDef = {
-  catalog: "def";
-  schema: "";
-  table: "";
-  originName: "";
-  fieldFlag: 129;
-  originTable: "";
-  fieldLen: 3;
-  name: string;
-  fieldType: keyof typeof types;
-  encoding: 63;
-  decimals: 0;
-  defaultVal: "";
+  readonly catalog?: "def";
+  readonly schema?: "";
+  readonly table?: "";
+  readonly originName?: "";
+  readonly fieldFlag?: 129;
+  readonly originTable?: "";
+  readonly fieldLen?: 3;
+  readonly name: string;
+  readonly fieldType: keyof typeof types;
+  readonly encoding?: 63;
+  readonly decimals?: 0;
+  readonly defaultVal?: "";
 };
 
 export type Results = {
   duration: number;
   error?: string;
-  rows?: Record<string, string | number>[];
+  rows?: ReadonlyArray<
+    Readonly<Record<string, string | number | undefined | boolean>>
+  >;
   fields?: FieldDef[];
 };
 
@@ -71,7 +73,7 @@ const QueryContextMenu = ({
             const row: string[] = [];
             stringRows.push(row);
             for (let n = 0; n < columns.length; n++) {
-              const str = rows[i][columns[n]].toString();
+              const str = (rows[i][columns[n]] ?? "").toString();
               row.push(str);
               if (columnWidths[n] < str.length) columnWidths[n] = str.length;
             }
@@ -162,22 +164,34 @@ const ResultTable = ({
     <tbody>
       {rows?.slice(0, 1000).map((r, i) => (
         <tr key={i}>
-          {Object.values(r).map((d, i) => (
-            <td
-              key={i}
-              style={{
-                ...tableCellStyle,
-                ...theme.table.cell,
-                textAlign:
-                  types[fields?.[i].fieldType ?? 0] === "number"
-                    ? "right"
-                    : "inherit",
-                ...theme.table[types[fields?.[i].fieldType ?? 0]],
-              }}
-            >
-              {d}
-            </td>
-          ))}
+          {(fields?.map((f) => [f.name, r[f.name]]) ?? Object.entries(r)).map(
+            (d, i) => (
+              <td
+                key={i}
+                style={{
+                  ...tableCellStyle,
+                  ...theme.table.cell,
+                  textAlign:
+                    (types[fields?.[i].fieldType ?? 0] === "number" &&
+                      "right") ||
+                    (types[fields?.[i].fieldType ?? 0] === "boolean" &&
+                      "center") ||
+                    "inherit",
+                  ...theme.table[types[fields?.[i].fieldType ?? 0]],
+                }}
+              >
+                {types[fields?.[i].fieldType ?? 0] === "boolean" ? (
+                  <input
+                    type="checkbox"
+                    checked={d[1] === true}
+                    disabled={typeof d[1] !== "boolean"}
+                  />
+                ) : (
+                  d[1]?.toString()
+                )}
+              </td>
+            )
+          )}
           <td style={{ width: "99%" }}></td>
         </tr>
       ))}
@@ -225,12 +239,16 @@ const ResultsComponent = ({
   const rows = results.rows?.map((r) =>
     Object.fromEntries(
       Object.entries(r).map(([column, value], i) => {
-        if (types[results?.fields?.[i].fieldType ?? 0] === "date")
+        if (
+          types[results?.fields?.[i].fieldType ?? 0] === "date" &&
+          (typeof value === "string" || typeof value === "number")
+        )
           return [column, new Date(value).getTime()];
         return [column, value];
       })
     )
   );
+
   if (display === "line" && rows) {
     return <LineChart data={rows} />;
   }

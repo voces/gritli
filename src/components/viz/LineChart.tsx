@@ -1,6 +1,6 @@
 import { React, d3, dayjs } from "../../deps.ts";
 
-type Row = Record<string, string | number>;
+type Row = Record<string, string | number | undefined | boolean>;
 type Rows = Row[];
 
 const deduceDataMap = (

@@ -1,3 +1,4 @@
+import { Icon } from "../components/Icon.tsx";
 import { TreeNode } from "../components/TreeNode.tsx";
 import { Connection, QueryContext } from "../contexts/QueryContext.ts";
 import { React } from "../deps.ts";
@@ -14,6 +15,7 @@ const Database = ({
   const {
     selected: selectedConnection,
     database: selectedDatabase,
+    table: selectedTable,
     patchState,
   } = React.useContext(QueryContext);
   const query = useQuery(connection);
@@ -21,14 +23,27 @@ const Database = ({
   const selected =
     connection === selectedConnection && database === selectedDatabase;
 
+  React.useEffect(() => {
+    if (tables.length || !selected) return;
+
+    query(`SHOW TABLES FROM \`${database}\`;`).then((result) => {
+      if (result.rows) {
+        setTables(
+          result.rows.map((r) => (r[`Tables_in_${database}`] ?? "").toString())
+        );
+        const table = result.rows[0]?.[`Tables_in_${database}`];
+        if (typeof table === "string") patchState({ table });
+      }
+    });
+  }, [selected, tables.length]);
+
   return (
     <TreeNode
+      key={selected.toString()}
+      initialExpanded={selected}
       label={
         <div style={{ display: "flex", alignItems: "center" }}>
-          <img
-            src="https://raw.githubusercontent.com/icons8/flat-color-icons/master/svg/database.svg"
-            width={16}
-          ></img>
+          <Icon icon="database" />
           <span style={{ fontWeight: selected ? "bold" : "inherit" }}>
             {database}
           </span>
@@ -45,22 +60,28 @@ const Database = ({
       onExpand={() => {
         patchState({ database });
         query(`USE \`${database}\`;`);
-        query(`SHOW TABLES FROM \`${database}\`;`).then((result) => {
-          if (result.rows) {
-            setTables(
-              result.rows.map((r) => r[`Tables_in_${database}`].toString())
-            );
-          }
-        });
       }}
       nodes={tables.map((table) => (
-        <div key={table} style={{ display: "flex", alignItems: "center" }}>
-          <img
-            src="https://icons8.github.io/flat-color-icons/svg/data_sheet.svg"
-            width={16}
-          ></img>
-          {table}
-        </div>
+        <TreeNode
+          key={table}
+          label={
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <Icon icon="data_sheet" />
+              <span
+                style={{
+                  fontWeight:
+                    selected && table === selectedTable ? "bold" : "inherit",
+                }}
+              >
+                {table}
+              </span>
+            </div>
+          }
+          onClick={() => {
+            patchState({ table });
+            return false;
+          }}
+        />
       ))}
     />
   );
@@ -75,11 +96,17 @@ const ConnectionComponent = ({
 }) => {
   const query = useQuery(connection);
   const [databases, setDatabases] = React.useState<string[]>();
+  const { database: selectedDatabase, patchState } =
+    React.useContext(QueryContext);
 
   const retrieveDatabases = React.useCallback(() => {
     query("SHOW DATABASES;").then((result) => {
       if (result.rows) {
-        setDatabases(result.rows.map((r) => r.Database.toString()));
+        const newDatabases = result.rows.map((r) =>
+          (r.Database ?? "").toString()
+        );
+        setDatabases(newDatabases);
+        if (!selectedDatabase) patchState({ database: newDatabases[0] });
       }
     });
   }, []);

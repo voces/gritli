@@ -2,9 +2,7 @@ import { React } from "./deps.ts";
 
 const urlTheme = new URLSearchParams(location.search).get("theme");
 const isDarkMode = urlTheme
-  ? urlTheme === "dark"
-    ? true
-    : false
+  ? urlTheme === "dark" ? true : false
   : window.matchMedia?.("(prefers-color-scheme: dark)").matches;
 
 type Theme = {
@@ -47,6 +45,7 @@ type Theme = {
     number: React.CSSProperties;
     string: React.CSSProperties;
     date: React.CSSProperties;
+    boolean?: React.CSSProperties;
     other?: React.CSSProperties;
   };
   tree: {
@@ -63,6 +62,7 @@ type Theme = {
   nav: {
     container: React.CSSProperties;
   };
+  input?: React.CSSProperties;
   extend: (source: DeepPartial<Theme>) => Theme;
 };
 
@@ -100,10 +100,6 @@ const theme: Theme = {
     "--border-secondary": "#eee",
   },
   panel: {
-    // title: {
-    //   backgroundColor: "#29292d",
-    //   color: "#eaeaea",
-    // },
     container: {
       backgroundColor: "var(--background-primary)",
       color: "var(--color-primary)",
@@ -169,6 +165,11 @@ const theme: Theme = {
       },
     },
   },
+  input: {
+    backgroundColor: "var(--background-primary)",
+    border: "1px solid var(--border-primary)",
+    color: "var(--color-primary)",
+  },
   extend: (source: DeepPartial<Theme>): Theme => {
     deepAssign(theme, source);
 
@@ -180,7 +181,7 @@ type DeepPartial<T> = {
   [P in keyof T]?: DeepPartial<T[P]>;
 };
 
-if (isDarkMode)
+if (isDarkMode) {
   theme.extend({
     monaco: "vs-dark",
     variables: {
@@ -203,5 +204,6 @@ if (isDarkMode)
       },
     },
   });
+}
 
 export { theme };

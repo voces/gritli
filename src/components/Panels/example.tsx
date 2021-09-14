@@ -1,5 +1,5 @@
 import { React, ReactDOM } from "../../deps.ts";
-import { randomUUID } from "../helpers/uuid.ts";
+import { randomUUID } from "../../helpers/uuid.ts";
 import { Panel, Node } from "./Panel.tsx";
 
 const root = document.getElementById("root");

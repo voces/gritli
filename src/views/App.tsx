@@ -1,6 +1,7 @@
 import { Log } from "../components/Log.tsx";
 import { Panel } from "../components/Panel.tsx";
 import { QueryTab } from "../components/QueryTab.tsx";
+import { TableTab } from "../components/TableTab.tsx";
 import { Tabs } from "../components/Tabs.tsx";
 import { LogContext } from "../contexts/LogContext.ts";
 import { Connection, QueryContext } from "../contexts/QueryContext.ts";
@@ -42,6 +43,8 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
 
   const [database, setDatabase] = React.useState<string | undefined>();
 
+  const [table, setTable] = React.useState<string | undefined>();
+
   return (
     <LogContext.Provider value={{ log, append }}>
       <QueryContext.Provider
@@ -49,10 +52,12 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
           connections,
           selected,
           database,
+          table,
           patchState: (state) => {
             if (state.connections) setConnections(state.connections);
             if (state.selected) setSelected(state.selected);
             if (state.database) setDatabase(state.database);
+            if (state.table) setTable(state.table);
           },
         }}
       >
@@ -62,58 +67,60 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export const App = () => {
+export const MainTabs = () => {
   const [tabCount, setTabCount] = React.useState(getQueryCount());
+  const { database, table } = React.useContext(QueryContext);
 
   return (
-    <Providers>
-      <Panel direction="vertical" style={{ height: "100%" }}>
-        <Panel id="main" basis="calc(100% - 118px)">
-          <Panel id="nav" basis={100} direction="horizontal">
-            <Nav />
-          </Panel>
-          <Panel id="content" basis={800} direction="vertical">
-            <Tabs
-              onNewTab={() => {
-                setTabCount((count) => {
-                  localStorage.setItem("query-count", (count + 1).toString());
-                  return count + 1;
-                });
-              }}
-              onCloseTab={(index) => {
-                setTabCount((count) => {
-                  const newCount = count - 1;
+    <Tabs
+      onNewTab={() => {
+        setTabCount((count) => {
+          localStorage.setItem("query-count", (count + 1).toString());
+          return count + 1;
+        });
+      }}
+      onCloseTab={(index) => {
+        setTabCount((count) => {
+          const newCount = count - 1;
 
-                  for (let i = index; i < newCount; i++) {
-                    localStorage.setItem(
-                      `query-${i}`,
-                      localStorage.getItem(`query-${i + 1}`) ?? ""
-                    );
-                  }
-                  localStorage.removeItem(`query-${newCount}`);
+          for (let i = index; i < newCount; i++) {
+            localStorage.setItem(
+              `query-${i}`,
+              localStorage.getItem(`query-${i + 1}`) ?? ""
+            );
+          }
+          localStorage.removeItem(`query-${newCount}`);
 
-                  localStorage.setItem("query-count", newCount.toString());
+          localStorage.setItem("query-count", newCount.toString());
 
-                  return newCount;
-                });
-              }}
-            >
-              {Array(tabCount)
-                .fill(0)
-                .map((_, i) => (
-                  <QueryTab
-                    key={`${tabCount}-${i}`}
-                    id={i}
-                    label={`Query #${i + 1}`}
-                  />
-                ))}
-            </Tabs>
-          </Panel>
-        </Panel>
-        <Panel id="output" basis={100}>
-          <Output />
-        </Panel>
-      </Panel>
-    </Providers>
+          return newCount;
+        });
+      }}
+    >
+      {database && table && <TableTab label={table} />}
+      {Array(tabCount)
+        .fill(0)
+        .map((_, i) => (
+          <QueryTab key={`${tabCount}-${i}`} id={i} label={`Query #${i + 1}`} />
+        ))}
+    </Tabs>
   );
 };
+
+export const App = () => (
+  <Providers>
+    <Panel direction="vertical" style={{ height: "100%" }}>
+      <Panel id="main" basis="calc(100% - 118px)">
+        <Panel id="nav" basis={100} direction="horizontal">
+          <Nav />
+        </Panel>
+        <Panel id="content" basis={800} direction="vertical">
+          <MainTabs />
+        </Panel>
+      </Panel>
+      <Panel id="output" basis={100}>
+        <Output />
+      </Panel>
+    </Panel>
+  </Providers>
+);
