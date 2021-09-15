@@ -1,13 +1,25 @@
 import { isRecord } from "./typeguards.ts";
 
+// {
+//   "Field": "discordId",
+//   "Type": "varchar(50)",
+//   "Collation": "utf8mb4_unicode_ci",
+//   "Null": "NO",
+//   "Key": "",
+//   "Default": null,
+//   "Extra": "",
+//   "Privileges": "select,insert,update,references",
+//   "Comment": ""
+// }
+
 type SqlColumnRow = {
-  COLUMN_NAME: string;
-  COLUMN_TYPE: string;
-  IS_NULLABLE: "NO" | "YES";
-  COLUMN_DEFAULT: string | null;
-  COLUMN_COMMENT: string | null;
-  ORDINAL_POSITION: number;
-  COLLATION_NAME: string | null;
+  Field: string;
+  Type: string;
+  Null: "NO" | "YES";
+  Default: string | null;
+  Comment: string | null;
+  Key: string | null;
+  Collation: string | null;
 };
 
 export type SqlColumn = {
@@ -18,14 +30,14 @@ export type SqlColumn = {
   nullable: boolean;
   default: string | undefined;
   comment: string | undefined;
-  ordinalPosition: number;
   collation: string | undefined;
+  key: string | null;
 };
 
 const isSqlColumnRow = (row: unknown): row is SqlColumnRow =>
-  isRecord(row) && typeof row.COLUMN_NAME === "string" &&
-  typeof row.COLUMN_TYPE === "string" &&
-  (typeof row.COLUMN_DEFAULT === "string" || row.COLUMN_DEFAULT === null);
+  isRecord(row) && typeof row.Field === "string" &&
+  typeof row.Type === "string" &&
+  (typeof row.Default === "string" || row.Default === null);
 
 const extractDataType = (str: string): string => {
   const value = str.match(/^\w+/)?.[0];
@@ -51,20 +63,21 @@ export const sqlColumnTransform = (
     >
     | undefined,
 ): SqlColumn[] => {
+  console.log(rows);
   if (!rows) return [];
   const columns: SqlColumn[] = [];
   for (const row of rows) {
     if (!isSqlColumnRow(row)) continue;
     columns.push({
-      name: row.COLUMN_NAME,
-      dataType: extractDataType(row.COLUMN_TYPE),
-      dataLength: extractDataLength(row.COLUMN_TYPE),
-      unsigned: extractSign(row.COLUMN_TYPE),
+      name: row.Field,
+      dataType: extractDataType(row.Type),
+      dataLength: extractDataLength(row.Type),
+      unsigned: extractSign(row.Type),
       nullable: row.IS_NULLABLE === "YES",
-      default: row.COLUMN_DEFAULT ?? undefined,
-      comment: row.COLUMN_COMMENT ?? undefined,
-      ordinalPosition: row.ORDINAL_POSITION,
-      collation: row.COLLATION_NAME ?? undefined,
+      default: row.Default ?? undefined,
+      comment: row.Comment ?? undefined,
+      collation: row.Collation ?? undefined,
+      key: row.Key,
     });
   }
   return columns;

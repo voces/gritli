@@ -22,6 +22,7 @@ export const Tabs = ({
     [children]
   );
 
+  // TODO: excise this so it's MainTab?
   React.useEffect(() => {
     const listener = (e: KeyboardEvent) => {
       if (e.code.startsWith("Digit") && e.altKey) {
@@ -39,6 +40,12 @@ export const Tabs = ({
         if (onCloseTab) {
           onCloseTab(selectedTab);
           setSelectedTab(selectedTab);
+        }
+      } else if (e.code === "KeyT" && e.altKey) {
+        e.preventDefault();
+        if (onNewTab) {
+          onNewTab();
+          setSelectedTab(childrenArr.length);
         }
       }
     };
@@ -70,7 +77,7 @@ export const Tabs = ({
             }}
           >
             <span>{child.props.label}</span>
-            {onCloseTab && (
+            {onCloseTab && child.props.canClose !== false && (
               <span
                 style={{
                   fontSize: 10,

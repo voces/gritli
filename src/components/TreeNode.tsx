@@ -17,6 +17,11 @@ export const TreeNode = ({
   onClick?: (event: React.MouseEvent, expanded: boolean) => boolean;
 }) => {
   const [expanded, setExpanded] = React.useState(initialExpanded);
+
+  React.useEffect(() => {
+    setExpanded(initialExpanded);
+  }, [initialExpanded]);
+
   return (
     <div style={{ fontSize: 13 }}>
       <span

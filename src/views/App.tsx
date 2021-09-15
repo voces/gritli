@@ -2,6 +2,7 @@ import { Label } from "../components/Label.tsx";
 import { Log } from "../components/Log.tsx";
 import { Panel } from "../components/Panel.tsx";
 import { QueryTab } from "../components/QueryTab.tsx";
+import { TableDataTab } from "../components/TableDataTab.tsx";
 import { TableTab } from "../components/TableTab/TableTab.tsx";
 import { Tabs } from "../components/Tabs.tsx";
 import { LogContext } from "../contexts/LogContext.ts";
@@ -82,7 +83,7 @@ export const MainTabs = () => {
       }}
       onCloseTab={(index) => {
         setTabCount((count) => {
-          const newCount = count - 1;
+          let newCount = count - 1;
 
           for (let i = index; i < newCount; i++) {
             localStorage.setItem(
@@ -91,6 +92,11 @@ export const MainTabs = () => {
             );
           }
           localStorage.removeItem(`query-${newCount}`);
+
+          if (newCount === 0) {
+            localStorage.setItem(`query-0`, "");
+            newCount++;
+          }
 
           localStorage.setItem("query-count", newCount.toString());
 
@@ -103,6 +109,15 @@ export const MainTabs = () => {
           key={table}
           label={<Label icon="data_sheet">{table}</Label>}
           table={table}
+          canClose={false}
+        />
+      )}
+      {database && table && (
+        <TableDataTab
+          key={table}
+          label={<Label icon="data_sheet">Data</Label>}
+          table={table}
+          canClose={false}
         />
       )}
       {Array(tabCount)

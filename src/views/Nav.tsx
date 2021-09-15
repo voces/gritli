@@ -26,12 +26,10 @@ const Database = ({
   React.useEffect(() => {
     if (tables.length || !selected) return;
 
-    query(`SHOW TABLES FROM \`${database}\`;`).then((result) => {
+    query(`SHOW TABLE STATUS FROM \`${database}\`;`).then((result) => {
       if (result.rows) {
-        setTables(
-          result.rows.map((r) => (r[`Tables_in_${database}`] ?? "").toString())
-        );
-        const table = result.rows[0]?.[`Tables_in_${database}`];
+        setTables(result.rows.map((r) => (r.Name ?? "").toString()));
+        const table = result.rows[0]?.Name;
         if (typeof table === "string") patchState({ table });
       }
     });
@@ -39,7 +37,6 @@ const Database = ({
 
   return (
     <TreeNode
-      key={selected.toString()}
       initialExpanded={selected}
       label={
         <div style={{ display: "flex", alignItems: "center" }}>

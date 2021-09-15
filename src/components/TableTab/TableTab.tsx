@@ -37,11 +37,16 @@ const fields = [
   // { name: "Virtuality", fieldType: MYSQL_TYPE_VARCHAR },
 ];
 
+const KEY: Record<string, string> = {
+  PRI: "🔑",
+};
+
 export const TableTab = ({
   table,
 }: {
   label: React.ReactNode;
   table: string;
+  canClose: boolean;
 }) => {
   const { database } = React.useContext(QueryContext);
   const selectedTabState = useSessionState("tableTab", 0);
@@ -61,7 +66,9 @@ export const TableTab = ({
 
   React.useEffect(() => {
     query(
-      `SELECT * FROM \`information_schema\`.\`COLUMNS\` WHERE TABLE_SCHEMA = '${database}' AND TABLE_NAME = '${table}';`
+      // maybe use: SHOW FULL COLUMNS FROM `database`.`table`;
+      // `SELECT * FROM \`information_schema\`.\`COLUMNS\` WHERE TABLE_SCHEMA = '${database}' AND TABLE_NAME = '${table}';`
+      `SHOW FULL COLUMNS FROM \`${database}\`.\`${table}\``
     ).then((ret) => setColumns(sqlColumnTransform(ret.rows) ?? []));
 
     query(
@@ -98,9 +105,11 @@ export const TableTab = ({
           checksum:
             typeof checksum === "boolean" ? checksum : optionsData.checksum,
         });
-
-        console.log(row);
       }
+
+      query(`SHOW INDEXES IN \`${database}\`.\`${table}\`;`).then((ret) => {
+        console.log(ret);
+      });
     });
   }, [database, table]);
 
@@ -146,8 +155,8 @@ export const TableTab = ({
               results={{
                 duration: 0,
                 fields,
-                rows: columns.map((column) => ({
-                  "#": column.ordinalPosition,
+                rows: columns.map((column, idx) => ({
+                  "#": `${KEY[column.key ?? ""] ?? ""} ${idx + 1}`,
                   Name: column.name,
                   Datatype: column.dataType,
                   "Length/Set": column.dataLength,
