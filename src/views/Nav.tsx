@@ -78,8 +78,11 @@ const Database = ({
             </div>
           }
           onClick={() => {
-            patchState({ table });
-            return false;
+            if (selectedTable !== table) {
+              patchState({ table });
+              return false;
+            }
+            return true;
           }}
         />
       ))}

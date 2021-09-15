@@ -43,7 +43,7 @@ export const TreeNode = ({
                   paddingLeft: 8,
                   marginLeft: 4,
                   position: "absolute",
-                  height: i < arr.length - 1 ? (i === 0 ? 17 : 20) : 11,
+                  height: i < arr.length - 1 ? (i === 0 ? 13 : 16) : 10,
                   marginTop: i === 0 ? 3 : 0,
                   ...theme.tree.guides.base,
                 }}

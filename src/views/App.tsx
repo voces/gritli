@@ -1,7 +1,7 @@
 import { Log } from "../components/Log.tsx";
 import { Panel } from "../components/Panel.tsx";
 import { QueryTab } from "../components/QueryTab.tsx";
-import { TableTab } from "../components/TableTab.tsx";
+import { TableTab } from "../components/TableTab/TableTab.tsx";
 import { Tabs } from "../components/Tabs.tsx";
 import { LogContext } from "../contexts/LogContext.ts";
 import { Connection, QueryContext } from "../contexts/QueryContext.ts";
@@ -97,7 +97,7 @@ export const MainTabs = () => {
         });
       }}
     >
-      {database && table && <TableTab label={table} />}
+      {database && table && <TableTab key={table} label={table} />}
       {Array(tabCount)
         .fill(0)
         .map((_, i) => (

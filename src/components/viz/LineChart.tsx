@@ -38,8 +38,8 @@ export const LineChart = ({ data }: { data: Rows }) => {
 
     const svg = d3.select(svgRef.current);
 
-    const xAxisValues = data.map((r) => r[dataMap.xAxis] as any);
-    const yAxisValues = data.map((r) => r[dataMap.yAxis] as any);
+    const xAxisValues = data.map((r) => r[dataMap.xAxis] as number);
+    const yAxisValues = data.map((r) => r[dataMap.yAxis] as number);
 
     const xAxis = d3
       .scaleLinear()
@@ -62,7 +62,10 @@ export const LineChart = ({ data }: { data: Rows }) => {
       data.reduce((lines, row) => {
         const series = dataMap.series.map((c) => row[c]).join("-");
         if (!lines[series]) lines[series] = [];
-        lines[series].push([row[dataMap.xAxis], row[dataMap.yAxis]] as any);
+        lines[series].push([row[dataMap.xAxis], row[dataMap.yAxis]] as [
+          number,
+          number
+        ]);
         return lines;
       }, {} as Record<string, [key: number, value: number][]>)
     );

@@ -11,10 +11,7 @@ const formatDuration = (ms: number) => {
 
 export const useQuery = (
   connection?: Connection
-): ((
-  query: string,
-  cache?: "no-cache" | "force-cache"
-) => Promise<Results>) => {
+): ((query: string, cache?: RequestCache) => Promise<Results>) => {
   const queryContext = React.useContext(QueryContext);
   const log = React.useContext(LogContext);
   const [lastResults, setLastResults] = React.useState<Results | Error>();

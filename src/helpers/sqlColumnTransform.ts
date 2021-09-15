@@ -7,6 +7,7 @@ type SqlColumnRow = {
   COLUMN_DEFAULT: string | null;
   COLUMN_COMMENT: string | null;
   ORDINAL_POSITION: number;
+  COLLATION_NAME: string | null;
 };
 
 export type SqlColumn = {
@@ -18,6 +19,7 @@ export type SqlColumn = {
   default: string | undefined;
   comment: string | undefined;
   ordinalPosition: number;
+  collation: string | undefined;
 };
 
 const isSqlColumnRow = (row: unknown): row is SqlColumnRow =>
@@ -37,7 +39,7 @@ const extractDataLength = (str: string): number | undefined => {
 };
 
 const extractSign = (str: string): boolean | undefined => {
-  const isNumeric = !!str.match(/^(int|float|tinyint)/);
+  const isNumeric = !!str.match(/^(int|float|tinyint|bigint)/);
   if (!isNumeric) return;
   return !!str.match(/unsigned$/);
 };
@@ -62,6 +64,7 @@ export const sqlColumnTransform = (
       default: row.COLUMN_DEFAULT ?? undefined,
       comment: row.COLUMN_COMMENT ?? undefined,
       ordinalPosition: row.ORDINAL_POSITION,
+      collation: row.COLLATION_NAME ?? undefined,
     });
   }
   return columns;
