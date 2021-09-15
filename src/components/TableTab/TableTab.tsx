@@ -16,7 +16,7 @@ import { Panel } from "./../Panel.tsx";
 import { QueryResults } from "./../QueryResults.tsx";
 import { Tabs } from "./../Tabs.tsx";
 import { BasicData, BasicTab } from "./BasicTab.tsx";
-import { Label } from "./Label.tsx";
+import { Label } from "../Label.tsx";
 import { OptionsData, OptionsTab } from "./OptionsTab.tsx";
 import { CreateCodeTab } from "./CreateCodeTab.tsx";
 
@@ -37,28 +37,70 @@ const fields = [
   // { name: "Virtuality", fieldType: MYSQL_TYPE_VARCHAR },
 ];
 
-export const TableTab = ({ label: table }: { label: string }) => {
+export const TableTab = ({
+  table,
+}: {
+  label: React.ReactNode;
+  table: string;
+}) => {
   const { database } = React.useContext(QueryContext);
   const selectedTabState = useSessionState("tableTab", 0);
   const query = useQuery();
   const [basicData, setBasicData] = React.useState<BasicData>({
     name: table,
-    description: "",
+    comment: "",
   });
   const [optionsData, setOptionsData] = React.useState<OptionsData>({
     autoIncrement: undefined,
     defaultCollation: "utf8mb4_unicode_ci",
     engine: "InnoDB",
+    rowFormat: "DEFAULT",
+    checksum: false,
   });
   const [columns, setColumns] = React.useState<SqlColumn[]>([]);
 
   React.useEffect(() => {
     query(
-      `SELECT * FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = '${database}' AND TABLE_NAME = '${table}';`
+      `SELECT * FROM \`information_schema\`.\`COLUMNS\` WHERE TABLE_SCHEMA = '${database}' AND TABLE_NAME = '${table}';`
+    ).then((ret) => setColumns(sqlColumnTransform(ret.rows) ?? []));
+
+    query(
+      `SELECT * FROM \`information_schema\`.\`TABLES\` WHERE TABLE_SCHEMA = '${database}' AND TABLE_NAME = '${table}';`
     ).then((ret) => {
-      const columns = sqlColumnTransform(ret.rows) ?? [];
-      console.log(ret, columns);
-      setColumns(columns);
+      const row = ret.rows?.[0];
+      if (row) {
+        const name = row.TABLE_NAME;
+        const comment = row.TABLE_COMMENT;
+
+        setBasicData({
+          name: typeof name === "string" ? name : basicData.name,
+          comment: typeof comment === "string" ? comment : basicData.comment,
+        });
+
+        const autoIncrement = row.AUTO_INCREMENT;
+        const defaultCollation = row.TABLE_COLLATION;
+        const engine = row.ENGINE;
+        const rowFormat = row.ROW_FORMAT;
+        const checksum = row.CHECKSUM;
+
+        setOptionsData({
+          autoIncrement:
+            typeof autoIncrement === "number"
+              ? autoIncrement
+              : optionsData.autoIncrement,
+          defaultCollation:
+            typeof defaultCollation === "string"
+              ? defaultCollation
+              : optionsData.defaultCollation,
+          engine: typeof engine === "string" ? engine : optionsData.engine,
+          rowFormat:
+            typeof rowFormat === "string" ? rowFormat : optionsData.rowFormat,
+          checksum:
+            typeof checksum === "boolean" ? checksum : optionsData.checksum,
+        });
+
+        console.log(row);
+      }
     });
   }, [database, table]);
 

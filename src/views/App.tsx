@@ -1,3 +1,4 @@
+import { Label } from "../components/Label.tsx";
 import { Log } from "../components/Log.tsx";
 import { Panel } from "../components/Panel.tsx";
 import { QueryTab } from "../components/QueryTab.tsx";
@@ -97,11 +98,21 @@ export const MainTabs = () => {
         });
       }}
     >
-      {database && table && <TableTab key={table} label={table} />}
+      {database && table && (
+        <TableTab
+          key={table}
+          label={<Label icon="data_sheet">{table}</Label>}
+          table={table}
+        />
+      )}
       {Array(tabCount)
         .fill(0)
         .map((_, i) => (
-          <QueryTab key={`${tabCount}-${i}`} id={i} label={`Query #${i + 1}`} />
+          <QueryTab
+            key={`${tabCount}-${i}`}
+            id={i}
+            label={<Label icon="document">{`Query #${i + 1}`}</Label>}
+          />
         ))}
     </Tabs>
   );

@@ -1,5 +1,5 @@
-import { React } from "../../deps.ts";
-import { Icon, IconType } from "./../Icon.tsx";
+import { React } from "../deps.ts";
+import { Icon, IconType } from "./Icon.tsx";
 
 export const Label = ({
   children,
@@ -8,8 +8,8 @@ export const Label = ({
   children: React.ReactNode;
   icon: IconType;
 }) => (
-  <div style={{ display: "flex", alignItems: "center" }}>
+  <span style={{ display: "inline-flex", alignItems: "center" }}>
     <Icon icon={icon} style={{ paddingRight: 2 }} />
     {children}
-  </div>
+  </span>
 );

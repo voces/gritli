@@ -5,7 +5,7 @@ import { TextArea } from "./TextArea.tsx";
 
 export type BasicData = {
   name: string;
-  description: string;
+  comment: string;
 };
 
 export const BasicTab = ({
@@ -31,8 +31,8 @@ export const BasicTab = ({
       <TextArea
         style={{ flexGrow: 1 }}
         rows={5}
-        value={data.description}
-        onInput={(e) => onChange({ description: e.currentTarget.value })}
+        value={data.comment}
+        onInput={(e) => onChange({ comment: e.currentTarget.value })}
       />
     </InputRow>
   </div>

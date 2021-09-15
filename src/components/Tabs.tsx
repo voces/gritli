@@ -60,6 +60,8 @@ export const Tabs = ({
           <span
             onClick={() => setSelectedTab(i)}
             style={{
+              display: "inline-flex",
+              alignItems: "center",
               ...tabLabelBase,
               ...theme.tabs.label.base,
               ...(i === actualSelectedTab

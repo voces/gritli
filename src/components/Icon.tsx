@@ -9,7 +9,8 @@ export type IconType =
   | "tree_structure"
   | "add_database"
   | "data_configuration"
-  | "pie_chart";
+  | "pie_chart"
+  | "document";
 
 export const Icon = ({
   icon,

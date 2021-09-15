@@ -1,12 +1,13 @@
 import { React } from "../../deps.ts";
 import { Input } from "./Input.tsx";
 import { InputRow } from "./InputRow.tsx";
-import { TextArea } from "./TextArea.tsx";
 
 export type OptionsData = {
   autoIncrement: number | undefined;
   defaultCollation: string;
   engine: string;
+  rowFormat: string;
+  checksum: boolean;
 };
 
 export const OptionsTab = ({
@@ -20,7 +21,17 @@ export const OptionsTab = ({
       label="Auto increment"
       style={{ marginTop: "0.25em", marginBottom: "0.25em" }}
     >
-      <Input style={{ flexGrow: 1 }} value={data.autoIncrement} />
+      <Input style={{ flexGrow: 1 }} value={data.autoIncrement} type="number" />
+    </InputRow>
+    <InputRow label="Checksum" style={{ marginBottom: "0.25em" }}>
+      <Input
+        checked={data.checksum}
+        type="checkbox"
+        style={{ width: undefined, padding: 0, margin: "3px 0" }}
+      />
+    </InputRow>
+    <InputRow label="Row format" style={{ marginBottom: "0.25em" }}>
+      <Input style={{ flexGrow: 1 }} value={data.rowFormat} />
     </InputRow>
     <InputRow label="Default collation" style={{ marginBottom: "0.25em" }}>
       <Input style={{ flexGrow: 1 }} value={data.defaultCollation} />
