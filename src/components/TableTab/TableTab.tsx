@@ -20,6 +20,11 @@ import { Label } from "../Label.tsx";
 import { OptionsData, OptionsTab } from "./OptionsTab.tsx";
 import { CreateCodeTab } from "./CreateCodeTab.tsx";
 import { Index, indexRowsToObjs, IndexTab } from "./IndexTab.tsx";
+import {
+  ForeignKey,
+  foreignKeyRowsToObjs,
+  ForeignKeyTab,
+} from "./ForeignKeyTab.tsx";
 
 const Placeholder = ({}: { label: React.ReactNode }) => <div>Placeholder</div>;
 
@@ -65,6 +70,7 @@ export const TableTab = ({
   });
   const [columns, setColumns] = React.useState<SqlColumn[]>([]);
   const [indexes, setIndexes] = React.useState<Index[]>([]);
+  const [foreignKeys, setForeignKeys] = React.useState<ForeignKey[]>([]);
 
   React.useEffect(() => {
     query(
@@ -112,6 +118,28 @@ export const TableTab = ({
       query(`SHOW INDEXES IN \`${database}\`.\`${table}\`;`).then((ret) => {
         setIndexes(indexRowsToObjs(ret.rows));
       });
+
+      query(`SELECT
+    tc.constraint_name,
+    kcu.column_name, kcu.referenced_table_name, kcu.referenced_column_name,
+    rc.update_rule, rc.delete_rule
+FROM information_schema.table_constraints tc
+INNER JOIN information_schema.key_column_usage kcu ON
+    tc.constraint_catalog = kcu.constraint_catalog
+    AND tc.constraint_schema = kcu.constraint_schema
+    AND tc.constraint_name = kcu.constraint_name
+    AND tc.table_name = kcu.table_name
+LEFT JOIN information_schema.referential_constraints rc ON
+    tc.constraint_catalog = rc.constraint_catalog
+    AND tc.constraint_schema = rc.constraint_schema
+    AND tc.constraint_name = rc.constraint_name
+    AND tc.table_name = rc.table_name
+WHERE
+    tc.constraint_type = 'FOREIGN KEY'
+    AND tc.constraint_schema = '${database}'
+    AND tc.table_name = '${table}';`).then((ret) => {
+        setForeignKeys(foreignKeyRowsToObjs(ret.rows));
+      });
     });
   }, [database, table]);
 
@@ -132,8 +160,9 @@ export const TableTab = ({
             label={<Label icon="flash_on">Indexes</Label>}
             indexes={indexes}
           />
-          <Placeholder
+          <ForeignKeyTab
             label={<Label icon="tree_structure">Foreign keys</Label>}
+            foreignKeys={foreignKeys}
           />
           <Placeholder label={<Label icon="pie_chart">Partitions</Label>} />
           <CreateCodeTab

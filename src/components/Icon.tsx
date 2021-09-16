@@ -19,7 +19,8 @@ export type IconType =
   | "key"
   | "up"
   | "down"
-  | "puzzle";
+  | "puzzle"
+  | "link";
 
 export const Icon = ({
   icon,
