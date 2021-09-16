@@ -19,6 +19,7 @@ import { BasicData, BasicTab } from "./BasicTab.tsx";
 import { Label } from "../Label.tsx";
 import { OptionsData, OptionsTab } from "./OptionsTab.tsx";
 import { CreateCodeTab } from "./CreateCodeTab.tsx";
+import { Index, indexRowsToObjs, IndexTab } from "./IndexTab.tsx";
 
 const Placeholder = ({}: { label: React.ReactNode }) => <div>Placeholder</div>;
 
@@ -63,6 +64,7 @@ export const TableTab = ({
     checksum: false,
   });
   const [columns, setColumns] = React.useState<SqlColumn[]>([]);
+  const [indexes, setIndexes] = React.useState<Index[]>([]);
 
   React.useEffect(() => {
     query(
@@ -108,7 +110,7 @@ export const TableTab = ({
       }
 
       query(`SHOW INDEXES IN \`${database}\`.\`${table}\`;`).then((ret) => {
-        console.log(ret);
+        setIndexes(indexRowsToObjs(ret.rows));
       });
     });
   }, [database, table]);
@@ -126,7 +128,10 @@ export const TableTab = ({
             label={<Label icon="support">Options</Label>}
             data={optionsData}
           />
-          <Placeholder label={<Label icon="flash_on">Indexes</Label>} />
+          <IndexTab
+            label={<Label icon="flash_on">Indexes</Label>}
+            indexes={indexes}
+          />
           <Placeholder
             label={<Label icon="tree_structure">Foreign keys</Label>}
           />

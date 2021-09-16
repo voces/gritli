@@ -63,7 +63,6 @@ export const sqlColumnTransform = (
     >
     | undefined,
 ): SqlColumn[] => {
-  console.log(rows);
   if (!rows) return [];
   const columns: SqlColumn[] = [];
   for (const row of rows) {

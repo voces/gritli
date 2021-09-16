@@ -10,20 +10,28 @@ export type IconType =
   | "add_database"
   | "data_configuration"
   | "pie_chart"
-  | "document";
+  | "document"
+  | "plus"
+  | "collapse"
+  | "expand"
+  | "cancel"
+  | "full_trash"
+  | "key"
+  | "up"
+  | "down"
+  | "puzzle";
 
 export const Icon = ({
   icon,
   size = 16,
-  style,
-}: {
+  ...props
+}: React.ImgHTMLAttributes<HTMLImageElement> & {
   icon: IconType;
   size?: 16;
-  style?: React.CSSProperties;
 }) => (
   <img
     src={`https://raw.githubusercontent.com/icons8/flat-color-icons/8eccbbbd8b2af1d2c9593e7cfba5ecb0d68ee378/svg/${icon}.svg`}
     width={size}
-    style={style}
+    {...props}
   />
 );

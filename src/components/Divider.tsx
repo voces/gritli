@@ -14,11 +14,9 @@ export const Divider = ({
 
   if (direction === "horizontal") {
     style.height = 1;
-    style.width = "100%";
     if (!fixed) style.cursor = "ns-resize";
   } else {
     style.width = 1;
-    style.height = "100%";
     if (!fixed) style.cursor = "ew-resize";
   }
 
