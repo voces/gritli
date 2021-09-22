@@ -29,6 +29,7 @@ const MYSQL_TYPE_VAR_STRING = 0xfd;
 const MYSQL_TYPE_STRING = 0xfe;
 const MYSQL_TYPE_GEOMETRY = 0xff;
 export const EDITOR_TYPE_BOOLEAN = 0x100;
+export const EDITOR_TYPE_REACT = 0x101;
 
 export const types: Record<
   number,

@@ -1,5 +1,6 @@
 import {
   EDITOR_TYPE_BOOLEAN,
+  EDITOR_TYPE_REACT,
   MYSQL_TYPE_SHORT,
   MYSQL_TYPE_VARCHAR,
 } from "../../constants.ts";
@@ -13,7 +14,7 @@ import { useQuery } from "../../hooks/useQuery.tsx";
 import { useSessionState } from "../../hooks/useSessionState.ts";
 import { theme } from "../../theme.ts";
 import { Panel } from "./../Panel.tsx";
-import { QueryResults } from "./../QueryResults.tsx";
+import { ResultTable } from "./../QueryResults.tsx";
 import { Tabs } from "./../Tabs.tsx";
 import { BasicData, BasicTab } from "./BasicTab.tsx";
 import { Label } from "../Label.tsx";
@@ -29,7 +30,7 @@ import {
 const Placeholder = ({}: { label: React.ReactNode }) => <div>Placeholder</div>;
 
 const fields = [
-  { name: "#", fieldType: MYSQL_TYPE_SHORT },
+  { name: "#", fieldType: EDITOR_TYPE_REACT },
   { name: "Name", fieldType: MYSQL_TYPE_VARCHAR },
   { name: "Datatype", fieldType: MYSQL_TYPE_VARCHAR },
   { name: "Length/Set", fieldType: MYSQL_TYPE_SHORT },
@@ -184,22 +185,23 @@ WHERE
               borderRight: undefined,
             }}
           >
-            <QueryResults
-              results={{
-                duration: 0,
-                fields,
-                rows: columns.map((column, idx) => ({
-                  "#": `${KEY[column.key ?? ""] ?? ""} ${idx + 1}`,
-                  Name: column.name,
-                  Datatype: column.dataType,
-                  "Length/Set": column.dataLength,
-                  Unsigned: column.unsigned,
-                  "Allow NULL": column.nullable,
-                  Default: column.default,
-                  Comment: column.comment,
-                  Collation: column.collation,
-                })),
-              }}
+            <ResultTable
+              fields={fields}
+              rows={columns.map((column, idx) => ({
+                "#": (
+                  <div style={{ textAlign: "right" }}>
+                    {column.key ? <Label icon="key">{idx + 1}</Label> : idx + 1}
+                  </div>
+                ),
+                Name: column.name,
+                Datatype: column.dataType,
+                "Length/Set": column.dataLength,
+                Unsigned: column.unsigned,
+                "Allow NULL": column.nullable,
+                Default: column.default,
+                Comment: column.comment,
+                Collation: column.collation,
+              }))}
             />
           </div>
         </div>

@@ -1,17 +1,5 @@
 import { isRecord } from "./typeguards.ts";
 
-// {
-//   "Field": "discordId",
-//   "Type": "varchar(50)",
-//   "Collation": "utf8mb4_unicode_ci",
-//   "Null": "NO",
-//   "Key": "",
-//   "Default": null,
-//   "Extra": "",
-//   "Privileges": "select,insert,update,references",
-//   "Comment": ""
-// }
-
 type SqlColumnRow = {
   Field: string;
   Type: string;
@@ -59,7 +47,12 @@ const extractSign = (str: string): boolean | undefined => {
 export const sqlColumnTransform = (
   rows:
     | ReadonlyArray<
-      Readonly<Record<string, string | number | boolean | undefined>>
+      Readonly<
+        Record<
+          string,
+          string | number | boolean | undefined
+        >
+      >
     >
     | undefined,
 ): SqlColumn[] => {

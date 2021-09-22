@@ -1,4 +1,4 @@
-import { types } from "../constants.ts";
+import { EDITOR_TYPE_REACT, types } from "../constants.ts";
 import { React } from "../deps.ts";
 import { theme } from "../theme.ts";
 import { ContextMenu } from "./ContextMenu.tsx";
@@ -114,17 +114,21 @@ const tableCellStyle: React.CSSProperties = {
   overflow: "auto",
 };
 
-const ResultTable = ({
+export const ResultTable = ({
   handleContextMenu,
   handleClick,
   error,
   rows,
   fields,
 }: {
-  handleContextMenu: (value: { x: number; y: number }) => void;
-  handleClick: () => boolean;
-  error: Results["error"];
-  rows: Results["rows"];
+  handleContextMenu?: (value: { x: number; y: number }) => void;
+  handleClick?: () => boolean;
+  error?: Results["error"];
+  rows?: ReadonlyArray<
+    Readonly<
+      Record<string, string | number | undefined | boolean | React.ReactElement>
+    >
+  >;
   fields: Results["fields"];
 }) => (
   <table
@@ -137,11 +141,11 @@ const ResultTable = ({
       ...theme.table.container,
     }}
     onContextMenu={(e) => {
-      handleContextMenu({ x: e.pageX, y: e.pageY });
+      handleContextMenu?.({ x: e.pageX, y: e.pageY });
       e.preventDefault();
     }}
     onClick={(e) => {
-      if (handleClick()) {
+      if (handleClick?.()) {
         e.preventDefault();
       }
     }}
@@ -180,15 +184,15 @@ const ResultTable = ({
                   ...theme.table[types[fields?.[i].fieldType ?? 0]],
                 }}
               >
-                {types[fields?.[i].fieldType ?? 0] === "boolean" ? (
+                {(types[fields?.[i].fieldType ?? 0] === "boolean" && (
                   <input
                     type="checkbox"
                     checked={d[1] === true}
                     disabled={typeof d[1] !== "boolean"}
                   />
-                ) : (
-                  d[1]?.toString()
-                )}
+                )) ||
+                  (fields?.[i].fieldType === EDITOR_TYPE_REACT && d[1]) ||
+                  d[1]?.toString()}
               </td>
             )
           )}
