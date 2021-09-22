@@ -47,14 +47,13 @@ const KEY: Record<string, string> = {
   PRI: "🔑",
 };
 
-export const TableTab = ({
+const TableTabInner = ({
+  database,
   table,
 }: {
-  label: React.ReactNode;
+  database: string;
   table: string;
-  canClose: boolean;
 }) => {
-  const { database } = React.useContext(QueryContext);
   const selectedTabState = useSessionState("tableTab", 0);
   const query = useQuery();
   const [basicData, setBasicData] = React.useState<BasicData>({
@@ -207,4 +206,10 @@ WHERE
       </Panel>
     </Panel>
   );
+};
+
+export const TableTab = ({}: { label: React.ReactNode; canClose: boolean }) => {
+  const { database, table } = React.useContext(QueryContext);
+  if (!database || !table) return null;
+  return <TableTabInner database={database} table={table} />;
 };

@@ -22,6 +22,9 @@ const Database = ({
   const [tables, setTables] = React.useState<string[]>([]);
   const selected =
     connection === selectedConnection && database === selectedDatabase;
+  const [localSelectedTable, setLocalSelectedTable] = React.useState<
+    string | undefined
+  >();
 
   React.useEffect(() => {
     if (tables.length || !selected) return;
@@ -30,7 +33,10 @@ const Database = ({
       if (result.rows) {
         setTables(result.rows.map((r) => (r.Name ?? "").toString()));
         const table = result.rows[0]?.Name;
-        if (typeof table === "string") patchState({ table });
+        if (typeof table === "string") {
+          setLocalSelectedTable(table);
+          patchState({ database, table });
+        }
       }
     });
   }, [selected, tables.length]);
@@ -48,14 +54,15 @@ const Database = ({
       }
       onClick={(_: React.MouseEvent, expanded: boolean) => {
         if (!selected && expanded) {
-          patchState({ database });
+          patchState({ database, table: localSelectedTable });
           query(`USE \`${database}\`;`);
+          // Don't collapse if just reselecting
           return false;
         }
         return true;
       }}
       onExpand={() => {
-        patchState({ database });
+        patchState({ database, table: localSelectedTable });
         query(`USE \`${database}\`;`);
       }}
       nodes={tables.map((table) => (
@@ -76,7 +83,8 @@ const Database = ({
           }
           onClick={() => {
             if (selectedTable !== table) {
-              patchState({ table });
+              setLocalSelectedTable(table);
+              patchState({ database, table });
               return false;
             }
             return true;

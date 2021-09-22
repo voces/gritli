@@ -57,9 +57,9 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
           table,
           patchState: (state) => {
             if (state.connections) setConnections(state.connections);
-            if (state.selected) setSelected(state.selected);
-            if (state.database) setDatabase(state.database);
-            if (state.table) setTable(state.table);
+            if ("selected" in state) setSelected(state.selected);
+            if ("database" in state) setDatabase(state.database);
+            if ("table" in state) setTable(state.table);
           },
         }}
       >
@@ -108,7 +108,6 @@ export const MainTabs = () => {
         <TableTab
           key={table}
           label={<Label icon="data_sheet">{table}</Label>}
-          table={table}
           canClose={false}
         />
       )}
@@ -116,7 +115,6 @@ export const MainTabs = () => {
         <TableDataTab
           key={table}
           label={<Label icon="data_sheet">Data</Label>}
-          table={table}
           canClose={false}
         />
       )}

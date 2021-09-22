@@ -6,7 +6,7 @@ export const TreeNode = ({
   nodes,
   onExpand,
   showGuides = true,
-  initialExpanded = false,
+  initialExpanded,
   onClick,
 }: {
   label: React.ReactNode;
@@ -16,10 +16,10 @@ export const TreeNode = ({
   initialExpanded?: boolean;
   onClick?: (event: React.MouseEvent, expanded: boolean) => boolean;
 }) => {
-  const [expanded, setExpanded] = React.useState(initialExpanded);
+  const [expanded, setExpanded] = React.useState(initialExpanded ?? false);
 
   React.useEffect(() => {
-    setExpanded(initialExpanded);
+    if (initialExpanded) setExpanded(initialExpanded);
   }, [initialExpanded]);
 
   return (
