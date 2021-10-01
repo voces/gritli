@@ -1,4 +1,4 @@
-import { createElement } from "react";
+import React from "react";
 import { Icon, IconType } from "./Icon.tsx";
 
 export const Label = ({

@@ -1,6 +1,6 @@
 import "./init.ts";
 import { render } from "react-dom";
-import { createElement } from "react";
+import React from "react";
 import { theme } from "./theme.ts";
 import { App } from "./components/App.tsx";
 

@@ -1,6 +1,6 @@
 import { QueryContext } from "../../../contexts/QueryContext.ts";
 import { format } from "sql-formatter";
-import { createElement, useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useQuery } from "../../../hooks/useQuery.tsx";
 import { TextArea } from "./TextArea.tsx";
 

@@ -5,7 +5,7 @@ import {
   MYSQL_TYPE_VARCHAR,
 } from "../../../constants.ts";
 import { QueryContext } from "../../../contexts/QueryContext.ts";
-import { createElement, useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   SqlColumn,
   sqlColumnTransform,

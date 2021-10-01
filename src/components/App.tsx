@@ -7,7 +7,7 @@ import { TableTab } from "./tabs/TableTab/TableTab.tsx";
 import { Tabs } from "./Tabs.tsx";
 import { LogContext } from "../contexts/LogContext.ts";
 import { Connection, QueryContext } from "../contexts/QueryContext.ts";
-import { createElement, useState, useContext, useCallback } from "react";
+import React, { useState, useContext, useCallback } from "react";
 import { Nav } from "./Nav/Nav.tsx";
 import { Output } from "./Output.tsx";
 

@@ -5,7 +5,7 @@ import {
   schemeCategory10,
   line as d3Line,
 } from "d3";
-import { createElement, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 
 type Row = Record<
   string,

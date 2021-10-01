@@ -1,12 +1,10 @@
 import { theme } from "../theme.ts";
-import {
-  createElement,
+import React, {
   useState,
   useEffect,
   useMemo,
   Children as ReactChildren,
   isValidElement,
-  Fragment,
 } from "react";
 
 export const Tabs = ({
@@ -120,7 +118,7 @@ export const Tabs = ({
     >
       <div style={{ display: "flex" }}>
         {labels.map((l, i) => (
-          <Fragment key={i}>{l}</Fragment>
+          <React.Fragment key={i}>{l}</React.Fragment>
         ))}
         {onNewTab && (
           <span

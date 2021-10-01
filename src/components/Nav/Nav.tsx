@@ -1,13 +1,7 @@
 import { Icon } from "vel/Icon.tsx";
 import { TreeNode } from "./TreeNode.tsx";
 import { Connection, QueryContext } from "../../contexts/QueryContext.ts";
-import {
-  createElement,
-  useState,
-  useContext,
-  useEffect,
-  useCallback,
-} from "react";
+import React, { useState, useContext, useEffect, useCallback } from "react";
 import { useQuery } from "../../hooks/useQuery.tsx";
 import { theme } from "../../theme.ts";
 

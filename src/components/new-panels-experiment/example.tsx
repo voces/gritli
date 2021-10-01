@@ -1,7 +1,7 @@
 import { randomUUID } from "../../helpers/uuid.ts";
 import { Panel, Node } from "./Panel.tsx";
 import { render } from "react-dom";
-import { createElement } from "react";
+import React from "react";
 
 const root = document.getElementById("root");
 

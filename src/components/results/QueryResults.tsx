@@ -1,5 +1,5 @@
 import { EDITOR_TYPE_REACT, types } from "../../constants.ts";
-import { createElement, useState, Fragment } from "react";
+import React, { useState } from "react";
 import { theme } from "../../theme.ts";
 import { ContextMenu } from "vel/ContextMenu.tsx";
 import type { Option } from "vel/ContextMenu.tsx";

@@ -1,7 +1,7 @@
 import { Results } from "../components/results/QueryResults.tsx";
 import { LogContext } from "../contexts/LogContext.ts";
 import { Connection, QueryContext } from "../contexts/QueryContext.ts";
-import { createElement, useContext, useState } from "react";
+import React, { useContext, useState } from "react";
 
 const formatDuration = (ms: number) => {
   if (ms < 1000) return `${ms}ms`;

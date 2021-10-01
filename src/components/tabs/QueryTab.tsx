@@ -1,5 +1,5 @@
 import MonacoEditor from "monaco";
-import { createElement, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useQuery } from "../../hooks/useQuery.tsx";
 import { Panel } from "../panels/Panel.tsx";
 import { QueryResults, Results } from "../results/QueryResults.tsx";

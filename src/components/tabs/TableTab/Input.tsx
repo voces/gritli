@@ -1,4 +1,4 @@
-import { createElement } from "react";
+import React from "react";
 import { theme } from "../../../theme.ts";
 
 export const Input = (props: React.InputHTMLAttributes<HTMLInputElement>) => (

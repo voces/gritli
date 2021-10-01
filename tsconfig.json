@@ -2,7 +2,7 @@
   "compilerOptions": {
     "lib": ["ES2020", "dom"],
     "jsx": "react",
-    "jsxFactory": "createElement",
-    "jsxFragmentFactory": "Fragment"
+    "jsxFactory": "React.createElement",
+    "jsxFragmentFactory": "React.Fragment"
   }
 }
