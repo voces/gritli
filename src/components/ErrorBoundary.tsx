@@ -1,6 +1,6 @@
-import React, { Component } from "react";
+import React from "react";
 
-export class ErrorBoundary extends Component<
+export class ErrorBoundary extends React.Component<
   { children: React.ReactNode },
   { error: string | undefined }
 > {

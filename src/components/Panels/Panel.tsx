@@ -1,12 +1,4 @@
-import React, {
-  useState,
-  Children as ReactChildren,
-  isValidElement,
-  useRef,
-  useMemo,
-  useCallback,
-  cloneElement,
-} from "react";
+import React, { useState, useRef, useMemo, useCallback } from "react";
 import { theme } from "../../theme.ts";
 import { Divider } from "./Divider.tsx";
 
@@ -40,12 +32,14 @@ export const Panel = ({
   const [childBasisOverrides, setChildBasisOverrides] = useState<
     (number | undefined)[]
   >(
-    ReactChildren.map(children, (child) =>
-      isValidElement(child) ? getStoredPanelBasis(child.props.id) : undefined
+    React.Children.map(children, (child) =>
+      React.isValidElement(child)
+        ? getStoredPanelBasis(child.props.id)
+        : undefined
     ) ?? []
   );
   const dragTarget = useRef<HTMLElement>();
-  const childArr = useMemo(() => ReactChildren.toArray(children), [children]);
+  const childArr = useMemo(() => React.Children.toArray(children), [children]);
 
   // Captures the event and stores the clicked divider
   const handleMouseDown = useCallback(
@@ -88,7 +82,7 @@ export const Panel = ({
 
       // Update overrides
       const previousNode = childArr[index];
-      if (isValidElement(previousNode) && previousNode.props.id) {
+      if (React.isValidElement(previousNode) && previousNode.props.id) {
         storePanelBasis(
           previousNode.props.id,
           previous[sizeProp] / parent[sizeProp] + diff
@@ -96,7 +90,7 @@ export const Panel = ({
       }
 
       const nextNode = childArr[index + 1];
-      if (isValidElement(nextNode) && nextNode.props.id) {
+      if (React.isValidElement(nextNode) && nextNode.props.id) {
         storePanelBasis(
           nextNode.props.id,
           next[sizeProp] / parent[sizeProp] - diff
@@ -120,15 +114,17 @@ export const Panel = ({
   const newChildren: React.ReactNodeArray = [];
   for (let i = 0; i < childArr.length; i++) {
     const child = childArr[i];
-    const childNode = isValidElement(child) ? child : undefined;
+    const childNode = React.isValidElement(child) ? child : undefined;
 
     const nextChild = childArr[i + 1];
-    const nextChildNode = isValidElement(nextChild) ? nextChild : undefined;
+    const nextChildNode = React.isValidElement(nextChild)
+      ? nextChild
+      : undefined;
 
     const storedBasis = childBasisOverrides[i];
     newChildren.push(
       childNode
-        ? cloneElement(childNode, {
+        ? React.cloneElement(childNode, {
             basis:
               (typeof storedBasis === "number"
                 ? storedBasis * 100 + "%"

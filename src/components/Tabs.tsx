@@ -1,11 +1,5 @@
 import { theme } from "../theme.ts";
-import React, {
-  useState,
-  useEffect,
-  useMemo,
-  Children as ReactChildren,
-  isValidElement,
-} from "react";
+import React, { useState, useEffect, useMemo } from "react";
 
 export const Tabs = ({
   children,
@@ -24,7 +18,7 @@ export const Tabs = ({
 
   // We need an array to index into
   const childrenArr = useMemo(
-    () => ReactChildren.toArray(children),
+    () => React.Children.toArray(children),
     [children]
   );
 
@@ -68,7 +62,7 @@ export const Tabs = ({
   const labels = useMemo(() => {
     const labels: React.ReactNodeArray = [];
     childrenArr.forEach((child, i) => {
-      if (isValidElement(child) && child.props.label) {
+      if (React.isValidElement(child) && child.props.label) {
         labels.push(
           <span
             onClick={() => setSelectedTab(i)}
