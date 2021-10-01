@@ -1,13 +1,13 @@
 import { LogContext } from "../contexts/LogContext.ts";
-import { React } from "../deps.ts";
+import { createElement, Fragment, useContext } from "react";
 
 export const Output = () => {
-  const logContext = React.useContext(LogContext);
+  const logContext = useContext(LogContext);
 
   return (
     <pre style={{ margin: 0 }}>
       {logContext.log.map((l) => (
-        <React.Fragment key={l.key}>{l.node}</React.Fragment>
+        <Fragment key={l.key}>{l.node}</Fragment>
       ))}
     </pre>
   );

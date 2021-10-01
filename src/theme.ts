@@ -1,5 +1,3 @@
-import { React } from "./deps.ts";
-
 const urlTheme = new URLSearchParams(location.search).get("theme");
 const isDarkMode = urlTheme
   ? urlTheme === "dark" ? true : false

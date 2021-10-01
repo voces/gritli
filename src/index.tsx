@@ -1,4 +1,5 @@
-import { React, ReactDOM } from "./deps.ts";
+import { ReactDOM } from "./deps.ts";
+import { createElement } from "react";
 import { theme } from "./theme.ts";
 import { App } from "./components/App.tsx";
 

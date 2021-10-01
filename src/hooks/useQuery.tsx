@@ -1,7 +1,7 @@
 import { Results } from "../components/results/QueryResults.tsx";
 import { LogContext } from "../contexts/LogContext.ts";
 import { Connection, QueryContext } from "../contexts/QueryContext.ts";
-import { React } from "../deps.ts";
+import { createElement, useContext, useState } from "react";
 
 const formatDuration = (ms: number) => {
   if (ms < 1000) return `${ms}ms`;
@@ -12,9 +12,9 @@ const formatDuration = (ms: number) => {
 export const useQuery = (
   connection?: Connection
 ): ((query: string, cache?: RequestCache) => Promise<Results>) => {
-  const queryContext = React.useContext(QueryContext);
-  const log = React.useContext(LogContext);
-  const [lastResults, setLastResults] = React.useState<Results | Error>();
+  const queryContext = useContext(QueryContext);
+  const log = useContext(LogContext);
+  const [lastResults, setLastResults] = useState<Results | Error>();
   const usedConnection = connection ?? queryContext.selected;
 
   if (usedConnection)

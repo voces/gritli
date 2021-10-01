@@ -1,4 +1,4 @@
-import { React } from "../deps.ts";
+import { createContext } from "react";
 
 export type Connection = {
   driver: "mysql";
@@ -25,7 +25,7 @@ let globalState: ContextData = {
   table: undefined,
 };
 
-export const QueryContext = React.createContext<FullContextData>({
+export const QueryContext = createContext<FullContextData>({
   ...globalState,
   patchState: (state) => {
     globalState = { ...globalState, ...state };

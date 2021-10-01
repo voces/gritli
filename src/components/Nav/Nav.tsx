@@ -1,7 +1,13 @@
 import { Icon } from "vel/Icon.tsx";
 import { TreeNode } from "./TreeNode.tsx";
 import { Connection, QueryContext } from "../../contexts/QueryContext.ts";
-import * as React from "react";
+import {
+  createElement,
+  useState,
+  useContext,
+  useEffect,
+  useCallback,
+} from "react";
 import { useQuery } from "../../hooks/useQuery.tsx";
 import { theme } from "../../theme.ts";
 
@@ -17,16 +23,16 @@ const Database = ({
     database: selectedDatabase,
     table: selectedTable,
     patchState,
-  } = React.useContext(QueryContext);
+  } = useContext(QueryContext);
   const query = useQuery(connection);
-  const [tables, setTables] = React.useState<string[]>([]);
+  const [tables, setTables] = useState<string[]>([]);
   const selected =
     connection === selectedConnection && database === selectedDatabase;
-  const [localSelectedTable, setLocalSelectedTable] = React.useState<
+  const [localSelectedTable, setLocalSelectedTable] = useState<
     string | undefined
   >();
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (tables.length || !selected) return;
 
     query(`SHOW TABLE STATUS FROM \`${database}\`;`).then((result) => {
@@ -103,11 +109,10 @@ const ConnectionComponent = ({
   selected: boolean;
 }) => {
   const query = useQuery(connection);
-  const [databases, setDatabases] = React.useState<string[]>();
-  const { database: selectedDatabase, patchState } =
-    React.useContext(QueryContext);
+  const [databases, setDatabases] = useState<string[]>();
+  const { database: selectedDatabase, patchState } = useContext(QueryContext);
 
-  const retrieveDatabases = React.useCallback(() => {
+  const retrieveDatabases = useCallback(() => {
     query("SHOW DATABASES;").then((result) => {
       if (result.rows) {
         const newDatabases = result.rows.map((r) =>
@@ -119,7 +124,7 @@ const ConnectionComponent = ({
     });
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (selected && !databases) retrieveDatabases();
   }, [selected, databases]);
 
@@ -142,7 +147,7 @@ const ConnectionComponent = ({
 };
 
 export const Nav = () => {
-  const { connections, selected, database } = React.useContext(QueryContext);
+  const { connections, selected, database } = useContext(QueryContext);
 
   return (
     <nav

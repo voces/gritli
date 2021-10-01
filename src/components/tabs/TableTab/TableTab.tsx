@@ -5,7 +5,7 @@ import {
   MYSQL_TYPE_VARCHAR,
 } from "../../../constants.ts";
 import { QueryContext } from "../../../contexts/QueryContext.ts";
-import { React } from "../../../deps.ts";
+import { createElement, useState, useEffect, useContext } from "react";
 import {
   SqlColumn,
   sqlColumnTransform,
@@ -57,22 +57,22 @@ const TableTabInner = ({
 }) => {
   const selectedTabState = useSessionState("tableTab", 0);
   const query = useQuery();
-  const [basicData, setBasicData] = React.useState<BasicData>({
+  const [basicData, setBasicData] = useState<BasicData>({
     name: table,
     comment: "",
   });
-  const [optionsData, setOptionsData] = React.useState<OptionsData>({
+  const [optionsData, setOptionsData] = useState<OptionsData>({
     autoIncrement: undefined,
     defaultCollation: "utf8mb4_unicode_ci",
     engine: "InnoDB",
     rowFormat: "DEFAULT",
     checksum: false,
   });
-  const [columns, setColumns] = React.useState<SqlColumn[]>([]);
-  const [indexes, setIndexes] = React.useState<Index[]>([]);
-  const [foreignKeys, setForeignKeys] = React.useState<ForeignKey[]>([]);
+  const [columns, setColumns] = useState<SqlColumn[]>([]);
+  const [indexes, setIndexes] = useState<Index[]>([]);
+  const [foreignKeys, setForeignKeys] = useState<ForeignKey[]>([]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     query(
       // maybe use: SHOW FULL COLUMNS FROM `database`.`table`;
       // `SELECT * FROM \`information_schema\`.\`COLUMNS\` WHERE TABLE_SCHEMA = '${database}' AND TABLE_NAME = '${table}';`
@@ -211,7 +211,7 @@ WHERE
 };
 
 export const TableTab = ({}: { label: React.ReactNode; canClose: boolean }) => {
-  const { database, table } = React.useContext(QueryContext);
+  const { database, table } = useContext(QueryContext);
   if (!database || !table) return null;
   return <TableTabInner database={database} table={table} />;
 };

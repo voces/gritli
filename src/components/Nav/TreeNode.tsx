@@ -1,5 +1,5 @@
-import { React } from "../../deps.ts";
 import { theme } from "../../theme.ts";
+import { createElement, useState, useEffect } from "react";
 
 export const TreeNode = ({
   label,
@@ -16,9 +16,9 @@ export const TreeNode = ({
   initialExpanded?: boolean;
   onClick?: (event: React.MouseEvent, expanded: boolean) => boolean;
 }) => {
-  const [expanded, setExpanded] = React.useState(initialExpanded ?? false);
+  const [expanded, setExpanded] = useState(initialExpanded ?? false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (initialExpanded) setExpanded(initialExpanded);
   }, [initialExpanded]);
 

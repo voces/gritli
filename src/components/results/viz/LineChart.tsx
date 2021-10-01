@@ -1,4 +1,5 @@
-import { React, d3 } from "../../../deps.ts";
+import { d3 } from "../../../deps.ts";
+import { createElement, useEffect, useRef } from "react";
 
 type Row = Record<
   string,
@@ -22,9 +23,9 @@ const deduceDataMap = (
 };
 
 export const LineChart = ({ data }: { data: Rows }) => {
-  const svgRef = React.useRef<SVGSVGElement>(null);
+  const svgRef = useRef<SVGSVGElement>(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!data[0]) return;
     if (!svgRef.current) return;
     const parent = svgRef.current.parentElement?.parentElement;

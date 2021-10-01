@@ -1,6 +1,6 @@
-import { React } from "../deps.ts";
+import { createElement, Component } from "react";
 
-export class ErrorBoundary extends React.Component<
+export class ErrorBoundary extends Component<
   { children: React.ReactNode },
   { error: string | undefined }
 > {

@@ -1,5 +1,11 @@
-import { React } from "../../deps.ts";
 import { randomUUID } from "../../helpers/uuid.ts";
+import {
+  Fragment,
+  createElement,
+  useState,
+  useEffect,
+  useReducer,
+} from "react";
 
 export type Node = {
   id?: string;
@@ -32,17 +38,15 @@ const SimplePanelBody = ({
   mouseDelta: number | undefined;
   node: Node & { children: Node[] };
 }) => {
-  const [persistedSizeOverrides, setPersistedSizeOverrides] = React.useState<
+  const [persistedSizeOverrides, setPersistedSizeOverrides] = useState<
     number[]
   >(Array(node.children.length).fill(0));
-  const [sizeOverrides, setSizeOverrides] = React.useState<number[]>(
+  const [sizeOverrides, setSizeOverrides] = useState<number[]>(
     Array(node.children.length).fill(0)
   );
-  const [activeElement, setActiveElement] = React.useState<
-    number | undefined
-  >();
+  const [activeElement, setActiveElement] = useState<number | undefined>();
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (typeof activeElement !== "number") return;
 
     if (typeof mouseDelta !== "number") {
@@ -117,7 +121,7 @@ const SimplePanelBody = ({
 };
 
 const TabPanelBody = ({ children }: { children: Node[] }) => {
-  const [activeTab, setActiveTab] = React.useState(0);
+  const [activeTab, setActiveTab] = useState(0);
 
   const titles = children.map((child) => child.title);
   const childrens = children.map((child) => child.children);
@@ -200,14 +204,14 @@ export const Panel = ({ node, style }: PanelProps): PanelElement => {
   const direction = node.direction ?? "vertical";
 
   // For resizing
-  const [mouseDelta, setMouseDelta] = React.useState<number | undefined>();
+  const [mouseDelta, setMouseDelta] = useState<number | undefined>();
 
   // For dragging
-  const [dragState, setDragState] = React.useState<
+  const [dragState, setDragState] = useState<
     "left" | "right" | "top" | "bottom" | "center" | undefined
   >();
 
-  const [, forceUpdate] = React.useReducer((x) => x + 1, 0);
+  const [, forceUpdate] = useReducer((x) => x + 1, 0);
 
   Object.defineProperty(node, "forceUpdate", {
     value: forceUpdate,
@@ -306,7 +310,7 @@ export const Panel = ({ node, style }: PanelProps): PanelElement => {
                 : "vertical";
 
             if (cur.tabs && cur.parent) {
-              if (cur.parent === direction) cur = cur.parent;
+              if (cur.parent.direction === direction) cur = cur.parent;
               else {
                 const curIndex = cur.parent.children.indexOf(cur);
                 if (curIndex >= 0) {

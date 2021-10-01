@@ -1,5 +1,6 @@
 import { QueryContext } from "../../../contexts/QueryContext.ts";
-import { formatSql, React } from "../../../deps.ts";
+import { formatSql } from "../../../deps.ts";
+import { createElement, useState, useEffect, useContext } from "react";
 import { useQuery } from "../../../hooks/useQuery.tsx";
 import { TextArea } from "./TextArea.tsx";
 
@@ -9,11 +10,11 @@ export const CreateCodeTab = ({
   label: React.ReactNode;
   table: string;
 }) => {
-  const { database } = React.useContext(QueryContext);
+  const { database } = useContext(QueryContext);
   const query = useQuery();
-  const [code, setCode] = React.useState("");
+  const [code, setCode] = useState("");
 
-  React.useEffect(() => {
+  useEffect(() => {
     // Derive from all data rather than just using existing create code...
     query(`SHOW CREATE TABLE \`${database}\`.\`${table}\`;`).then((ret) => {
       const firstRow = ret.rows?.[0];

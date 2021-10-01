@@ -1,4 +1,4 @@
-import { React } from "../deps.ts";
+import { createElement } from "react";
 import { useLazyRef } from "../hooks/useLazyRef.ts";
 
 const formatter = new Intl.DateTimeFormat("en-us", {

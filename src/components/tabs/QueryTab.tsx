@@ -1,4 +1,5 @@
-import { MonacoEditor, React } from "../../deps.ts";
+import { MonacoEditor } from "../../deps.ts";
+import { createElement, useState, useEffect } from "react";
 import { useQuery } from "../../hooks/useQuery.tsx";
 import { Panel } from "../panels/Panel.tsx";
 import { QueryResults, Results } from "../results/QueryResults.tsx";
@@ -6,19 +7,17 @@ import { ErrorBoundary } from "../ErrorBoundary.tsx";
 import { theme } from "../../theme.ts";
 
 export const QueryTab = ({ id }: { id: number; label: React.ReactNode }) => {
-  const [query, setQuery] = React.useState(
-    localStorage.getItem(`query-${id}`) ?? ""
-  );
-  const [results, setResults] = React.useState<Results | undefined>();
+  const [query, setQuery] = useState(localStorage.getItem(`query-${id}`) ?? "");
+  const [results, setResults] = useState<Results | undefined>();
 
   const queryFn = useQuery();
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!query) return;
     queryFn(query, "force-cache").then(setResults);
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const listener = async (e: KeyboardEvent) => {
       if (e.key === "Enter" && e.shiftKey) {
         e.preventDefault();

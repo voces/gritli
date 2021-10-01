@@ -1,4 +1,4 @@
-import { React } from "../../deps.ts";
+import { createElement } from "react";
 import { theme } from "../../theme.ts";
 
 export const Divider = ({

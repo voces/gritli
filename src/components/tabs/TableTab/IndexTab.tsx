@@ -1,4 +1,4 @@
-import { React } from "../../../deps.ts";
+import { createElement, useState, Fragment } from "react";
 import { isArray, isRecord } from "../../../helpers/typeguards.ts";
 import { Icon } from "vel/Icon.tsx";
 import { Label } from "vel/Label.tsx";
@@ -65,7 +65,7 @@ const IndexActions = () => (
 );
 
 const IndexRow = ({ index }: { index: Index }) => {
-  const [expanded, setExpanded] = React.useState(false);
+  const [expanded, setExpanded] = useState(false);
   return (
     <>
       <div style={{ margin: "2px 2px 4px" }}>

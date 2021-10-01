@@ -1,5 +1,5 @@
 import { EDITOR_TYPE_REACT, types } from "../../constants.ts";
-import { React } from "../../deps.ts";
+import { createElement, useState, Fragment } from "react";
 import { theme } from "../../theme.ts";
 import { ContextMenu } from "vel/ContextMenu.tsx";
 import type { Option } from "vel/ContextMenu.tsx";
@@ -227,7 +227,7 @@ const ResultsComponent = ({
   handleContextMenu: (value: { x: number; y: number }) => void;
   handleClick: () => boolean;
 }) => {
-  const [display, setDisplay] = React.useState<"table" | "line">("table");
+  const [display, setDisplay] = useState<"table" | "line">("table");
 
   if (display === "table")
     return (
@@ -261,7 +261,7 @@ const ResultsComponent = ({
 };
 
 export const QueryResults = ({ results }: { results: Results }) => {
-  const [contextMenu, setContextMenu] = React.useState<
+  const [contextMenu, setContextMenu] = useState<
     { x: number; y: number } | undefined
   >();
 

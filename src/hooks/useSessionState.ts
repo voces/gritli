@@ -1,4 +1,4 @@
-import { React } from "../deps.ts";
+import { useEffect, useState } from "react";
 
 export const store = <T>(key: string, value: T) => {
   sessionStorage.setItem(key, JSON.stringify(value));
@@ -25,11 +25,11 @@ export const retrieve = <T>(
 };
 
 export const useSessionState = <T>(key: string, initial: T) => {
-  const state = React.useState(
+  const state = useState(
     () => retrieve(key, (_v): _v is T => true) ?? initial,
   );
 
-  React.useEffect(() => store(key, state[0]), [state[0]]);
+  useEffect(() => store(key, state[0]), [state[0]]);
 
   return state;
 };

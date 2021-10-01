@@ -7,7 +7,7 @@ import { TableTab } from "./tabs/TableTab/TableTab.tsx";
 import { Tabs } from "./Tabs.tsx";
 import { LogContext } from "../contexts/LogContext.ts";
 import { Connection, QueryContext } from "../contexts/QueryContext.ts";
-import { React } from "../deps.ts";
+import { createElement, useState, useContext, useCallback } from "react";
 import { Nav } from "./Nav/Nav.tsx";
 import { Output } from "./Output.tsx";
 
@@ -22,30 +22,28 @@ const getQueryCount = () => {
 };
 
 const Providers = ({ children }: { children: React.ReactNode }) => {
-  const [log, setLog] = React.useState<
-    { node: React.ReactNode; key: string }[]
-  >([]);
-  const append = React.useCallback((value: React.ReactNode) => {
+  const [log, setLog] = useState<{ node: React.ReactNode; key: string }[]>([]);
+  const append = useCallback((value: React.ReactNode) => {
     setLog((log) => [
       { node: <Log log={value} />, key: Math.random().toString() },
       ...log.slice(0, 99),
     ]);
   }, []);
 
-  const [connections, setConnections] = React.useState(() => {
+  const [connections, setConnections] = useState(() => {
     const json = JSON.parse(
       localStorage.getItem("connections") ?? '[{"driver":"mysql","port":3307}]'
     );
     return json as Connection[];
   });
 
-  const [selected, setSelected] = React.useState<Connection | undefined>(
+  const [selected, setSelected] = useState<Connection | undefined>(
     connections[0]
   );
 
-  const [database, setDatabase] = React.useState<string | undefined>();
+  const [database, setDatabase] = useState<string | undefined>();
 
-  const [table, setTable] = React.useState<string | undefined>();
+  const [table, setTable] = useState<string | undefined>();
 
   return (
     <LogContext.Provider value={{ log, append }}>
@@ -70,8 +68,8 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
 };
 
 export const MainTabs = () => {
-  const [tabCount, setTabCount] = React.useState(getQueryCount());
-  const { database, table } = React.useContext(QueryContext);
+  const [tabCount, setTabCount] = useState(getQueryCount());
+  const { database, table } = useContext(QueryContext);
 
   return (
     <Tabs

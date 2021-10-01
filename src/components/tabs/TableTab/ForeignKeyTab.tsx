@@ -1,4 +1,4 @@
-import { React } from "../../../deps.ts";
+import { Fragment, createElement } from "react";
 import { isArray, isRecord } from "../../../helpers/typeguards.ts";
 import { Label } from "vel/Label.tsx";
 import { Panel } from "../../panels/Panel.tsx";

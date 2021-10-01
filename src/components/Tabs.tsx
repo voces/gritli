@@ -1,5 +1,13 @@
-import { React } from "../deps.ts";
 import { theme } from "../theme.ts";
+import {
+  createElement,
+  useState,
+  useEffect,
+  useMemo,
+  Children as ReactChildren,
+  isValidElement,
+  Fragment,
+} from "react";
 
 export const Tabs = ({
   children,
@@ -14,16 +22,16 @@ export const Tabs = ({
   selectedTabState?: [number, React.Dispatch<React.SetStateAction<number>>];
   style?: React.CSSProperties;
 }) => {
-  const [selectedTab, setSelectedTab] = selectedTabState ?? React.useState(0);
+  const [selectedTab, setSelectedTab] = selectedTabState ?? useState(0);
 
   // We need an array to index into
-  const childrenArr = React.useMemo(
-    () => React.Children.toArray(children),
+  const childrenArr = useMemo(
+    () => ReactChildren.toArray(children),
     [children]
   );
 
   // TODO: excise this so it's MainTab?
-  React.useEffect(() => {
+  useEffect(() => {
     const listener = (e: KeyboardEvent) => {
       if (e.code.startsWith("Digit") && e.altKey) {
         e.preventDefault();
@@ -49,9 +57,9 @@ export const Tabs = ({
         }
       }
     };
-    window.addEventListener("keydown", listener);
+    globalThis.addEventListener("keydown", listener);
 
-    return () => window.removeEventListener("keydown", listener);
+    return () => globalThis.removeEventListener("keydown", listener);
   }, [selectedTab, childrenArr.length]);
 
   const actualSelectedTab = Math.min(selectedTab, childrenArr.length - 1);
@@ -59,10 +67,10 @@ export const Tabs = ({
   const tabLabelBase = { padding: 8, fontSize: 14, cursor: "pointer" };
 
   // Extract labels from children
-  const labels = React.useMemo(() => {
+  const labels = useMemo(() => {
     const labels: React.ReactNodeArray = [];
     childrenArr.forEach((child, i) => {
-      if (React.isValidElement(child) && child.props.label) {
+      if (isValidElement(child) && child.props.label) {
         labels.push(
           <span
             onClick={() => setSelectedTab(i)}
@@ -112,7 +120,7 @@ export const Tabs = ({
     >
       <div style={{ display: "flex" }}>
         {labels.map((l, i) => (
-          <React.Fragment key={i}>{l}</React.Fragment>
+          <Fragment key={i}>{l}</Fragment>
         ))}
         {onNewTab && (
           <span
