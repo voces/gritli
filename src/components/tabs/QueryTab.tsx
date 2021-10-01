@@ -1,9 +1,9 @@
-import { MonacoEditor, React } from "../deps.ts";
-import { useQuery } from "../hooks/useQuery.tsx";
-import { Panel } from "./Panel.tsx";
-import { QueryResults, Results } from "./QueryResults.tsx";
-import { ErrorBoundary } from "./ErrorBoundary.tsx";
-import { theme } from "../theme.ts";
+import { MonacoEditor, React } from "../../deps.ts";
+import { useQuery } from "../../hooks/useQuery.tsx";
+import { Panel } from "../panels/Panel.tsx";
+import { QueryResults, Results } from "../results/QueryResults.tsx";
+import { ErrorBoundary } from "../ErrorBoundary.tsx";
+import { theme } from "../../theme.ts";
 
 export const QueryTab = ({ id }: { id: number; label: React.ReactNode }) => {
   const [query, setQuery] = React.useState(
@@ -25,9 +25,9 @@ export const QueryTab = ({ id }: { id: number; label: React.ReactNode }) => {
         setResults(await queryFn(query));
       }
     };
-    window.addEventListener("keydown", listener);
+    globalThis.addEventListener("keydown", listener);
 
-    return () => window.removeEventListener("keydown", listener);
+    return () => globalThis.removeEventListener("keydown", listener);
   }, [query]);
 
   return (

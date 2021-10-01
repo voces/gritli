@@ -1,4 +1,4 @@
-import { React } from "../../deps.ts";
+import { React } from "../../../deps.ts";
 import { Input } from "./Input.tsx";
 import { InputRow } from "./InputRow.tsx";
 import { TextArea } from "./TextArea.tsx";

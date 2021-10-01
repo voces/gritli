@@ -3,21 +3,21 @@ import {
   EDITOR_TYPE_REACT,
   MYSQL_TYPE_SHORT,
   MYSQL_TYPE_VARCHAR,
-} from "../../constants.ts";
-import { QueryContext } from "../../contexts/QueryContext.ts";
-import { React } from "../../deps.ts";
+} from "../../../constants.ts";
+import { QueryContext } from "../../../contexts/QueryContext.ts";
+import { React } from "../../../deps.ts";
 import {
   SqlColumn,
   sqlColumnTransform,
-} from "../../helpers/sqlColumnTransform.ts";
-import { useQuery } from "../../hooks/useQuery.tsx";
-import { useSessionState } from "../../hooks/useSessionState.ts";
-import { theme } from "../../theme.ts";
-import { Panel } from "./../Panel.tsx";
-import { ResultTable } from "./../QueryResults.tsx";
-import { Tabs } from "./../Tabs.tsx";
+} from "../../../helpers/sqlColumnTransform.ts";
+import { useQuery } from "../../../hooks/useQuery.tsx";
+import { useSessionState } from "../../../hooks/useSessionState.ts";
+import { theme } from "../../../theme.ts";
+import { Panel } from "../../panels/Panel.tsx";
+import { ResultTable } from "../../results/QueryResults.tsx";
+import { Tabs } from "../../Tabs.tsx";
 import { BasicData, BasicTab } from "./BasicTab.tsx";
-import { Label } from "../Label.tsx";
+import { Label } from "vel/Label.tsx";
 import { OptionsData, OptionsTab } from "./OptionsTab.tsx";
 import { CreateCodeTab } from "./CreateCodeTab.tsx";
 import { Index, indexRowsToObjs, IndexTab } from "./IndexTab.tsx";

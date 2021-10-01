@@ -1,7 +1,7 @@
-import { React } from "../deps.ts";
-import { useQuery } from "../hooks/useQuery.tsx";
-import { QueryResults, Results } from "./QueryResults.tsx";
-import { QueryContext } from "../contexts/QueryContext.ts";
+import { React } from "../../deps.ts";
+import { useQuery } from "../../hooks/useQuery.tsx";
+import { QueryResults, Results } from "../results/QueryResults.tsx";
+import { QueryContext } from "../../contexts/QueryContext.ts";
 
 export const TableDataTab = ({}: {
   label: React.ReactNode;

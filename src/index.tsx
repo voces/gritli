@@ -1,6 +1,6 @@
 import { React, ReactDOM } from "./deps.ts";
 import { theme } from "./theme.ts";
-import { App } from "./views/App.tsx";
+import { App } from "./components/App.tsx";
 
 const root = document.getElementById("root");
 

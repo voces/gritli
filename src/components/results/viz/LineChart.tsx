@@ -1,4 +1,4 @@
-import { React, d3 } from "../../deps.ts";
+import { React, d3 } from "../../../deps.ts";
 
 type Row = Record<
   string,

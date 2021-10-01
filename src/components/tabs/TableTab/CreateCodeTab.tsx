@@ -1,6 +1,6 @@
-import { QueryContext } from "../../contexts/QueryContext.ts";
-import { formatSql, React } from "../../deps.ts";
-import { useQuery } from "../../hooks/useQuery.tsx";
+import { QueryContext } from "../../../contexts/QueryContext.ts";
+import { formatSql, React } from "../../../deps.ts";
+import { useQuery } from "../../../hooks/useQuery.tsx";
 import { TextArea } from "./TextArea.tsx";
 
 export const CreateCodeTab = ({

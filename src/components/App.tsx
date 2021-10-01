@@ -1,14 +1,14 @@
-import { Label } from "../components/Label.tsx";
-import { Log } from "../components/Log.tsx";
-import { Panel } from "../components/Panel.tsx";
-import { QueryTab } from "../components/QueryTab.tsx";
-import { TableDataTab } from "../components/TableDataTab.tsx";
-import { TableTab } from "../components/TableTab/TableTab.tsx";
-import { Tabs } from "../components/Tabs.tsx";
+import { Label } from "vel/Label.tsx";
+import { Log } from "./Log.tsx";
+import { Panel } from "./panels/Panel.tsx";
+import { QueryTab } from "./tabs/QueryTab.tsx";
+import { TableDataTab } from "./tabs/TableDataTab.tsx";
+import { TableTab } from "./tabs/TableTab/TableTab.tsx";
+import { Tabs } from "./Tabs.tsx";
 import { LogContext } from "../contexts/LogContext.ts";
 import { Connection, QueryContext } from "../contexts/QueryContext.ts";
 import { React } from "../deps.ts";
-import { Nav } from "./Nav.tsx";
+import { Nav } from "./Nav/Nav.tsx";
 import { Output } from "./Output.tsx";
 
 const getQueryCount = () => {

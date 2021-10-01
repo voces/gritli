@@ -1,8 +1,8 @@
-import { EDITOR_TYPE_REACT, types } from "../constants.ts";
-import { React } from "../deps.ts";
-import { theme } from "../theme.ts";
-import { ContextMenu } from "./ContextMenu.tsx";
-import type { Option } from "./ContextMenu.tsx";
+import { EDITOR_TYPE_REACT, types } from "../../constants.ts";
+import { React } from "../../deps.ts";
+import { theme } from "../../theme.ts";
+import { ContextMenu } from "vel/ContextMenu.tsx";
+import type { Option } from "vel/ContextMenu.tsx";
 import { LineChart } from "./viz/LineChart.tsx";
 
 type FieldDef = {

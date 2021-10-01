@@ -1,9 +1,9 @@
-import { Icon } from "../components/Icon.tsx";
-import { TreeNode } from "../components/TreeNode.tsx";
-import { Connection, QueryContext } from "../contexts/QueryContext.ts";
-import { React } from "../deps.ts";
-import { useQuery } from "../hooks/useQuery.tsx";
-import { theme } from "../theme.ts";
+import { Icon } from "vel/Icon.tsx";
+import { TreeNode } from "./TreeNode.tsx";
+import { Connection, QueryContext } from "../../contexts/QueryContext.ts";
+import * as React from "react";
+import { useQuery } from "../../hooks/useQuery.tsx";
+import { theme } from "../../theme.ts";
 
 const Database = ({
   database,

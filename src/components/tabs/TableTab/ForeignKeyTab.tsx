@@ -1,7 +1,7 @@
-import { React } from "../../deps.ts";
-import { isArray, isRecord } from "../../helpers/typeguards.ts";
-import { Label } from "../Label.tsx";
-import { Panel } from "../Panel.tsx";
+import { React } from "../../../deps.ts";
+import { isArray, isRecord } from "../../../helpers/typeguards.ts";
+import { Label } from "vel/Label.tsx";
+import { Panel } from "../../panels/Panel.tsx";
 
 type ForeignKeyColumns = {
   column: string;

@@ -1,0 +1,6 @@
+{
+  "imports": {
+    "vel/": "./src/components/vel/",
+    "react": "https://esm.sh/react@17.0.2"
+  }
+}

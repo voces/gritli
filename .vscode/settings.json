@@ -8,5 +8,6 @@
   "deno.suggest.imports.hosts": {
     "https://cdn.skypack.dev": false,
     "https://esm.sh": false
-  }
+  },
+  "deno.importMap": "./import_map.json"
 }

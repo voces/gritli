@@ -1,5 +1,5 @@
-import { React } from "../deps.ts";
-import { theme } from "../theme.ts";
+import { React } from "../../deps.ts";
+import { theme } from "../../theme.ts";
 
 export const TreeNode = ({
   label,

@@ -1,4 +1,4 @@
-import { Results } from "../components/QueryResults.tsx";
+import { Results } from "../components/results/QueryResults.tsx";
 import { LogContext } from "../contexts/LogContext.ts";
 import { Connection, QueryContext } from "../contexts/QueryContext.ts";
 import { React } from "../deps.ts";
