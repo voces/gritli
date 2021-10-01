@@ -1,4 +1,10 @@
-import { d3 } from "../../../deps.ts";
+import {
+  select,
+  scaleLinear,
+  scaleOrdinal,
+  schemeCategory10,
+  line as d3Line,
+} from "d3";
 import { createElement, useEffect, useRef } from "react";
 
 type Row = Record<
@@ -40,25 +46,22 @@ export const LineChart = ({ data }: { data: Rows }) => {
 
     const dataMap = deduceDataMap(data);
 
-    const svg = d3.select(svgRef.current);
+    const svg = select(svgRef.current);
 
     const xAxisValues = data.map((r) => r[dataMap.xAxis] as number);
     const yAxisValues = data.map((r) => r[dataMap.yAxis] as number);
 
-    const xAxis = d3
-      .scaleLinear()
+    const xAxis = scaleLinear()
       .domain([Math.min(...xAxisValues), Math.max(...xAxisValues)])
       .range([10, parent.clientWidth - 10]);
 
-    const yAxis = d3
-      .scaleLinear()
+    const yAxis = scaleLinear()
       .domain([Math.min(...yAxisValues), Math.max(...yAxisValues)])
       .range([parent.clientHeight - 10, 10]);
 
-    const color = d3.scaleOrdinal(d3.schemeCategory10);
+    const color = scaleOrdinal(schemeCategory10);
 
-    const line = d3
-      .line()
+    const line = d3Line()
       .x((d) => xAxis(d[0]))
       .y((d) => yAxis(d[1]));
 

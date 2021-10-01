@@ -1,6 +1,7 @@
-import { React, ReactDOM } from "../../deps.ts";
 import { randomUUID } from "../../helpers/uuid.ts";
 import { Panel, Node } from "./Panel.tsx";
+import { render } from "react-dom";
+import { createElement } from "react";
 
 const root = document.getElementById("root");
 
@@ -57,7 +58,4 @@ while (stack.length) {
 // deno-lint-ignore no-explicit-any
 (window as any).tree = tree;
 
-ReactDOM.render(
-  <Panel node={tree} style={{ width: "100%", height: "100%" }} />,
-  root
-);
+render(<Panel node={tree} style={{ width: "100%", height: "100%" }} />, root);

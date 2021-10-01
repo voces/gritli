@@ -1,4 +1,5 @@
-import { ReactDOM } from "./deps.ts";
+import "./init.ts";
+import { render } from "react-dom";
 import { createElement } from "react";
 import { theme } from "./theme.ts";
 import { App } from "./components/App.tsx";
@@ -9,4 +10,4 @@ if (root)
   for (const [property, value] of Object.entries(theme.variables))
     if (value) root.style.setProperty(property, value);
 
-ReactDOM.render(<App />, root);
+render(<App />, root);

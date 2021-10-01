@@ -1,6 +1,12 @@
 {
   "imports": {
-    "vel/": "./src/components/vel/",
-    "react": "https://esm.sh/react@17.0.2"
+    "d3": "https://esm.sh/d3@6.7.0",
+    "dayjs": "https://esm.sh/dayjs@1.10.5",
+    "dayjs/": "https://esm.sh/dayjs@1.10.5/",
+    "monaco": "https://esm.sh/@monaco-editor/react@4.1.3?no-check",
+    "react-dom": "https://esm.sh/react-dom@17.0.2",
+    "react": "https://esm.sh/react@17.0.2",
+    "sql-formatter": "https://esm.sh/sql-formatter@4.0.2",
+    "vel/": "./src/components/vel/"
   }
 }

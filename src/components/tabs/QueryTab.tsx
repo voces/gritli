@@ -1,4 +1,4 @@
-import { MonacoEditor } from "../../deps.ts";
+import MonacoEditor from "monaco";
 import { createElement, useState, useEffect } from "react";
 import { useQuery } from "../../hooks/useQuery.tsx";
 import { Panel } from "../panels/Panel.tsx";

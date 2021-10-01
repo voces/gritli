@@ -1,5 +1,5 @@
 import { QueryContext } from "../../../contexts/QueryContext.ts";
-import { formatSql } from "../../../deps.ts";
+import { format } from "sql-formatter";
 import { createElement, useState, useEffect, useContext } from "react";
 import { useQuery } from "../../../hooks/useQuery.tsx";
 import { TextArea } from "./TextArea.tsx";
@@ -21,7 +21,7 @@ export const CreateCodeTab = ({
       const code = firstRow?.["Create Table"] ?? firstRow?.["Create View"];
       const isView = firstRow && "Create View" in firstRow;
       if (typeof code === "string")
-        setCode(isView ? formatSql(code, { language: "mysql" }) : code);
+        setCode(isView ? format(code, { language: "mysql" }) : code);
     });
   }, [table]);
 
