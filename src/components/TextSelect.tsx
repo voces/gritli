@@ -39,14 +39,18 @@ export const TextSelectOption = ({
         {option.hotkey.map((key) => (
           <span
             style={{
-              backgroundColor: "rgba(255, 255, 255, 0.2)",
               borderRadius: 2,
               fontSize: "80%",
-              marginLeft: 4,
+              marginLeft: 3,
               padding: "3px 6px",
+              ...theme.textSelect?.optionHotkey,
             }}
           >
-            {key}
+            {key
+              .replace("Key", "")
+              .replace("!Meta", "⌘")
+              .replace("!Shift", "⇧")
+              .replace("!Alt", "⌥")}
           </span>
         ))}
       </span>

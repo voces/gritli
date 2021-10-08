@@ -5,7 +5,7 @@ store.dispatch(commandsSlice.actions.register({
   id: "connections.add",
   name: "Add connection",
   description: "Adds a MySQL server to connect to",
-  hotkey: ["Alt", "N"],
+  hotkey: ["!Alt", "KeyN"],
   tags: [{ label: "Connections", color: "red" }],
   callback: () => {
     store.dispatch(commandsSlice.actions.show({
@@ -29,22 +29,6 @@ store.dispatch(commandsSlice.actions.register({
             }));
           },
         }));
-      },
-    }));
-  },
-}));
-
-store.dispatch(commandsSlice.actions.register({
-  id: "connections.add2",
-  name: "Add connection2",
-  description: "Adds a MySQL server to connect to",
-  hotkey: ["Alt", "N"],
-  tags: [{ label: "Connections", color: "red" }],
-  callback: () => {
-    store.dispatch(commandsSlice.actions.show({
-      placeholder: "Hostname",
-      callback: (_, hostname) => {
-        console.log("hostname is", hostname);
       },
     }));
   },

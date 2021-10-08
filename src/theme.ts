@@ -69,6 +69,7 @@ type Theme = {
     inputFocused?: React.CSSProperties;
     option?: React.CSSProperties;
     optionFocused?: React.CSSProperties;
+    optionHotkey?: React.CSSProperties;
   };
   badge?: {
     red?: React.CSSProperties;
@@ -196,6 +197,10 @@ const theme: Theme = {
     optionFocused: {
       color: "var(--color-focus)",
       backgroundColor: "var(--background-focus)",
+    },
+    optionHotkey: {
+      color: "var(--color-secondary)",
+      backgroundColor: "var(--background-tertiary)",
     },
   },
   badge: {

@@ -17,30 +17,22 @@ export const CommandPalette = () => {
 
   const options = getOptions(input);
 
+  // Global hotkey command runner
   const onKeyDown = useCallback((e: KeyboardEvent) => {
-    // Global hotkey to open command palette
-    if (e.metaKey && e.shiftKey && e.code === "KeyP") {
-      dispatch(
-        commandsSlice.actions.show({
-          input: ">",
-          // The default options getter for the command palette
-          options: (query: string) => {
-            if (query[0] === ">") {
-              query = query.slice(1);
-              if (!query) return commands;
-              const regexp = new RegExp(query.split("").join(".*"), "i");
-              return commands.filter((c) => {
-                const text = c.name + (c.description ?? "");
-                const match = regexp.exec(text);
-                return !!match;
-              });
-            }
-            return [];
-          },
-        })
-      );
-      return;
-    }
+    const command = commands.find((command) => {
+      const codes = command.hotkey;
+      if (!codes?.length) return false;
+
+      if (e.metaKey === !codes.includes("!Meta")) return false;
+      if (e.shiftKey === !codes.includes("!Shift")) return false;
+      if (e.altKey === !codes.includes("!Alt")) return false;
+      if (e.ctrlKey === !codes.includes("!Ctrl")) return false;
+
+      const code = command.hotkey!.find((v) => v[0] !== "!");
+      return e.code === code;
+    });
+
+    command?.callback();
   }, []);
 
   // Install global listener

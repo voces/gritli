@@ -1,10 +1,11 @@
 import { BadgeColor } from "../vel/Badge.tsx";
 
 export type Command = {
+  callback: () => void;
+  description?: string;
+  hidden?: boolean;
+  hotkey?: string[];
   id: string;
   name: string;
-  description?: string;
-  callback: () => void;
-  hotkey?: string[];
   tags?: { label: string; color: BadgeColor }[];
 };

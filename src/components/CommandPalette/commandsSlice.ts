@@ -40,7 +40,6 @@ export const commandsSlice = createSlice({
       state.placeholder = action?.payload.placeholder ?? "";
       state.options = action?.payload.options ?? (() => []);
       state.callback = action?.payload.callback;
-      console.log("show", state.callback);
     },
     setValue: (state, action: PayloadAction<string>) => {
       state.input = action.payload;
