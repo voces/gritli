@@ -1,3 +1,5 @@
+import "react";
+
 const urlTheme = new URLSearchParams(location.search).get("theme");
 const isDarkMode = urlTheme
   ? urlTheme === "dark" ? true : false
@@ -61,6 +63,16 @@ type Theme = {
     container: React.CSSProperties;
   };
   input?: React.CSSProperties;
+  textSelect?: {
+    container?: React.CSSProperties;
+    input?: React.CSSProperties;
+    inputFocused?: React.CSSProperties;
+    option?: React.CSSProperties;
+    optionFocused?: React.CSSProperties;
+  };
+  badge?: {
+    red?: React.CSSProperties;
+  };
   extend: (source: DeepPartial<Theme>) => Theme;
 };
 
@@ -167,6 +179,30 @@ const theme: Theme = {
     backgroundColor: "var(--background-primary)",
     border: "1px solid var(--border-primary)",
     color: "var(--color-primary)",
+  },
+  textSelect: {
+    container: {
+      backgroundColor: "var(--background-primary)",
+    },
+    input: {
+      backgroundColor: "var(--background-secondary)",
+    },
+    inputFocused: {
+      border: "1px solid var(--color-secondary)",
+    },
+    option: {
+      color: "var(--color-primary)",
+    },
+    optionFocused: {
+      color: "var(--color-focus)",
+      backgroundColor: "var(--background-focus)",
+    },
+  },
+  badge: {
+    red: {
+      backgroundColor: "#f5424b",
+      color: "var(--color-focus)",
+    },
   },
   extend: (source: DeepPartial<Theme>): Theme => {
     deepAssign(theme, source);

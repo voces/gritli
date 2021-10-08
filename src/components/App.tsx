@@ -10,6 +10,9 @@ import { Connection, QueryContext } from "../contexts/QueryContext.ts";
 import React, { useState, useContext, useCallback } from "react";
 import { Nav } from "./Nav/Nav.tsx";
 import { Output } from "./Output.tsx";
+import { CommandPalette } from "./CommandPalette/CommandPalette.tsx";
+import { store } from "../store.ts";
+import { Provider } from "react-redux";
 
 const getQueryCount = () => {
   const queryCount = parseInt(localStorage.getItem("query-count") ?? "0");
@@ -61,7 +64,7 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
           },
         }}
       >
-        {children}
+        <Provider store={store}>{children}</Provider>
       </QueryContext.Provider>
     </LogContext.Provider>
   );
@@ -144,5 +147,6 @@ export const App = () => (
         <Output />
       </Panel>
     </Panel>
+    <CommandPalette />
   </Providers>
 );

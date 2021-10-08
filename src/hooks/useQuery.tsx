@@ -40,6 +40,9 @@ export const useQuery = (
       setLastResults(results);
 
       if (results instanceof Error) {
+        if (results.message === "Failed to fetch") {
+          results.message = "Unable to connect to proxy service.";
+        }
         log.append(
           <span style={{ color: "red" }}>
             {"-- "}

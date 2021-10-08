@@ -1,5 +1,5 @@
 import React from "react";
-import { Input } from "./Input.tsx";
+import { Input } from "vel/Input.tsx";
 import { InputRow } from "./InputRow.tsx";
 
 export type OptionsData = {
