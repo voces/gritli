@@ -22275,6 +22275,8 @@ const MainTabs = ()=>{
             table: s.connection.table
         })
     );
+    const foo = 1 + Math.random();
+    if (foo > 2) return null;
     return export_default4.createElement(Tabs, {
         onNewTab: ()=>{
             setTabCount((count)=>{
