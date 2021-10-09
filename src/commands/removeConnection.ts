@@ -18,7 +18,9 @@ store.dispatch(commandsSlice.actions.register({
           query,
           (c: { name: string; id: number }) => c.name,
         );
-        return store.getState().connections.map(formatConnection)
+        return store.getState().connections.map((c) =>
+          formatConnection(c, true)
+        )
           .map((name, id) => ({ name, id })).filter(fuzzy);
       },
       callback: (_, _2, opt) => {
