@@ -12,7 +12,7 @@ import {
 import { useQuery } from "../../../hooks/useQuery.tsx";
 import { useSessionState } from "../../../hooks/useSessionState.ts";
 import { theme } from "../../../theme.ts";
-import { Panel } from "../../panels/Panel.tsx";
+import { Panel } from "../../Panels/Panel.tsx";
 import { ResultTable } from "../../results/QueryResults.tsx";
 import { Tabs } from "../../Tabs.tsx";
 import { BasicData, BasicTab } from "./BasicTab.tsx";

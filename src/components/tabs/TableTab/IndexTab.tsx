@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { isArray, isRecord } from "../../../helpers/typeguards.ts";
 import { Icon } from "vel/Icon.tsx";
 import { Label } from "vel/Label.tsx";
-import { Panel } from "../../panels/Panel.tsx";
+import { Panel } from "../../Panels/Panel.tsx";
 
 export type Index = {
   name: string;

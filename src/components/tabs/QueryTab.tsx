@@ -1,7 +1,7 @@
 import MonacoEditor from "monaco";
 import React, { useState, useEffect } from "react";
 import { useQuery } from "../../hooks/useQuery.tsx";
-import { Panel } from "../panels/Panel.tsx";
+import { Panel } from "../Panels/Panel.tsx";
 import { QueryResults, Results } from "../results/QueryResults.tsx";
 import { ErrorBoundary } from "../ErrorBoundary.tsx";
 import { theme } from "../../theme.ts";

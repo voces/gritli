@@ -1,10 +1,10 @@
 import { Label } from "vel/Label.tsx";
-import { Panel } from "./panels/Panel.tsx";
+import { Panel } from "./Panels/Panel.tsx";
 import { QueryTab } from "./tabs/QueryTab.tsx";
 import { TableDataTab } from "./tabs/TableDataTab.tsx";
 import { TableTab } from "./tabs/TableTab/TableTab.tsx";
 import { Tabs } from "./Tabs.tsx";
-import React, { useState, useContext, useCallback } from "react";
+import React, { useState } from "react";
 import { Nav } from "./Nav/Nav.tsx";
 import { Output } from "./Output.tsx";
 import { CommandPalette } from "./CommandPalette/CommandPalette.tsx";
