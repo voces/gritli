@@ -22119,11 +22119,7 @@ const isConnections = (v)=>isArray(v) && v.every(isConnection)
 ;
 const connectionsSlice = Mr1({
     name: "commands",
-    initialState: retrieve1("connections", isConnections) ?? [
-        {
-            driver: "mysql"
-        }
-    ],
+    initialState: retrieve1("connections", isConnections) ?? [],
     reducers: {
         add: (state, action)=>{
             state.push(action.payload);
@@ -22275,8 +22271,6 @@ const MainTabs = ()=>{
             table: s.connection.table
         })
     );
-    const foo = 1 + Math.random();
-    if (foo > 2) return null;
     return export_default4.createElement(Tabs, {
         onNewTab: ()=>{
             setTabCount((count)=>{
