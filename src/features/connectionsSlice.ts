@@ -36,7 +36,7 @@ export const connectionsSlice = createSlice({
   initialState: retrieve(
     "connections",
     isConnections,
-  ) ?? [{ driver: "mysql" } as Connection],
+  ) ?? [],
   reducers: {
     add: (state, action: PayloadAction<Connection>) => {
       state.push(action.payload);
