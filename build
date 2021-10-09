@@ -1,0 +1,1 @@
+deno bundle src/index.tsx public/index.js --config tsconfig.json --import-map import_map.json --no-check "$@"
