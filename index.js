@@ -21808,7 +21808,15 @@ const Nav = ()=>{
             connection: c,
             selected: c === selected
         })
-    ));
+    ), connections.length === 0 && export_default4.createElement("div", null, "No connections. Add your first connection with", " ", export_default4.createElement("pre", {
+        style: {
+            display: "inline"
+        }
+    }, "Command+N"), " or", " ", export_default4.createElement("pre", {
+        style: {
+            display: "inline"
+        }
+    }, "Command+Shift+P"), " and run \"Add connection\""));
 };
 const formatter = new Intl.DateTimeFormat("en-us", {
     hour: "numeric",
