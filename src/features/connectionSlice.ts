@@ -6,6 +6,7 @@ export type Connection = {
   username?: string;
   hostname?: string;
   password?: string;
+  proxy?: string;
 };
 
 export const connectionSlice = createSlice({

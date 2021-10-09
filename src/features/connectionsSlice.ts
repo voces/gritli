@@ -15,6 +15,7 @@ const connectionKeys = new Set([
   "username",
   "hostname",
   "password",
+  "proxy",
 ]);
 
 const isConnection = (v: unknown): v is Connection =>
@@ -24,7 +25,8 @@ const isConnection = (v: unknown): v is Connection =>
   hasMaybeNumber(v, "port") &&
   hasMaybeString(v, "username") &&
   hasMaybeString(v, "hostname") &&
-  hasMaybeString(v, "password");
+  hasMaybeString(v, "password") &&
+  hasMaybeString(v, "proxy");
 
 const isConnections = (v: unknown): v is Connection[] =>
   isArray(v) && v.every(isConnection);

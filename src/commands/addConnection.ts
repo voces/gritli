@@ -23,13 +23,19 @@ store.dispatch(commandsSlice.actions.register({
                 store.dispatch(commandsSlice.actions.show({
                   placeholder: "Password",
                   callback: (_, password) => {
-                    store.dispatch(commandsSlice.actions.hide());
-                    store.dispatch(connectionsSlice.actions.add({
-                      driver: "mysql",
-                      username: username || "root",
-                      hostname: hostname || "localhost",
-                      password: password || undefined,
-                      port: port.length ? parseInt(port) : undefined,
+                    store.dispatch(commandsSlice.actions.show({
+                      placeholder: "Proxy (default http://localhost:3000)",
+                      callback: (_, proxy) => {
+                        store.dispatch(commandsSlice.actions.hide());
+                        store.dispatch(connectionsSlice.actions.add({
+                          driver: "mysql",
+                          username: username || "root",
+                          hostname: hostname || "localhost",
+                          password: password || undefined,
+                          port: port.length ? parseInt(port) : undefined,
+                          proxy: proxy || "http://localhost:3000",
+                        }));
+                      },
                     }));
                   },
                 }));

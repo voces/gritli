@@ -25,7 +25,9 @@ export const useQuery = (
       const start = Date.now();
 
       const results: Results | Error = await fetch(
-        `http://localhost:3000/?config=${encodeURIComponent(
+        `${
+          usedConnection.proxy ?? "http://localhost:3000"
+        }/?config=${encodeURIComponent(
           JSON.stringify(usedConnection)
         )}&query=${encodeURIComponent(query)}`,
         {
@@ -42,7 +44,7 @@ export const useQuery = (
 
       if (results instanceof Error) {
         if (results.message === "Failed to fetch") {
-          results.message = "Unable to connect to proxy service.";
+          results.message = `Unable to connect to proxy service at ${usedConnection.proxy}; download and run at https://github.com/voces/gritli-proxy`;
         }
         dispatch(
           outputSlice.actions.append(
