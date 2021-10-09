@@ -39,6 +39,7 @@ export const DatabaseNode = ({
           dispatch(
             connectionSlice.actions.selectTable({ connection, database, table })
           );
+          if (selectedDatabase !== database) query(`USE \`${database}\`;`);
         }
       }
     });
@@ -93,6 +94,7 @@ export const DatabaseNode = ({
                 table,
               })
             );
+            if (selectedDatabase !== database) query(`USE \`${database}\`;`);
           }}
         />
       ))}

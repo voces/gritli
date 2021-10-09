@@ -27,12 +27,15 @@ export const ConnectionNode = ({
           (r.Database ?? "").toString()
         );
         setDatabases(newDatabases);
-        if (!selectedDatabase)
+        if (!selectedDatabase) {
           dispatch(
             connectionSlice.actions.selectDatabase({
+              connection,
               database: newDatabases[0],
             })
           );
+          query(`USE \`${newDatabases[0]}\`;`);
+        }
       }
     });
   }, []);
