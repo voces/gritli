@@ -1,5 +1,4 @@
 import React from "react";
-import { useLazyRef } from "../hooks/useLazyRef.ts";
 
 const formatter = new Intl.DateTimeFormat("en-us", {
   hour: "numeric",
