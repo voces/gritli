@@ -29,6 +29,9 @@ export const MainTabs = () => {
     table: s.connection.table,
   }));
 
+  const foo = 1 + Math.random();
+  if (foo > 2) return null;
+
   return (
     <Tabs
       onNewTab={() => {
