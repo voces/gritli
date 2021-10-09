@@ -1,4 +1,4 @@
-import { React } from "../deps.ts";
+import React from "react";
 import { useLazyRef } from "../hooks/useLazyRef.ts";
 
 const formatter = new Intl.DateTimeFormat("en-us", {
@@ -9,12 +9,17 @@ const formatter = new Intl.DateTimeFormat("en-us", {
   hour12: false,
 });
 
-export const Log = ({ log }: { log: React.ReactNode }) => {
-  const time = useLazyRef(() => formatter.format(new Date())).current;
-  return (
-    <div style={{ display: "flex" }}>
-      <span style={{ color: "#999", marginRight: 4 }}>[{time}]</span>
-      {log}
-    </div>
-  );
-};
+export const Log = ({
+  children,
+  time,
+}: {
+  children: React.ReactNode;
+  time: number;
+}) => (
+  <div style={{ display: "flex" }}>
+    <span style={{ color: "#999", marginRight: 4 }}>
+      [{formatter.format(time)}]
+    </span>
+    {children}
+  </div>
+);

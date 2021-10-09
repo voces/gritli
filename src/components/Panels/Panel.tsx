@@ -1,11 +1,11 @@
-import { React } from "../deps.ts";
-import { theme } from "../theme.ts";
+import React, { useState, useRef, useMemo, useCallback } from "react";
+import { theme } from "../../theme.ts";
 import { Divider } from "./Divider.tsx";
 
 const getStoredPanelBasis = (id: string) => {
   const value = localStorage.getItem(`panel-${id}-basis`);
   if (!value) return;
-  return parseInt(value);
+  return parseFloat(value);
 };
 
 const storePanelBasis = (id: string, basis: number) => {
@@ -29,8 +29,8 @@ export const Panel = ({
   style?: React.CSSProperties;
   title?: React.ReactNode;
 }) => {
-  const [childBasisOverrides, setChildBasisOverrides] = React.useState<
-    number[]
+  const [childBasisOverrides, setChildBasisOverrides] = useState<
+    (number | undefined)[]
   >(
     React.Children.map(children, (child) =>
       React.isValidElement(child)
@@ -38,14 +38,11 @@ export const Panel = ({
         : undefined
     ) ?? []
   );
-  const dragTarget = React.useRef<HTMLElement>();
-  const childArr = React.useMemo(
-    () => React.Children.toArray(children),
-    [children]
-  );
+  const dragTarget = useRef<HTMLElement>();
+  const childArr = useMemo(() => React.Children.toArray(children), [children]);
 
   // Captures the event and stores the clicked divider
-  const handleMouseDown = React.useCallback(
+  const handleMouseDown = useCallback(
     (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
       if (
         e.target instanceof HTMLElement &&
@@ -61,7 +58,7 @@ export const Panel = ({
   );
 
   //
-  const handleMouseMove = React.useCallback(
+  const handleMouseMove = useCallback(
     (e) => {
       if (!dragTarget.current) return;
 
@@ -71,21 +68,24 @@ export const Panel = ({
       // The divider should be dividing two elements
       const previous = dragTarget.current.previousElementSibling;
       const next = dragTarget.current.nextElementSibling;
-      if (!previous || !next) return;
-
-      // Ignore no-diffs
-      const diff = direction === "horizontal" ? e.movementX : e.movementY;
-      if (diff === 0) return;
+      const parent = dragTarget.current.parentElement;
+      if (!previous || !next || !parent) return;
 
       const sizeProp =
         direction === "horizontal" ? "clientWidth" : "clientHeight";
+
+      // Ignore no-diffs
+      const diff =
+        (direction === "horizontal" ? e.movementX : e.movementY) /
+        parent[sizeProp];
+      if (diff === 0) return;
 
       // Update overrides
       const previousNode = childArr[index];
       if (React.isValidElement(previousNode) && previousNode.props.id) {
         storePanelBasis(
           previousNode.props.id,
-          (childBasisOverrides[index] ?? previous[sizeProp]) + diff
+          previous[sizeProp] / parent[sizeProp] + diff
         );
       }
 
@@ -93,21 +93,21 @@ export const Panel = ({
       if (React.isValidElement(nextNode) && nextNode.props.id) {
         storePanelBasis(
           nextNode.props.id,
-          (childBasisOverrides[index + 1] ?? next[sizeProp]) - diff
+          next[sizeProp] / parent[sizeProp] - diff
         );
       }
 
       setChildBasisOverrides([
         ...childBasisOverrides.slice(0, index),
-        (childBasisOverrides[index] ?? previous[sizeProp]) + diff,
-        (childBasisOverrides[index + 1] ?? next[sizeProp]) - diff,
+        previous[sizeProp] / parent[sizeProp] + diff,
+        next[sizeProp] / parent[sizeProp] - diff,
         ...childBasisOverrides.slice(index + 2),
       ]);
     },
     [childArr, childBasisOverrides]
   );
 
-  const handleMouseUp = React.useCallback(() => {
+  const handleMouseUp = useCallback(() => {
     dragTarget.current = undefined;
   }, []);
 
@@ -121,11 +121,14 @@ export const Panel = ({
       ? nextChild
       : undefined;
 
+    const storedBasis = childBasisOverrides[i];
     newChildren.push(
       childNode
         ? React.cloneElement(childNode, {
             basis:
-              childBasisOverrides[i] ??
+              (typeof storedBasis === "number"
+                ? storedBasis * 100 + "%"
+                : undefined) ??
               childNode.props.basis ??
               childNode.props.style?.basis,
           })

@@ -1,5 +1,5 @@
-import { React } from "../deps.ts";
-import { theme } from "../theme.ts";
+import React, { useState } from "react";
+import { theme } from "../../theme.ts";
 
 type ActualOption = {
   type: "option";
@@ -12,7 +12,7 @@ type OptionSeparator = { type: "option-separator" };
 export type Option = ActualOption | OptionSeparator;
 
 const OptionComponent = ({ option }: { option: Option }) => {
-  const [hovered, setHovered] = React.useState(false);
+  const [hovered, setHovered] = useState(false);
 
   if (option.type === "option-separator") {
     return (

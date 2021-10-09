@@ -1,4 +1,4 @@
-import { React } from "../deps.ts";
+import React from "react";
 
 export class ErrorBoundary extends React.Component<
   { children: React.ReactNode },
@@ -10,7 +10,6 @@ export class ErrorBoundary extends React.Component<
   }
 
   static getDerivedStateFromError(error: Error) {
-    // Update state so the next render will show the fallback UI.
     return { error: error.message };
   }
 
@@ -21,7 +20,6 @@ export class ErrorBoundary extends React.Component<
 
   render() {
     if (this.state.error) {
-      // You can render any custom fallback UI
       return <span style={{ color: "red" }}>{this.state.error}</span>;
     }
 

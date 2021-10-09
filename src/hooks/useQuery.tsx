@@ -1,7 +1,8 @@
-import { Results } from "../components/QueryResults.tsx";
-import { LogContext } from "../contexts/LogContext.ts";
-import { Connection, QueryContext } from "../contexts/QueryContext.ts";
-import { React } from "../deps.ts";
+import { Results } from "../components/results/QueryResults.tsx";
+import React, { useState } from "react";
+import { useAppDispatch, useAppSelector } from "./storeHooks.ts";
+import { outputSlice } from "../features/outputSlice.ts";
+import { Connection } from "../features/connectionSlice.ts";
 
 const formatDuration = (ms: number) => {
   if (ms < 1000) return `${ms}ms`;
@@ -11,44 +12,74 @@ const formatDuration = (ms: number) => {
 
 export const useQuery = (
   connection?: Connection
-): ((
-  query: string,
-  cache?: "no-cache" | "force-cache"
-) => Promise<Results>) => {
-  const queryContext = React.useContext(QueryContext);
-  const log = React.useContext(LogContext);
-  const usedConnection = connection ?? queryContext.selected;
+): ((query: string, cache?: RequestCache) => Promise<Results>) => {
+  const selectedConnection = useAppSelector((s) => s.connection.connection);
+  const [lastResults, setLastResults] = useState<Results | Error>();
+  const usedConnection = connection ?? selectedConnection;
+  const dispatch = useAppDispatch();
 
   if (usedConnection)
     return async (query, cache = "no-cache") => {
-      log.append(query);
+      dispatch(outputSlice.actions.append(query));
 
       const start = Date.now();
 
-      const results: Results = await fetch(
-        `http://localhost:3000/?config=${encodeURIComponent(
+      const results: Results | Error = await fetch(
+        `${
+          usedConnection.proxy ?? "http://localhost:3000"
+        }/?config=${encodeURIComponent(
           JSON.stringify(usedConnection)
         )}&query=${encodeURIComponent(query)}`,
-        { cache: cache }
-      ).then((r) => r.json());
+        {
+          cache:
+            !lastResults || lastResults instanceof Error || lastResults.error
+              ? "reload"
+              : cache,
+        }
+      )
+        .then((r) => r.json())
+        .catch((err) => err);
+
+      setLastResults(results);
+
+      if (results instanceof Error) {
+        if (results.message === "Failed to fetch") {
+          results.message = `Unable to connect to proxy service at ${usedConnection.proxy}; download and run at https://github.com/voces/gritli-proxy`;
+        }
+        dispatch(
+          outputSlice.actions.append(
+            <span style={{ color: "red" }}>
+              {"-- "}
+              {results.message}
+            </span>
+          )
+        );
+        throw results;
+      }
 
       const totalDuration = Date.now() - start;
 
       if (results.error)
-        log.append(
-          <span style={{ color: "red" }}>
-            {"-- "}
-            {results.error}
-          </span>
+        dispatch(
+          outputSlice.actions.append(
+            <span style={{ color: "red" }}>
+              {"-- "}
+              {results.error}
+            </span>
+          )
         );
 
       if (results.rows)
-        log.append(
-          <span style={{ color: "#666" }}>
-            -- completed with {results.rows.length} results in{" "}
-            {formatDuration(totalDuration)} ({formatDuration(results.duration)}{" "}
-            query time)
-          </span>
+        dispatch(
+          outputSlice.actions.append(
+            <span style={{ color: "#666" }}>
+              {`-- completed with ${
+                results.rows.length
+              } results in ${formatDuration(totalDuration)} (${formatDuration(
+                results.duration
+              )} query time)`}
+            </span>
+          )
         );
 
       return results;

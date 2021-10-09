@@ -1,9 +1,24 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta http-equiv="Content-Language" content="en">
     <link rel="stylesheet" href="style.css">
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        style-src 'unsafe-inline' https://cdn.jsdelivr.net;
+        img-src https://raw.githubusercontent.com;
+        connect-src *;
+        script-src-elem 'self' https://cdn.jsdelivr.net; 
+        font-src https://cdn.jsdelivr.net;
+        worker-src blob:;
+    ">
 </head>
 <body>
+    <div style="position: absolute; top: -1000px">
+        Some English placeholder because Chrome keeps detecting the wrong
+        language. Hopefully if I include enough English text, it won't do that
+        and I will not have to go completely crazy.
+    </div>
     <div id="root"></div>
     <script src="index.js" type="module"></script>
 </body>

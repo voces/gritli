@@ -1,38 +1,37 @@
-import { MonacoEditor, React } from "../deps.ts";
-import { useQuery } from "../hooks/useQuery.tsx";
-import { Panel } from "./Panel.tsx";
-import { QueryResults, Results } from "./QueryResults.tsx";
-import { ErrorBoundary } from "./ErrorBoundary.tsx";
-import { theme } from "../theme.ts";
+import MonacoEditor from "monaco";
+import React, { useState, useEffect } from "react";
+import { useQuery } from "../../hooks/useQuery.tsx";
+import { Panel } from "../panels/Panel.tsx";
+import { QueryResults, Results } from "../results/QueryResults.tsx";
+import { ErrorBoundary } from "../ErrorBoundary.tsx";
+import { theme } from "../../theme.ts";
 
 export const QueryTab = ({ id }: { id: number; label: React.ReactNode }) => {
-  const [query, setQuery] = React.useState(
-    localStorage.getItem(`query-${id}`) ?? "",
-  );
-  const [results, setResults] = React.useState<Results | undefined>();
+  const [query, setQuery] = useState(localStorage.getItem(`query-${id}`) ?? "");
+  const [results, setResults] = useState<Results | undefined>();
 
   const queryFn = useQuery();
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!query) return;
     queryFn(query, "force-cache").then(setResults);
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const listener = async (e: KeyboardEvent) => {
       if (e.key === "Enter" && e.shiftKey) {
         e.preventDefault();
         setResults(await queryFn(query));
       }
     };
-    window.addEventListener("keydown", listener);
+    globalThis.addEventListener("keydown", listener);
 
-    return () => window.removeEventListener("keydown", listener);
+    return () => globalThis.removeEventListener("keydown", listener);
   }, [query]);
 
   return (
     <Panel direction="vertical" style={{ height: "100%" }}>
-      <Panel id="query" basis={1}>
+      <Panel id="query" basis={"40%"}>
         <div
           style={{
             overflow: "hidden",
@@ -61,7 +60,7 @@ export const QueryTab = ({ id }: { id: number; label: React.ReactNode }) => {
           </ErrorBoundary>
         </div>
       </Panel>
-      <Panel id="results" basis={2} style={{ overflow: "auto" }}>
+      <Panel id="results" basis={"60%"} style={{ overflow: "auto" }}>
         {results && <QueryResults results={results} />}
       </Panel>
     </Panel>

@@ -1,28 +1,31 @@
-import { types } from "../constants.ts";
-import { React } from "../deps.ts";
-import { theme } from "../theme.ts";
-import { ContextMenu } from "./ContextMenu.tsx";
-import type { Option } from "./ContextMenu.tsx";
+import { EDITOR_TYPE_REACT, types } from "../../constants.ts";
+import React, { useState } from "react";
+import { theme } from "../../theme.ts";
+import { ContextMenu } from "vel/ContextMenu.tsx";
+import type { Option } from "vel/ContextMenu.tsx";
+import { LineChart } from "./viz/LineChart.tsx";
 
 type FieldDef = {
-  catalog: "def";
-  schema: "";
-  table: "";
-  originName: "";
-  fieldFlag: 129;
-  originTable: "";
-  fieldLen: 3;
-  name: string;
-  fieldType: keyof typeof types;
-  encoding: 63;
-  decimals: 0;
-  defaultVal: "";
+  readonly catalog?: "def";
+  readonly schema?: "";
+  readonly table?: "";
+  readonly originName?: "";
+  readonly fieldFlag?: 129;
+  readonly originTable?: "";
+  readonly fieldLen?: 3;
+  readonly name: string;
+  readonly fieldType: keyof typeof types;
+  readonly encoding?: 63;
+  readonly decimals?: 0;
+  readonly defaultVal?: "";
 };
 
 export type Results = {
   duration: number;
   error?: string;
-  rows?: Record<string, string | number>[];
+  rows?: ReadonlyArray<
+    Readonly<Record<string, string | number | undefined | boolean>>
+  >;
   fields?: FieldDef[];
 };
 
@@ -70,7 +73,7 @@ const QueryContextMenu = ({
             const row: string[] = [];
             stringRows.push(row);
             for (let n = 0; n < columns.length; n++) {
-              const str = rows[i][columns[n]].toString();
+              const str = (rows[i][columns[n]] ?? "").toString();
               row.push(str);
               if (columnWidths[n] < str.length) columnWidths[n] = str.length;
             }
@@ -111,17 +114,21 @@ const tableCellStyle: React.CSSProperties = {
   overflow: "auto",
 };
 
-const ResultTable = ({
+export const ResultTable = ({
   handleContextMenu,
   handleClick,
   error,
   rows,
   fields,
 }: {
-  handleContextMenu: (value: { x: number; y: number }) => void;
-  handleClick: () => boolean;
-  error: Results["error"];
-  rows: Results["rows"];
+  handleContextMenu?: (value: { x: number; y: number }) => void;
+  handleClick?: () => boolean;
+  error?: Results["error"];
+  rows?: ReadonlyArray<
+    Readonly<
+      Record<string, string | number | undefined | boolean | React.ReactElement>
+    >
+  >;
   fields: Results["fields"];
 }) => (
   <table
@@ -134,11 +141,11 @@ const ResultTable = ({
       ...theme.table.container,
     }}
     onContextMenu={(e) => {
-      handleContextMenu({ x: e.pageX, y: e.pageY });
+      handleContextMenu?.({ x: e.pageX, y: e.pageY });
       e.preventDefault();
     }}
     onClick={(e) => {
-      if (handleClick()) {
+      if (handleClick?.()) {
         e.preventDefault();
       }
     }}
@@ -161,22 +168,34 @@ const ResultTable = ({
     <tbody>
       {rows?.slice(0, 1000).map((r, i) => (
         <tr key={i}>
-          {Object.values(r).map((d, i) => (
-            <td
-              key={i}
-              style={{
-                ...tableCellStyle,
-                ...theme.table.cell,
-                textAlign:
-                  types[fields?.[i].fieldType ?? 0] === "number"
-                    ? "right"
-                    : "inherit",
-                ...theme.table[types[fields?.[i].fieldType ?? 0]],
-              }}
-            >
-              {d}
-            </td>
-          ))}
+          {(fields?.map((f) => [f.name, r[f.name]]) ?? Object.entries(r)).map(
+            (d, i) => (
+              <td
+                key={i}
+                style={{
+                  ...tableCellStyle,
+                  ...theme.table.cell,
+                  textAlign:
+                    (types[fields?.[i].fieldType ?? 0] === "number" &&
+                      "right") ||
+                    (types[fields?.[i].fieldType ?? 0] === "boolean" &&
+                      "center") ||
+                    "inherit",
+                  ...theme.table[types[fields?.[i].fieldType ?? 0]],
+                }}
+              >
+                {(types[fields?.[i].fieldType ?? 0] === "boolean" && (
+                  <input
+                    type="checkbox"
+                    checked={d[1] === true}
+                    disabled={typeof d[1] !== "boolean"}
+                  />
+                )) ||
+                  (fields?.[i].fieldType === EDITOR_TYPE_REACT && d[1]) ||
+                  d[1]?.toString()}
+              </td>
+            )
+          )}
           <td style={{ width: "99%" }}></td>
         </tr>
       ))}
@@ -199,9 +218,52 @@ const ResultTable = ({
   </table>
 );
 
+const ResultsComponent = ({
+  results,
+  handleContextMenu,
+  handleClick,
+}: {
+  results: Results;
+  handleContextMenu: (value: { x: number; y: number }) => void;
+  handleClick: () => boolean;
+}) => {
+  const [display, setDisplay] = useState<"table" | "line">("table");
+
+  if (display === "table")
+    return (
+      <ResultTable
+        rows={results.rows}
+        fields={results.fields}
+        error={results.error}
+        handleContextMenu={handleContextMenu}
+        handleClick={handleClick}
+      />
+    );
+
+  const rows = results.rows?.map((r) =>
+    Object.fromEntries(
+      Object.entries(r).map(([column, value], i) => {
+        if (
+          types[results?.fields?.[i].fieldType ?? 0] === "date" &&
+          (typeof value === "string" || typeof value === "number")
+        )
+          return [column, new Date(value).getTime()];
+        return [column, value];
+      })
+    )
+  );
+
+  if (display === "line" && rows) {
+    return <LineChart data={rows} />;
+  }
+
+  return <>Other</>;
+};
+
 export const QueryResults = ({ results }: { results: Results }) => {
-  const [contextMenu, setContextMenu] =
-    React.useState<{ x: number; y: number } | undefined>();
+  const [contextMenu, setContextMenu] = useState<
+    { x: number; y: number } | undefined
+  >();
 
   return (
     <>
@@ -212,10 +274,8 @@ export const QueryResults = ({ results }: { results: Results }) => {
         rows={results.rows}
         handleHide={() => setContextMenu(undefined)}
       />
-      <ResultTable
-        rows={results.rows}
-        fields={results.fields}
-        error={results.error}
+      <ResultsComponent
+        results={results}
         handleContextMenu={({ x, y }) => {
           setContextMenu({ x, y });
         }}
