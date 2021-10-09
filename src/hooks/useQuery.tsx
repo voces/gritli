@@ -1,7 +1,8 @@
 import { Results } from "../components/results/QueryResults.tsx";
-import { LogContext } from "../contexts/LogContext.ts";
 import { Connection, QueryContext } from "../contexts/QueryContext.ts";
 import React, { useContext, useState } from "react";
+import { useAppDispatch } from "./storeHooks.ts";
+import { outputSlice } from "../features/outputSlice.ts";
 
 const formatDuration = (ms: number) => {
   if (ms < 1000) return `${ms}ms`;
@@ -13,13 +14,13 @@ export const useQuery = (
   connection?: Connection
 ): ((query: string, cache?: RequestCache) => Promise<Results>) => {
   const queryContext = useContext(QueryContext);
-  const log = useContext(LogContext);
   const [lastResults, setLastResults] = useState<Results | Error>();
   const usedConnection = connection ?? queryContext.selected;
+  const dispatch = useAppDispatch();
 
   if (usedConnection)
     return async (query, cache = "no-cache") => {
-      log.append(query);
+      dispatch(outputSlice.actions.append(query));
 
       const start = Date.now();
 
@@ -43,11 +44,13 @@ export const useQuery = (
         if (results.message === "Failed to fetch") {
           results.message = "Unable to connect to proxy service.";
         }
-        log.append(
-          <span style={{ color: "red" }}>
-            {"-- "}
-            {results.message}
-          </span>
+        dispatch(
+          outputSlice.actions.append(
+            <span style={{ color: "red" }}>
+              {"-- "}
+              {results.message}
+            </span>
+          )
         );
         throw results;
       }
@@ -55,22 +58,26 @@ export const useQuery = (
       const totalDuration = Date.now() - start;
 
       if (results.error)
-        log.append(
-          <span style={{ color: "red" }}>
-            {"-- "}
-            {results.error}
-          </span>
+        dispatch(
+          outputSlice.actions.append(
+            <span style={{ color: "red" }}>
+              {"-- "}
+              {results.error}
+            </span>
+          )
         );
 
       if (results.rows)
-        log.append(
-          <span style={{ color: "#666" }}>
-            {`-- completed with ${
-              results.rows.length
-            } results in ${formatDuration(totalDuration)} (${formatDuration(
-              results.duration
-            )} query time)`}
-          </span>
+        dispatch(
+          outputSlice.actions.append(
+            <span style={{ color: "#666" }}>
+              {`-- completed with ${
+                results.rows.length
+              } results in ${formatDuration(totalDuration)} (${formatDuration(
+                results.duration
+              )} query time)`}
+            </span>
+          )
         );
 
       return results;

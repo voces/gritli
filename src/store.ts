@@ -1,11 +1,13 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { commandsSlice } from "./components/CommandPalette/commandsSlice.ts";
 import { connectionsSlice } from "./features/connectionsSlice.ts";
+import { outputSlice } from "./features/outputSlice.ts";
 
 export const store = configureStore({
   reducer: combineReducers({
     commands: commandsSlice.reducer,
     connections: connectionsSlice.reducer,
+    output: outputSlice.reducer,
   }),
 });
 

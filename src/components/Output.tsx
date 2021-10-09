@@ -1,13 +1,16 @@
-import { LogContext } from "../contexts/LogContext.ts";
-import React, { useContext } from "react";
+import React from "react";
+import { useAppSelector } from "../hooks/storeHooks.ts";
+import { Log } from "./Log.tsx";
 
 export const Output = () => {
-  const logContext = useContext(LogContext);
+  const log = useAppSelector((state) => state.output);
 
   return (
     <pre style={{ margin: 0 }}>
-      {logContext.log.map((l) => (
-        <React.Fragment key={l.key}>{l.node}</React.Fragment>
+      {log.map(({ key, time, node }) => (
+        <Log key={key} time={time}>
+          {node}
+        </Log>
       ))}
     </pre>
   );

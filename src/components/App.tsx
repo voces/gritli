@@ -1,11 +1,9 @@
 import { Label } from "vel/Label.tsx";
-import { Log } from "./Log.tsx";
 import { Panel } from "./panels/Panel.tsx";
 import { QueryTab } from "./tabs/QueryTab.tsx";
 import { TableDataTab } from "./tabs/TableDataTab.tsx";
 import { TableTab } from "./tabs/TableTab/TableTab.tsx";
 import { Tabs } from "./Tabs.tsx";
-import { LogContext } from "../contexts/LogContext.ts";
 import { Connection, QueryContext } from "../contexts/QueryContext.ts";
 import React, { useState, useContext, useCallback } from "react";
 import { Nav } from "./Nav/Nav.tsx";
@@ -26,13 +24,6 @@ const getQueryCount = () => {
 };
 
 const Providers = ({ children }: { children: React.ReactNode }) => {
-  const [log, setLog] = useState<{ node: React.ReactNode; key: string }[]>([]);
-  const append = useCallback((value: React.ReactNode) => {
-    setLog((log) => [
-      { node: <Log log={value} />, key: Math.random().toString() },
-      ...log.slice(0, 99),
-    ]);
-  }, []);
   const connections = useAppSelector((s) => s.connections);
 
   const [selected, setSelected] = useState<Connection | undefined>(
@@ -44,24 +35,22 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
   const [table, setTable] = useState<string | undefined>();
 
   return (
-    <LogContext.Provider value={{ log, append }}>
-      <QueryContext.Provider
-        value={{
-          connections,
-          selected,
-          database,
-          table,
-          patchState: (state) => {
-            // if (state.connections) setConnections(state.connections);
-            if ("selected" in state) setSelected(state.selected);
-            if ("database" in state) setDatabase(state.database);
-            if ("table" in state) setTable(state.table);
-          },
-        }}
-      >
-        {children}
-      </QueryContext.Provider>
-    </LogContext.Provider>
+    <QueryContext.Provider
+      value={{
+        connections,
+        selected,
+        database,
+        table,
+        patchState: (state) => {
+          // if (state.connections) setConnections(state.connections);
+          if ("selected" in state) setSelected(state.selected);
+          if ("database" in state) setDatabase(state.database);
+          if ("table" in state) setTable(state.table);
+        },
+      }}
+    >
+      {children}
+    </QueryContext.Provider>
   );
 };
 
