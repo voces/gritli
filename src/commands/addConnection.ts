@@ -1,4 +1,5 @@
 import { commandsSlice } from "../components/CommandPalette/commandsSlice.ts";
+import { connectionsSlice } from "../features/connectionsSlice.ts";
 import { store } from "../store.ts";
 
 store.dispatch(commandsSlice.actions.register({
@@ -9,20 +10,27 @@ store.dispatch(commandsSlice.actions.register({
   tags: [{ label: "Connections", color: "red" }],
   callback: () => {
     store.dispatch(commandsSlice.actions.show({
-      placeholder: "Username",
+      placeholder: "Username (default admin)",
       callback: (_, username) => {
         store.dispatch(commandsSlice.actions.show({
-          placeholder: "Hostname",
+          placeholder: "Hostname (default localhost)",
           callback: (_, hostname) => {
             store.dispatch(commandsSlice.actions.show({
               placeholder: "Port (default 3306)",
               callback: (_, port) => {
                 if (!port) port = "3306";
+                else if (isNaN(parseInt(port))) return;
                 store.dispatch(commandsSlice.actions.show({
                   placeholder: "Password",
                   callback: (_, password) => {
-                    console.log(username, hostname, port, password);
                     store.dispatch(commandsSlice.actions.hide());
+                    store.dispatch(connectionsSlice.actions.add({
+                      driver: "mysql",
+                      username: username || "admin",
+                      hostname: hostname || "localhost",
+                      password: password || undefined,
+                      port: port.length ? parseInt(port) : undefined,
+                    }));
                   },
                 }));
               },

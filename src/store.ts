@@ -1,8 +1,12 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { commandsSlice } from "./components/CommandPalette/commandsSlice.ts";
+import { connectionsSlice } from "./features/connectionsSlice.ts";
 
 export const store = configureStore({
-  reducer: combineReducers({ commands: commandsSlice.reducer }),
+  reducer: combineReducers({
+    commands: commandsSlice.reducer,
+    connections: connectionsSlice.reducer,
+  }),
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

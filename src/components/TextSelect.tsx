@@ -104,6 +104,8 @@ export const TextSelect = React.forwardRef<HTMLInputElement, Props>(
           onFocusOption(
             focusedOption === options.length - 1 ? 0 : focusedOption + 1
           );
+          e.preventDefault();
+          e.stopPropagation();
           return;
         }
 
@@ -111,6 +113,8 @@ export const TextSelect = React.forwardRef<HTMLInputElement, Props>(
           onFocusOption(
             focusedOption === options.length - 1 ? 0 : focusedOption + 1
           );
+          e.preventDefault();
+          e.stopPropagation();
           return;
         }
 

@@ -5,6 +5,7 @@ export type Connection = {
   port?: number;
   username?: string;
   hostname?: string;
+  password?: string;
 };
 
 type ContextData = {

@@ -4,6 +4,7 @@ import { Connection, QueryContext } from "../../contexts/QueryContext.ts";
 import React, { useState, useContext, useEffect, useCallback } from "react";
 import { useQuery } from "../../hooks/useQuery.tsx";
 import { theme } from "../../theme.ts";
+import { formatConnection } from "../../helpers/formatConnection.ts";
 
 const Database = ({
   database,
@@ -126,8 +127,7 @@ const ConnectionComponent = ({
     <TreeNode
       label={
         <span style={{ fontWeight: "bold" }}>
-          {connection.username ?? "root"}@{connection.hostname ?? "localhost"}:
-          {connection.port ?? 3306}
+          {formatConnection(connection)}
         </span>
       }
       onExpand={retrieveDatabases}

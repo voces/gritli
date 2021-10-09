@@ -13,6 +13,7 @@ import { Output } from "./Output.tsx";
 import { CommandPalette } from "./CommandPalette/CommandPalette.tsx";
 import { store } from "../store.ts";
 import { Provider } from "react-redux";
+import { useAppSelector } from "../hooks/storeHooks.ts";
 
 const getQueryCount = () => {
   const queryCount = parseInt(localStorage.getItem("query-count") ?? "0");
@@ -32,13 +33,7 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
       ...log.slice(0, 99),
     ]);
   }, []);
-
-  const [connections, setConnections] = useState(() => {
-    const json = JSON.parse(
-      localStorage.getItem("connections") ?? '[{"driver":"mysql","port":3307}]'
-    );
-    return json as Connection[];
-  });
+  const connections = useAppSelector((s) => s.connections);
 
   const [selected, setSelected] = useState<Connection | undefined>(
     connections[0]
@@ -57,14 +52,14 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
           database,
           table,
           patchState: (state) => {
-            if (state.connections) setConnections(state.connections);
+            // if (state.connections) setConnections(state.connections);
             if ("selected" in state) setSelected(state.selected);
             if ("database" in state) setDatabase(state.database);
             if ("table" in state) setTable(state.table);
           },
         }}
       >
-        <Provider store={store}>{children}</Provider>
+        {children}
       </QueryContext.Provider>
     </LogContext.Provider>
   );
@@ -133,20 +128,23 @@ export const MainTabs = () => {
 };
 
 export const App = () => (
-  <Providers>
-    <Panel direction="vertical" style={{ height: "100%" }}>
-      <Panel id="main" basis="calc(100% - 118px)">
-        <Panel id="nav" basis={100} direction="horizontal">
-          <Nav />
+  // Store provider set first, since it's used by other providers
+  <Provider store={store}>
+    <Providers>
+      <Panel direction="vertical" style={{ height: "100%" }}>
+        <Panel id="main" basis="calc(100% - 118px)">
+          <Panel id="nav" basis={100} direction="horizontal">
+            <Nav />
+          </Panel>
+          <Panel id="content" basis={800} direction="vertical">
+            <MainTabs />
+          </Panel>
         </Panel>
-        <Panel id="content" basis={800} direction="vertical">
-          <MainTabs />
+        <Panel id="output" basis={100}>
+          <Output />
         </Panel>
       </Panel>
-      <Panel id="output" basis={100}>
-        <Output />
-      </Panel>
-    </Panel>
-    <CommandPalette />
-  </Providers>
+      <CommandPalette />
+    </Providers>
+  </Provider>
 );
