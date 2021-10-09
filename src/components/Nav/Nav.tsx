@@ -26,6 +26,14 @@ export const Nav = () => {
           selected={c === selected}
         />
       ))}
+      {connections.length === 0 && (
+        <div>
+          No connections. Add your first connection with{" "}
+          <pre style={{ display: "inline" }}>Command+N</pre> or{" "}
+          <pre style={{ display: "inline" }}>Command+Shift+P</pre> and run "Add
+          connection"
+        </div>
+      )}
     </nav>
   );
 };
