@@ -14,19 +14,23 @@ export const TextSelectOption = ({
   focused,
   onSelect,
   option,
+  onFocus,
 }: {
   focused: boolean;
   onSelect: () => void;
   option: Option;
+  onFocus: () => void;
 }) => (
   <div
     style={{
       padding: 4,
+      cursor: "pointer",
       ...theme.textSelect?.option,
       ...(focused ? theme.textSelect?.optionFocused : undefined),
     }}
     title={option.description}
     onClick={onSelect}
+    onMouseEnter={onFocus}
   >
     {option.tags?.map(({ label, color }) => (
       <Badge color={color} style={{ marginRight: 4 }}>
@@ -184,6 +188,7 @@ export const TextSelect = React.forwardRef<HTMLInputElement, Props>(
             focused={focusedOption === index}
             onSelect={() => onSelect(index)}
             option={option}
+            onFocus={() => onFocusOption(index)}
           />
         ))}
       </div>

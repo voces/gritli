@@ -1,8 +1,8 @@
-import { QueryContext } from "../../../contexts/QueryContext.ts";
 import { format } from "sql-formatter";
 import React, { useState, useEffect, useContext } from "react";
 import { useQuery } from "../../../hooks/useQuery.tsx";
 import { TextArea } from "./TextArea.tsx";
+import { useAppSelector } from "../../../hooks/storeHooks.ts";
 
 export const CreateCodeTab = ({
   table,
@@ -10,7 +10,7 @@ export const CreateCodeTab = ({
   label: React.ReactNode;
   table: string;
 }) => {
-  const { database } = useContext(QueryContext);
+  const database = useAppSelector((s) => s.connection.database);
   const query = useQuery();
   const [code, setCode] = useState("");
 

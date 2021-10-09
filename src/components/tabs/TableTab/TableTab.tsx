@@ -4,7 +4,6 @@ import {
   MYSQL_TYPE_SHORT,
   MYSQL_TYPE_VARCHAR,
 } from "../../../constants.ts";
-import { QueryContext } from "../../../contexts/QueryContext.ts";
 import React, { useState, useEffect, useContext } from "react";
 import {
   SqlColumn,
@@ -26,6 +25,7 @@ import {
   foreignKeyRowsToObjs,
   ForeignKeyTab,
 } from "./ForeignKeyTab.tsx";
+import { useAppSelector } from "../../../hooks/storeHooks.ts";
 
 const Placeholder = ({}: { label: React.ReactNode }) => <div>Placeholder</div>;
 
@@ -211,7 +211,10 @@ WHERE
 };
 
 export const TableTab = ({}: { label: React.ReactNode; canClose: boolean }) => {
-  const { database, table } = useContext(QueryContext);
+  const { database, table } = useAppSelector((s) => ({
+    database: s.connection.database,
+    table: s.connection.table,
+  }));
   if (!database || !table) return null;
   return <TableTabInner database={database} table={table} />;
 };

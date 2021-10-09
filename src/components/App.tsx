@@ -4,7 +4,6 @@ import { QueryTab } from "./tabs/QueryTab.tsx";
 import { TableDataTab } from "./tabs/TableDataTab.tsx";
 import { TableTab } from "./tabs/TableTab/TableTab.tsx";
 import { Tabs } from "./Tabs.tsx";
-import { Connection, QueryContext } from "../contexts/QueryContext.ts";
 import React, { useState, useContext, useCallback } from "react";
 import { Nav } from "./Nav/Nav.tsx";
 import { Output } from "./Output.tsx";
@@ -23,40 +22,12 @@ const getQueryCount = () => {
   return queryCount;
 };
 
-const Providers = ({ children }: { children: React.ReactNode }) => {
-  const connections = useAppSelector((s) => s.connections);
-
-  const [selected, setSelected] = useState<Connection | undefined>(
-    connections[0]
-  );
-
-  const [database, setDatabase] = useState<string | undefined>();
-
-  const [table, setTable] = useState<string | undefined>();
-
-  return (
-    <QueryContext.Provider
-      value={{
-        connections,
-        selected,
-        database,
-        table,
-        patchState: (state) => {
-          // if (state.connections) setConnections(state.connections);
-          if ("selected" in state) setSelected(state.selected);
-          if ("database" in state) setDatabase(state.database);
-          if ("table" in state) setTable(state.table);
-        },
-      }}
-    >
-      {children}
-    </QueryContext.Provider>
-  );
-};
-
 export const MainTabs = () => {
   const [tabCount, setTabCount] = useState(getQueryCount());
-  const { database, table } = useContext(QueryContext);
+  const { database, table } = useAppSelector((s) => ({
+    database: s.connection.database,
+    table: s.connection.table,
+  }));
 
   return (
     <Tabs
@@ -119,21 +90,19 @@ export const MainTabs = () => {
 export const App = () => (
   // Store provider set first, since it's used by other providers
   <Provider store={store}>
-    <Providers>
-      <Panel direction="vertical" style={{ height: "100%" }}>
-        <Panel id="main" basis="calc(100% - 118px)">
-          <Panel id="nav" basis={100} direction="horizontal">
-            <Nav />
-          </Panel>
-          <Panel id="content" basis={800} direction="vertical">
-            <MainTabs />
-          </Panel>
+    <Panel direction="vertical" style={{ height: "100%" }}>
+      <Panel id="main" basis="calc(100% - 118px)">
+        <Panel id="nav" basis={100} direction="horizontal">
+          <Nav />
         </Panel>
-        <Panel id="output" basis={100}>
-          <Output />
+        <Panel id="content" basis={800} direction="vertical">
+          <MainTabs />
         </Panel>
       </Panel>
-      <CommandPalette />
-    </Providers>
+      <Panel id="output" basis={100}>
+        <Output />
+      </Panel>
+    </Panel>
+    <CommandPalette />
   </Provider>
 );

@@ -10,7 +10,7 @@ store.dispatch(commandsSlice.actions.register({
   tags: [{ label: "Connections", color: "red" }],
   callback: () => {
     store.dispatch(commandsSlice.actions.show({
-      placeholder: "Username (default admin)",
+      placeholder: "Username (default root)",
       callback: (_, username) => {
         store.dispatch(commandsSlice.actions.show({
           placeholder: "Hostname (default localhost)",
@@ -26,7 +26,7 @@ store.dispatch(commandsSlice.actions.register({
                     store.dispatch(commandsSlice.actions.hide());
                     store.dispatch(connectionsSlice.actions.add({
                       driver: "mysql",
-                      username: username || "admin",
+                      username: username || "root",
                       hostname: hostname || "localhost",
                       password: password || undefined,
                       port: port.length ? parseInt(port) : undefined,

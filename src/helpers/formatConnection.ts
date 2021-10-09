@@ -1,4 +1,4 @@
-import { Connection } from "../contexts/QueryContext.ts";
+import { Connection } from "../features/connectionSlice.ts";
 
 export const formatConnection = (connection: Connection) =>
   `${connection.username ?? "admin"}@${connection.hostname ??

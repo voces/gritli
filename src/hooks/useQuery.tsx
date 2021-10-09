@@ -1,8 +1,8 @@
 import { Results } from "../components/results/QueryResults.tsx";
-import { Connection, QueryContext } from "../contexts/QueryContext.ts";
-import React, { useContext, useState } from "react";
-import { useAppDispatch } from "./storeHooks.ts";
+import React, { useState } from "react";
+import { useAppDispatch, useAppSelector } from "./storeHooks.ts";
 import { outputSlice } from "../features/outputSlice.ts";
+import { Connection } from "../features/connectionSlice.ts";
 
 const formatDuration = (ms: number) => {
   if (ms < 1000) return `${ms}ms`;
@@ -13,9 +13,9 @@ const formatDuration = (ms: number) => {
 export const useQuery = (
   connection?: Connection
 ): ((query: string, cache?: RequestCache) => Promise<Results>) => {
-  const queryContext = useContext(QueryContext);
+  const selectedConnection = useAppSelector((s) => s.connection.connection);
   const [lastResults, setLastResults] = useState<Results | Error>();
-  const usedConnection = connection ?? queryContext.selected;
+  const usedConnection = connection ?? selectedConnection;
   const dispatch = useAppDispatch();
 
   if (usedConnection)

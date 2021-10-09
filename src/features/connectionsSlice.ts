@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import type { Connection } from "../contexts/QueryContext.ts";
 import { retrieve, store } from "../helpers/persistStore.ts";
 import {
   hasMaybeNumber,
@@ -8,6 +7,7 @@ import {
   isArray,
   isRecord,
 } from "../helpers/typeguards.ts";
+import { Connection } from "./connectionSlice.ts";
 
 const connectionKeys = new Set([
   "driver",
