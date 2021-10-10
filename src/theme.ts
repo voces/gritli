@@ -73,6 +73,7 @@ type Theme = {
   };
   badge?: {
     red?: React.CSSProperties;
+    green?: React.CSSProperties;
   };
   extend: (source: DeepPartial<Theme>) => Theme;
 };
@@ -206,6 +207,10 @@ const theme: Theme = {
   badge: {
     red: {
       backgroundColor: "#f5424b",
+      color: "var(--color-focus)",
+    },
+    green: {
+      backgroundColor: "#42f578",
       color: "var(--color-focus)",
     },
   },

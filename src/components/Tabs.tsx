@@ -22,38 +22,6 @@ export const Tabs = ({
     [children]
   );
 
-  // TODO: excise this so it's MainTab?
-  useEffect(() => {
-    const listener = (e: KeyboardEvent) => {
-      if (e.code.startsWith("Digit") && e.altKey) {
-        e.preventDefault();
-        const key = Math.min(
-          childrenArr.length,
-          parseInt(e.code[e.code.length - 1]) - 1
-        );
-        if (key === childrenArr.length) {
-          onNewTab?.();
-        }
-        setSelectedTab(key);
-      } else if (e.code === "KeyW" && e.altKey) {
-        e.preventDefault();
-        if (onCloseTab) {
-          onCloseTab(selectedTab);
-          setSelectedTab(selectedTab);
-        }
-      } else if (e.code === "KeyT" && e.altKey) {
-        e.preventDefault();
-        if (onNewTab) {
-          onNewTab();
-          setSelectedTab(childrenArr.length);
-        }
-      }
-    };
-    globalThis.addEventListener("keydown", listener);
-
-    return () => globalThis.removeEventListener("keydown", listener);
-  }, [selectedTab, childrenArr.length]);
-
   const actualSelectedTab = Math.min(selectedTab, childrenArr.length - 1);
 
   const tabLabelBase = { padding: 8, fontSize: 14, cursor: "pointer" };
@@ -85,8 +53,10 @@ export const Tabs = ({
                   padding: 4,
                   ...theme.tabs.label.close,
                 }}
-                onClick={() => {
+                onClick={(e) => {
                   onCloseTab(i);
+                  e.preventDefault();
+                  e.stopPropagation();
                 }}
               >
                 ✕

@@ -51,7 +51,7 @@ export const TextSelectOption = ({
             }}
           >
             {key
-              .replace("Key", "")
+              .replace(/^(Key|Digit)/, "")
               .replace("!Meta", "⌘")
               .replace("!Shift", "⇧")
               .replace("!Alt", "⌥")}

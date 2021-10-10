@@ -10,77 +10,75 @@ import { Output } from "./Output.tsx";
 import { CommandPalette } from "./CommandPalette/CommandPalette.tsx";
 import { store } from "../store.ts";
 import { Provider } from "react-redux";
-import { useAppSelector } from "../hooks/storeHooks.ts";
+import { useAppDispatch, useAppSelector } from "../hooks/storeHooks.ts";
+import { tabsSlice } from "../features/tabsSlice.ts";
 
-const getQueryCount = () => {
-  const queryCount = parseInt(localStorage.getItem("query-count") ?? "0");
-  if (queryCount === 0) {
-    localStorage.setItem("query-count", "1");
-    localStorage.setItem("query-0", "SELECT 1+1;");
-    return 1;
-  }
-  return queryCount;
-};
+// const getQueryCount = () => {
+//   const queryCount = parseInt(localStorage.getItem("query-count") ?? "0");
+//   if (queryCount === 0) {
+//     localStorage.setItem("query-count", "1");
+//     localStorage.setItem("query-0", "SELECT 1+1;");
+//     return 1;
+//   }
+//   return queryCount;
+// };
+
+const EmptyTab = () => <></>;
 
 export const MainTabs = () => {
-  const [tabCount, setTabCount] = useState(getQueryCount());
-  const { database, table } = useAppSelector((s) => ({
+  const dispatch = useAppDispatch();
+  const { database, table, queryTabCount, selected } = useAppSelector((s) => ({
     database: s.connection.database,
     table: s.connection.table,
+    queryTabCount: s.tabs.queryTabCount,
+    selected: s.tabs.selected,
   }));
 
   return (
     <Tabs
       onNewTab={() => {
-        setTabCount((count) => {
-          localStorage.setItem("query-count", (count + 1).toString());
-          return count + 1;
-        });
+        dispatch(tabsSlice.actions.newTab());
       }}
       onCloseTab={(index) => {
-        setTabCount((count) => {
-          let newCount = count - 1;
-
-          for (let i = index; i < newCount; i++) {
-            localStorage.setItem(
-              `query-${i}`,
-              localStorage.getItem(`query-${i + 1}`) ?? ""
-            );
-          }
-          localStorage.removeItem(`query-${newCount}`);
-
-          if (newCount === 0) {
-            localStorage.setItem(`query-0`, "");
-            newCount++;
-          }
-
-          localStorage.setItem("query-count", newCount.toString());
-
-          return newCount;
-        });
+        dispatch(tabsSlice.actions.closeTab(index));
       }}
+      selectedTabState={[
+        selected,
+        (tab: number | ((selected: number) => number)) => {
+          dispatch(
+            tabsSlice.actions.selectTab(
+              typeof tab === "number" ? tab : tab(selected)
+            )
+          );
+        },
+      ]}
     >
-      {database && table && (
+      {database && table ? (
         <TableTab
           key={table}
           label={<Label icon="data_sheet">{table}</Label>}
           canClose={false}
         />
+      ) : (
+        <EmptyTab />
       )}
-      {database && table && (
+      {database && table ? (
         <TableDataTab
           key={table}
           label={<Label icon="data_sheet">Data</Label>}
           canClose={false}
         />
+      ) : (
+        <EmptyTab />
       )}
-      {Array(tabCount)
+      {Array(queryTabCount)
         .fill(0)
         .map((_, i) => (
           <QueryTab
-            key={`${tabCount}-${i}`}
+            key={`${queryTabCount}-${i}`}
             id={i}
             label={<Label icon="document">{`Query #${i + 1}`}</Label>}
+            canClose={queryTabCount > 1}
           />
         ))}
     </Tabs>

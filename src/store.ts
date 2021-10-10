@@ -3,6 +3,7 @@ import { commandsSlice } from "./components/CommandPalette/commandsSlice.ts";
 import { connectionsSlice } from "./features/connectionsSlice.ts";
 import { outputSlice } from "./features/outputSlice.ts";
 import { connectionSlice } from "./features/connectionSlice.ts";
+import { tabsSlice } from "./features/tabsSlice.ts";
 
 export const store = configureStore({
   reducer: combineReducers({
@@ -10,6 +11,7 @@ export const store = configureStore({
     connection: connectionSlice.reducer,
     connections: connectionsSlice.reducer,
     output: outputSlice.reducer,
+    tabs: tabsSlice.reducer,
   }),
 });
 

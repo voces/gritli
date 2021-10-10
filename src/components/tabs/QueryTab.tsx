@@ -5,11 +5,19 @@ import { Panel } from "../Panels/Panel.tsx";
 import { QueryResults, Results } from "../results/QueryResults.tsx";
 import { ErrorBoundary } from "../ErrorBoundary.tsx";
 import { theme } from "../../theme.ts";
+import { useAppDispatch, useAppSelector } from "../../hooks/storeHooks.ts";
+import { tabsSlice } from "../../features/tabsSlice.ts";
 
-export const QueryTab = ({ id }: { id: number; label: React.ReactNode }) => {
-  const [query, setQuery] = useState(localStorage.getItem(`query-${id}`) ?? "");
+export const QueryTab = ({
+  id,
+}: {
+  id: number;
+  label: React.ReactNode;
+  canClose?: boolean;
+}) => {
   const [results, setResults] = useState<Results | undefined>();
-
+  const query = useAppSelector((s) => s.tabs.queryTabs[id]);
+  const dispatch = useAppDispatch();
   const queryFn = useQuery();
 
   useEffect(() => {
@@ -45,7 +53,7 @@ export const QueryTab = ({ id }: { id: number; label: React.ReactNode }) => {
               value={query}
               onChange={(v: string) => {
                 localStorage.setItem(`query-${id}`, v);
-                setQuery(v);
+                dispatch(tabsSlice.actions.updateTab({ id, value: v }));
               }}
               // onDidChangeCursorSelection={e => {
               // }}
