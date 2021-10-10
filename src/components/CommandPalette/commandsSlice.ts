@@ -17,6 +17,7 @@ export const commandsSlice = createSlice({
   name: "commands",
   initialState: {
     commands: [] as Command[],
+    commandMap: {} as Record<string, Command | undefined>,
     shown: false,
     input: ">",
     placeholder: "",
@@ -34,6 +35,7 @@ export const commandsSlice = createSlice({
   reducers: {
     register: (state, action: PayloadAction<Command>) => {
       state.commands.push(action.payload);
+      state.commandMap[action.payload.id] = action.payload;
     },
     hide: (state) => {
       state.shown = false;
