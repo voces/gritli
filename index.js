@@ -21837,6 +21837,25 @@ const ConnectionNode = ({ connection , selected  })=>{
         initialExpanded: selected
     });
 };
+const NoConnections = ()=>{
+    const command = Ur((s)=>s.commands.commandMap["connection.add"]
+    );
+    return export_default4.createElement("div", {
+        onClick: command?.callback,
+        style: {
+            height: "100%",
+            cursor: command?.callback ? "pointer" : undefined
+        }
+    }, "No connections. Add your first connection with", " ", export_default4.createElement("pre", {
+        style: {
+            display: "inline"
+        }
+    }, "⌘N"), " or", " ", export_default4.createElement("pre", {
+        style: {
+            display: "inline"
+        }
+    }, "⌘⇧P"), " and run \"Add connection\"");
+};
 const Nav = ()=>{
     const { connection: selected , connections  } = Ur((state)=>({
             connection: state.connection.connection,
@@ -21856,15 +21875,7 @@ const Nav = ()=>{
             connection: c,
             selected: c === selected
         })
-    ), connections.length === 0 && export_default4.createElement("div", null, "No connections. Add your first connection with", " ", export_default4.createElement("pre", {
-        style: {
-            display: "inline"
-        }
-    }, "⌘N"), " or", " ", export_default4.createElement("pre", {
-        style: {
-            display: "inline"
-        }
-    }, "⌘⇧P"), " and run \"Add connection\""));
+    ), connections.length === 0 && export_default4.createElement(NoConnections, null));
 };
 const formatter = new Intl.DateTimeFormat("en-us", {
     hour: "numeric",
@@ -21897,17 +21908,12 @@ const Output = ()=>{
         }, node)
     ));
 };
-const lru = (array, value, max)=>{
-    const oldIndex = array.indexOf(value);
-    if (oldIndex === 0) return;
-    if (oldIndex > 0) array.splice(oldIndex, 1);
-    array.unshift(value);
-    if (max && array.length > max) array.pop();
-};
 const commandsSlice = Mr1({
     name: "commands",
     initialState: {
         commands: [],
+        commandMap: {
+        },
         shown: false,
         input: ">",
         placeholder: "",
@@ -21915,11 +21921,15 @@ const commandsSlice = Mr1({
         callback: undefined,
         showIndex: 0,
         forceOption: true,
-        lru: retrieve("commands.lru", isStringArray) ?? []
+        usage: retrieve("commands.usage", (v)=>isRecord(v) && Object.values(v).every(isNumber)
+        ) ?? {
+        },
+        type: "text"
     },
     reducers: {
         register: (state, action)=>{
             state.commands.push(action.payload);
+            state.commandMap[action.payload.id] = action.payload;
         },
         hide: (state)=>{
             state.shown = false;
@@ -21932,13 +21942,14 @@ const commandsSlice = Mr1({
             state.callback = action?.payload.callback;
             state.showIndex++;
             state.forceOption = action?.payload.forceOption ?? !!state.options;
+            state.type = action?.payload.type ?? "text";
         },
         setValue: (state, action)=>{
             state.input = action.payload;
         },
         metricUseCommand: (state, action)=>{
-            lru(state.lru, action.payload, 10);
-            store("commands.lru", state.lru);
+            state.usage[action.payload] = Date.now();
+            store("commands.usage", state.usage);
         }
     }
 });
@@ -21969,7 +21980,11 @@ const TextSelectOption = ({ focused , onSelect , option , onFocus  })=>export_de
             ...focused ? theme.textSelect?.optionFocused : undefined
         },
         title: option.description,
-        onClick: onSelect,
+        onClick: (e)=>{
+            e.preventDefault();
+            e.stopPropagation();
+            onSelect();
+        },
         onMouseEnter: onFocus
     }, option.tags?.map(({ label , color  })=>export_default4.createElement(Badge, {
             color: color,
@@ -21993,7 +22008,7 @@ const TextSelectOption = ({ focused , onSelect , option , onFocus  })=>export_de
         }, key.replace(/^(Key|Digit)/, "").replace("!Meta", "⌘").replace("!Shift", "⇧").replace("!Alt", "⌥"))
     )))
 ;
-const TextSelect = export_default4.forwardRef(({ autoFocus , focusedOption , onClose , onFocusOption , onInput , onSelect , options , placeholder , value  }, ref)=>{
+const TextSelect = export_default4.forwardRef(({ autoFocus , focusedOption , onClose , onFocusOption , onInput , onSelect , options , placeholder , type , value  }, ref)=>{
     const myRef = Le2(null);
     const myRefPrevious = usePreviousValue(myRef.current);
     const [inputFocused, setInputFocused] = qe(false);
@@ -22082,6 +22097,7 @@ const TextSelect = export_default4.forwardRef(({ autoFocus , focusedOption , onC
             ...theme.textSelect?.input,
             ...inputFocused ? theme.textSelect?.inputFocused : undefined
         },
+        type: type,
         value: value
     }), options.map((option, index)=>export_default4.createElement(TextSelectOption, {
             focused: focusedOption === index,
@@ -22094,7 +22110,7 @@ const TextSelect = export_default4.forwardRef(({ autoFocus , focusedOption , onC
 });
 const CommandPalette = ()=>{
     const [focusIndex, setFocusIndex] = qe(0);
-    const { commands , input , shown , placeholder , options: getOptions , callback , showIndex , forceOption ,  } = Ur((state)=>state.commands
+    const { callback , commands , forceOption , input , options: getOptions , placeholder , showIndex , shown , type ,  } = Ur((state)=>state.commands
     );
     const dispatch = useAppDispatch();
     const options = getOptions?.(input) ?? [];
@@ -22147,6 +22163,7 @@ const CommandPalette = ()=>{
         },
         options: options,
         placeholder: placeholder,
+        type: type,
         value: input
     });
 };
@@ -22221,6 +22238,7 @@ store2.dispatch(commandsSlice.actions.register({
                                 else if (isNaN(parseInt(port))) return;
                                 store2.dispatch(commandsSlice.actions.show({
                                     placeholder: "Password",
+                                    type: "password",
                                     callback: (_, password)=>{
                                         store2.dispatch(commandsSlice.actions.show({
                                             placeholder: "Proxy (default http://localhost:3000)",
@@ -22294,7 +22312,7 @@ store2.dispatch(commandsSlice.actions.register({
                 if (query[0] === ">") {
                     query = query.slice(1);
                     const commandsSlice = store2.getState().commands;
-                    const sort = (a, b)=>(commandsSlice.lru.indexOf(b.id) ?? -Infinity) - (commandsSlice.lru.indexOf(a.id) ?? -Infinity)
+                    const sort = (a, b)=>(commandsSlice.usage[b.id] ?? -Infinity) - (commandsSlice.usage[a.id] ?? -Infinity)
                     ;
                     if (!query) {
                         return commandsSlice.commands.filter((c)=>!c.hidden
