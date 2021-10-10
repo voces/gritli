@@ -12,7 +12,9 @@ export const tabsSlice = createSlice({
   initialState: {
     queryTabCount: initialQueryTabs.length,
     queryTabs: initialQueryTabs,
-    selected: retrieve("tabs.selected", isNumber) ?? 0,
+    // Default to the first query, as first two tabs are invisible when there
+    // are no conenctions
+    selected: retrieve("tabs.selected", isNumber) ?? 2,
   },
   reducers: {
     newTab: (state, query: PayloadAction<string | undefined>) => {

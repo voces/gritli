@@ -16,7 +16,7 @@ const NoConnections = () => {
       }}
     >
       No connections. Add your first connection with{" "}
-      <pre style={{ display: "inline" }}>⌘N</pre> or{" "}
+      <pre style={{ display: "inline" }}>⌥N</pre> or{" "}
       <pre style={{ display: "inline" }}>⌘⇧P</pre> and run "Add connection"
     </div>
   );

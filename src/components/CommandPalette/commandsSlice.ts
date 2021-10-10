@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { retrieve, store } from "../../helpers/persistStore.ts";
 import { isNumber, isRecord } from "../../helpers/typeguards.ts";
-import { BadgeColor } from "../vel/Badge.tsx";
 import { Command } from "./types.ts";
 import type { HTMLInputTypeAttribute } from "react";
 
@@ -10,7 +9,6 @@ type Option = {
   description?: string;
   hotkey?: string[];
   name: string;
-  tags?: { label: string; color: BadgeColor }[];
 };
 
 export const commandsSlice = createSlice({

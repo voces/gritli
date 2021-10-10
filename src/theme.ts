@@ -65,11 +65,10 @@ type Theme = {
   input?: React.CSSProperties;
   textSelect?: {
     container?: React.CSSProperties;
-    input?: React.CSSProperties;
-    inputFocused?: React.CSSProperties;
     option?: React.CSSProperties;
     optionFocused?: React.CSSProperties;
     optionHotkey?: React.CSSProperties;
+    optionHotkeyFocused?: React.CSSProperties;
   };
   badge?: {
     red?: React.CSSProperties;
@@ -109,7 +108,7 @@ const theme: Theme = {
     "--background-tertiary": "#ececec",
     "--background-focus": "#0060C0",
     "--border-primary": "#eee",
-    "--border-secondary": "#eee",
+    "--border-secondary": "#ddd",
   },
   panel: {
     container: {
@@ -155,7 +154,7 @@ const theme: Theme = {
       backgroundColor: "var(--background-primary)",
     },
     option: {
-      color: "var(--color-secondary)",
+      color: "var(--color-tertiary)",
     },
     optionHovered: {
       backgroundColor: "var(--background-focus)",
@@ -184,14 +183,8 @@ const theme: Theme = {
   },
   textSelect: {
     container: {
-      backgroundColor: "var(--background-primary)",
-      boxShadow: "0 2px 4px 1px var(--background-secondary)",
-    },
-    input: {
       backgroundColor: "var(--background-secondary)",
-    },
-    inputFocused: {
-      border: "1px solid var(--color-secondary)",
+      boxShadow: "0 0 8px 2px var(--border-secondary)",
     },
     option: {
       color: "var(--color-primary)",
@@ -201,8 +194,13 @@ const theme: Theme = {
       backgroundColor: "var(--background-focus)",
     },
     optionHotkey: {
-      color: "var(--color-secondary)",
       backgroundColor: "var(--background-tertiary)",
+      border: "1px solid var(--border-secondary)",
+      boxShadow: "0 1px 1px 0px var(--border-primary)",
+    },
+    optionHotkeyFocused: {
+      backgroundColor: "inherit",
+      boxShadow: "none",
     },
   },
   badge: {

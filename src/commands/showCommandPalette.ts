@@ -30,7 +30,7 @@ store.dispatch(commandsSlice.actions.register({
           const matcher = fuzzyFilter(
             query,
             (c: Command) =>
-              [...(c.tags ?? []), c.name, c.description].filter((v) => v).join(
+              [c.name, c.description].filter((v) => v).join(
                 " ",
               ),
           );

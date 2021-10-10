@@ -7,7 +7,6 @@ store.dispatch(commandsSlice.actions.register({
   name: "Add connection",
   description: "Adds a MySQL server to connect to",
   hotkey: ["!Alt", "KeyN"],
-  tags: [{ label: "Connections", color: "red" }],
   callback: () => {
     store.dispatch(commandsSlice.actions.show({
       placeholder: "Username (default root)",

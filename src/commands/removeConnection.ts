@@ -9,7 +9,6 @@ store.dispatch(commandsSlice.actions.register({
   id: "connections.remove",
   name: "Remove connection",
   description: "Removes a server to connect to",
-  tags: [{ label: "Connections", color: "red" }],
   callback: () => {
     store.dispatch(commandsSlice.actions.show({
       placeholder: "Connection to remove",

@@ -13,7 +13,6 @@ type Option = {
   description?: string;
   hotkey?: string[];
   name: React.ReactNode;
-  tags?: { label: React.ReactNode; color: BadgeColor }[];
 };
 
 export const TextSelectOption = ({
@@ -29,8 +28,9 @@ export const TextSelectOption = ({
 }) => (
   <div
     style={{
-      padding: 4,
+      padding: "4px 11px",
       cursor: "pointer",
+      fontSize: 13,
       ...theme.textSelect?.option,
       ...(focused ? theme.textSelect?.optionFocused : undefined),
     }}
@@ -42,11 +42,6 @@ export const TextSelectOption = ({
     }}
     onMouseEnter={onFocus}
   >
-    {option.tags?.map(({ label, color }) => (
-      <Badge color={color} style={{ marginRight: 4 }}>
-        {label}
-      </Badge>
-    ))}
     {option.name}
     {option.hotkey?.length && (
       <span style={{ float: "right", marginTop: -1 }}>
@@ -54,10 +49,14 @@ export const TextSelectOption = ({
           <span
             style={{
               borderRadius: 2,
-              fontSize: "80%",
+              display: "inline-block",
               marginLeft: 3,
-              padding: "3px 6px",
+              padding: "1px 4px",
+              width: 11,
+              fontSize: 11,
+              textAlign: "center",
               ...theme.textSelect?.optionHotkey,
+              ...(focused ? theme.textSelect?.optionHotkeyFocused : undefined),
             }}
           >
             {key
@@ -127,7 +126,7 @@ export const TextSelect = React.forwardRef<HTMLInputElement, Props>(
 
         if (e.code === "ArrowUp") {
           onFocusOption(
-            focusedOption === options.length - 1 ? 0 : focusedOption + 1
+            focusedOption === 0 ? options.length - 1 : focusedOption - 1
           );
           e.preventDefault();
           e.stopPropagation();
@@ -157,11 +156,10 @@ export const TextSelect = React.forwardRef<HTMLInputElement, Props>(
         style={{
           left: "50%",
           maxWidth: "90vw",
-          padding: 4,
           position: "absolute",
           top: 0,
           transform: "translateX(-50%)",
-          width: 600,
+          width: 450,
           zIndex: 1,
           ...theme.textSelect?.container,
         }}
@@ -186,13 +184,10 @@ export const TextSelect = React.forwardRef<HTMLInputElement, Props>(
             color: "inherit",
             display: "block",
             fontFamily: "inherit",
-            fontSize: "90%",
-            outline: "none",
+            margin: "6px 6px 2px",
             padding: 4,
-            width: "calc(100% - 10px)",
+            width: "calc(100% - 22px)",
             ...theme.input,
-            ...theme.textSelect?.input,
-            ...(inputFocused ? theme.textSelect?.inputFocused : undefined),
           }}
           type={type}
           value={value}
