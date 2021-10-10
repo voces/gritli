@@ -39,7 +39,7 @@ export const TextSelectOption = ({
     ))}
     {option.name}
     {option.hotkey?.length && (
-      <span style={{ float: "right" }}>
+      <span style={{ float: "right", marginTop: -1 }}>
         {option.hotkey.map((key) => (
           <span
             style={{
@@ -150,6 +150,7 @@ export const TextSelect = React.forwardRef<HTMLInputElement, Props>(
           top: 0,
           transform: "translateX(-50%)",
           width: 600,
+          zIndex: 1,
           ...theme.textSelect?.container,
         }}
       >

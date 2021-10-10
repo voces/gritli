@@ -185,6 +185,7 @@ const theme: Theme = {
   textSelect: {
     container: {
       backgroundColor: "var(--background-primary)",
+      boxShadow: "0 2px 4px 1px var(--background-secondary)",
     },
     input: {
       backgroundColor: "var(--background-secondary)",
@@ -206,12 +207,12 @@ const theme: Theme = {
   },
   badge: {
     red: {
-      backgroundColor: "#f5424b",
-      color: "var(--color-focus)",
+      backgroundColor: "#B30912",
+      color: "white",
     },
     green: {
-      backgroundColor: "#42f578",
-      color: "var(--color-focus)",
+      backgroundColor: "#33b309",
+      color: "white",
     },
   },
   extend: (source: DeepPartial<Theme>): Theme => {

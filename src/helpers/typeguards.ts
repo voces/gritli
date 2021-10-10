@@ -38,3 +38,6 @@ export const hasMaybeNumber = <
   k: K,
 ): v is T & { [k in K]: string | undefined } =>
   k in v ? (typeof v[k] === "number" || v[k] == null) : true;
+
+export const isStringArray = (v: unknown): v is string[] =>
+  Array.isArray(v) && v.every((v) => typeof v === "string");

@@ -47,6 +47,7 @@ export const Tabs = ({
             <span>{child.props.label}</span>
             {onCloseTab && child.props.canClose !== false && (
               <span
+                title="Close (⌥W)"
                 style={{
                   fontSize: 10,
                   opacity: 0.6,
@@ -86,6 +87,7 @@ export const Tabs = ({
         ))}
         {onNewTab && (
           <span
+            title="New query (⌥T)"
             style={{
               ...tabLabelBase,
               ...theme.tabs.label.base,
