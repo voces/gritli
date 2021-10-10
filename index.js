@@ -6618,7 +6618,8 @@ const theme = {
     },
     textSelect: {
         container: {
-            backgroundColor: "var(--background-primary)"
+            backgroundColor: "var(--background-primary)",
+            boxShadow: "0 2px 4px 1px var(--background-secondary)"
         },
         input: {
             backgroundColor: "var(--background-secondary)"
@@ -6640,8 +6641,12 @@ const theme = {
     },
     badge: {
         red: {
-            backgroundColor: "#f5424b",
-            color: "var(--color-focus)"
+            backgroundColor: "#B30912",
+            color: "white"
+        },
+        green: {
+            backgroundColor: "#33b309",
+            color: "white"
         }
     },
     extend: (source)=>{
@@ -14975,9 +14980,87 @@ class ErrorBoundary extends export_default4.Component {
         return this.props.children;
     }
 }
+const store = (key, value)=>{
+    localStorage.setItem(key, JSON.stringify(value));
+};
+const retrieve = (key, typeguard)=>{
+    const raw = localStorage.getItem(key);
+    if (!raw) return;
+    let json;
+    try {
+        json = JSON.parse(raw);
+    } catch (err) {
+        console.warn(err);
+        return;
+    }
+    if (typeguard(json)) {
+        return json;
+    }
+};
+const isRecord = (v)=>!!v && typeof v === "object"
+;
+const isArray = (v)=>Array.isArray(v)
+;
+const isNumber = (v)=>typeof v === "number"
+;
+const hasNumber = (v, k)=>k in v && typeof v[k] === "number"
+;
+const hasString = (v, k)=>k in v && typeof v[k] === "string"
+;
+const hasMaybeString = (v, k)=>k in v ? typeof v[k] === "string" || v[k] == null : true
+;
+const hasMaybeNumber = (v, k)=>k in v ? typeof v[k] === "number" || v[k] == null : true
+;
+const isStringArray = (v)=>Array.isArray(v) && v.every((v)=>typeof v === "string"
+    )
+;
+const initialQueryTabs = retrieve("tabs.queryTabs", isStringArray) ?? [];
+if (!initialQueryTabs.length) initialQueryTabs.push("SELECT 1+1;");
+const tabsSlice = Mr1({
+    name: "output",
+    initialState: {
+        queryTabCount: initialQueryTabs.length,
+        queryTabs: initialQueryTabs,
+        selected: retrieve("tabs.selected", isNumber) ?? 0
+    },
+    reducers: {
+        newTab: (state, query)=>{
+            state.queryTabs.push(query.payload ?? "");
+            state.queryTabCount++;
+            store("tabs.queryTabs", state.queryTabs);
+        },
+        selectTab: (state, action)=>{
+            let index = action.payload;
+            if (index >= state.queryTabCount + 2) {
+                index = state.queryTabCount + 2;
+                state.queryTabs.push("");
+                state.queryTabCount++;
+                store("tabs.queryTabs", state.queryTabs);
+            }
+            state.selected = index;
+            store("tabs.selected", index);
+        },
+        closeTab: (state, action)=>{
+            if (action.payload < 2) return;
+            state.queryTabs.splice(action.payload - 2, 1);
+            state.queryTabCount--;
+            store("tabs.queryTabs", state.queryTabs);
+            if (action.payload < state.selected) {
+                state.selected -= 1;
+                store("tabs.selected", state.selected);
+            }
+        },
+        updateTab: (state, action)=>{
+            state.queryTabs[action.payload.id] = action.payload.value;
+            store("tabs.queryTabs", state.queryTabs);
+        }
+    }
+});
 const QueryTab = ({ id  })=>{
-    const [query, setQuery] = qe(localStorage.getItem(`query-${id}`) ?? "");
     const [results, setResults] = qe();
+    const query = Ur((s)=>s.tabs.queryTabs[id]
+    );
+    const dispatch = useAppDispatch();
     const queryFn = useQuery();
     xe(()=>{
         if (!query) return;
@@ -15015,7 +15098,10 @@ const QueryTab = ({ id  })=>{
         value: query,
         onChange: (v)=>{
             localStorage.setItem(`query-${id}`, v);
-            setQuery(v);
+            dispatch(tabsSlice.actions.updateTab({
+                id,
+                value: v
+            }));
         },
         options: {
             minimap: {
@@ -15051,18 +15137,6 @@ const TableDataTab = ({})=>{
         results: results
     }) : null;
 };
-const isRecord = (v)=>!!v && typeof v === "object"
-;
-const isArray = (v)=>Array.isArray(v)
-;
-const hasNumber = (v, k)=>k in v && typeof v[k] === "number"
-;
-const hasString = (v, k)=>k in v && typeof v[k] === "string"
-;
-const hasMaybeString = (v, k)=>k in v ? typeof v[k] === "string" || v[k] == null : true
-;
-const hasMaybeNumber = (v, k)=>k in v ? typeof v[k] === "number" || v[k] == null : true
-;
 const isSqlColumnRow = (row)=>isRecord(row) && typeof row.Field === "string" && typeof row.Type === "string" && (typeof row.Default === "string" || row.Default === null)
 ;
 const extractDataType = (str)=>{
@@ -15098,10 +15172,10 @@ const sqlColumnTransform = (rows)=>{
     }
     return columns;
 };
-const store = (key, value)=>{
+const store1 = (key, value)=>{
     sessionStorage.setItem(key, JSON.stringify(value));
 };
-const retrieve = (key, typeguard)=>{
+const retrieve1 = (key, typeguard)=>{
     const raw = sessionStorage.getItem(key);
     if (!raw) return;
     let json;
@@ -15116,10 +15190,10 @@ const retrieve = (key, typeguard)=>{
     }
 };
 const useSessionState = (key, initial)=>{
-    const state = qe(()=>retrieve(key, (_v)=>true
+    const state = qe(()=>retrieve1(key, (_v)=>true
         ) ?? initial
     );
-    xe(()=>store(key, state[0])
+    xe(()=>store1(key, state[0])
     , [
         state[0]
     ]);
@@ -15130,36 +15204,6 @@ const Tabs = ({ children , onNewTab , onCloseTab , selectedTabState , style  })=
     const childrenArr = Ae(()=>export_default4.Children.toArray(children)
     , [
         children
-    ]);
-    xe(()=>{
-        const listener = (e)=>{
-            if (e.code.startsWith("Digit") && e.altKey) {
-                e.preventDefault();
-                const key = Math.min(childrenArr.length, parseInt(e.code[e.code.length - 1]) - 1);
-                if (key === childrenArr.length) {
-                    onNewTab?.();
-                }
-                setSelectedTab(key);
-            } else if (e.code === "KeyW" && e.altKey) {
-                e.preventDefault();
-                if (onCloseTab) {
-                    onCloseTab(selectedTab);
-                    setSelectedTab(selectedTab);
-                }
-            } else if (e.code === "KeyT" && e.altKey) {
-                e.preventDefault();
-                if (onNewTab) {
-                    onNewTab();
-                    setSelectedTab(childrenArr.length);
-                }
-            }
-        };
-        globalThis.addEventListener("keydown", listener);
-        return ()=>globalThis.removeEventListener("keydown", listener)
-        ;
-    }, [
-        selectedTab,
-        childrenArr.length
     ]);
     const actualSelectedTab = Math.min(selectedTab, childrenArr.length - 1);
     const tabLabelBase = {
@@ -15182,14 +15226,17 @@ const Tabs = ({ children , onNewTab , onCloseTab , selectedTabState , style  })=
                         ...i === actualSelectedTab ? theme.tabs.label.selected : undefined
                     }
                 }, export_default4.createElement("span", null, child.props.label), onCloseTab && child.props.canClose !== false && export_default4.createElement("span", {
+                    title: "Close (⌥W)",
                     style: {
                         fontSize: 10,
                         opacity: 0.6,
                         padding: 4,
                         ...theme.tabs.label.close
                     },
-                    onClick: ()=>{
+                    onClick: (e)=>{
                         onCloseTab(i);
+                        e.preventDefault();
+                        e.stopPropagation();
                     }
                 }, "✕")));
             }
@@ -15216,6 +15263,7 @@ const Tabs = ({ children , onNewTab , onCloseTab , selectedTabState , style  })=
             key: i
         }, l)
     ), onNewTab && export_default4.createElement("span", {
+        title: "New query (⌥T)",
         style: {
             ...tabLabelBase,
             ...theme.tabs.label.base,
@@ -21812,11 +21860,11 @@ const Nav = ()=>{
         style: {
             display: "inline"
         }
-    }, "Command+N"), " or", " ", export_default4.createElement("pre", {
+    }, "⌘N"), " or", " ", export_default4.createElement("pre", {
         style: {
             display: "inline"
         }
-    }, "Command+Shift+P"), " and run \"Add connection\""));
+    }, "⌘⇧P"), " and run \"Add connection\""));
 };
 const formatter = new Intl.DateTimeFormat("en-us", {
     hour: "numeric",
@@ -21849,6 +21897,13 @@ const Output = ()=>{
         }, node)
     ));
 };
+const lru = (array, value, max)=>{
+    const oldIndex = array.indexOf(value);
+    if (oldIndex === 0) return;
+    if (oldIndex > 0) array.splice(oldIndex, 1);
+    array.unshift(value);
+    if (max && array.length > max) array.pop();
+};
 const commandsSlice = Mr1({
     name: "commands",
     initialState: {
@@ -21859,7 +21914,8 @@ const commandsSlice = Mr1({
         options: undefined,
         callback: undefined,
         showIndex: 0,
-        forceOption: true
+        forceOption: true,
+        lru: retrieve("commands.lru", isStringArray) ?? []
     },
     reducers: {
         register: (state, action)=>{
@@ -21879,6 +21935,10 @@ const commandsSlice = Mr1({
         },
         setValue: (state, action)=>{
             state.input = action.payload;
+        },
+        metricUseCommand: (state, action)=>{
+            lru(state.lru, action.payload, 10);
+            store("commands.lru", state.lru);
         }
     }
 });
@@ -21919,7 +21979,8 @@ const TextSelectOption = ({ focused , onSelect , option , onFocus  })=>export_de
         }, label)
     ), option.name, option.hotkey?.length && export_default4.createElement("span", {
         style: {
-            float: "right"
+            float: "right",
+            marginTop: -1
         }
     }, option.hotkey.map((key)=>export_default4.createElement("span", {
             style: {
@@ -21929,7 +21990,7 @@ const TextSelectOption = ({ focused , onSelect , option , onFocus  })=>export_de
                 padding: "3px 6px",
                 ...theme.textSelect?.optionHotkey
             }
-        }, key.replace("Key", "").replace("!Meta", "⌘").replace("!Shift", "⇧").replace("!Alt", "⌥"))
+        }, key.replace(/^(Key|Digit)/, "").replace("!Meta", "⌘").replace("!Shift", "⇧").replace("!Alt", "⌥"))
     )))
 ;
 const TextSelect = export_default4.forwardRef(({ autoFocus , focusedOption , onClose , onFocusOption , onInput , onSelect , options , placeholder , value  }, ref)=>{
@@ -21988,6 +22049,7 @@ const TextSelect = export_default4.forwardRef(({ autoFocus , focusedOption , onC
             top: 0,
             transform: "translateX(-50%)",
             width: 600,
+            zIndex: 1,
             ...theme.textSelect?.container
         }
     }, export_default4.createElement("input", {
@@ -22095,23 +22157,6 @@ const fuzzyFilter = (query, propAccessor)=>{
     return (value)=>!!regexp.exec(propAccessor(value))
     ;
 };
-const store1 = (key, value)=>{
-    localStorage.setItem(key, JSON.stringify(value));
-};
-const retrieve1 = (key, typeguard)=>{
-    const raw = localStorage.getItem(key);
-    if (!raw) return;
-    let json;
-    try {
-        json = JSON.parse(raw);
-    } catch (err) {
-        console.warn(err);
-        return;
-    }
-    if (typeguard(json)) {
-        return json;
-    }
-};
 const connectionKeys = new Set([
     "driver",
     "port",
@@ -22127,15 +22172,15 @@ const isConnections = (v)=>isArray(v) && v.every(isConnection)
 ;
 const connectionsSlice = Mr1({
     name: "commands",
-    initialState: retrieve1("connections", isConnections) ?? [],
+    initialState: retrieve("connections", isConnections) ?? [],
     reducers: {
         add: (state, action)=>{
             state.push(action.payload);
-            store1("connections", state);
+            store("connections", state);
         },
         remove: (state, action)=>{
             state.splice(typeof action.payload === "number" ? action.payload : state.indexOf(action.payload), 1);
-            store1("connections", state);
+            store("connections", state);
         }
     }
 });
@@ -22144,7 +22189,8 @@ const store2 = br({
         commands: commandsSlice.reducer,
         connection: connectionSlice.reducer,
         connections: connectionsSlice.reducer,
-        output: outputSlice.reducer
+        output: outputSlice.reducer,
+        tabs: tabsSlice.reducer
     })
 });
 store2.dispatch(commandsSlice.actions.register({
@@ -22247,78 +22293,136 @@ store2.dispatch(commandsSlice.actions.register({
             options: (query)=>{
                 if (query[0] === ">") {
                     query = query.slice(1);
-                    const commands = store2.getState().commands.commands;
-                    if (!query) return commands.filter((c)=>!c.hidden
+                    const commandsSlice = store2.getState().commands;
+                    const sort = (a, b)=>(commandsSlice.lru.indexOf(b.id) ?? -Infinity) - (commandsSlice.lru.indexOf(a.id) ?? -Infinity)
+                    ;
+                    if (!query) {
+                        return commandsSlice.commands.filter((c)=>!c.hidden
+                        ).sort(sort);
+                    }
+                    const matcher = fuzzyFilter(query, (c)=>[
+                            ...c.tags ?? [],
+                            c.name,
+                            c.description
+                        ].filter((v)=>v
+                        ).join(" ")
                     );
-                    const matcher = fuzzyFilter(query, (c)=>c.name + (c.description ?? "")
-                    );
-                    return commands.filter((c)=>!c.hidden && matcher(c)
-                    );
+                    return commandsSlice.commands.filter((c)=>!c.hidden && matcher(c)
+                    ).sort(sort);
                 }
                 return [];
+            },
+            callback: (_, _2, command)=>{
+                store2.dispatch(commandsSlice.actions.hide());
+                if (command && hasString(command, "id")) {
+                    store2.dispatch(commandsSlice.actions.metricUseCommand(command.id));
+                    command?.callback();
+                }
             }
         }));
+    }
+}));
+store2.dispatch(commandsSlice.actions.register({
+    id: "tabs.closeTab",
+    name: "Close current tab",
+    hotkey: [
+        "!Alt",
+        "KeyW"
+    ],
+    tags: [
+        {
+            label: "Tabs",
+            color: "green"
+        }
+    ],
+    callback: ()=>{
+        store2.dispatch(tabsSlice.actions.closeTab(store2.getState().tabs.selected));
     }
 }));
 store2.dispatch(connectionSlice.actions.selectConnection({
     connection: store2.getState().connections[0]
 }));
-const getQueryCount = ()=>{
-    const queryCount = parseInt(localStorage.getItem("query-count") ?? "0");
-    if (queryCount === 0) {
-        localStorage.setItem("query-count", "1");
-        localStorage.setItem("query-0", "SELECT 1+1;");
-        return 1;
+store2.dispatch(commandsSlice.actions.register({
+    id: "tabs.newTab",
+    name: "Open new tab",
+    hotkey: [
+        "!Alt",
+        "KeyT"
+    ],
+    tags: [
+        {
+            label: "Tabs",
+            color: "green"
+        }
+    ],
+    callback: ()=>{
+        store2.dispatch(tabsSlice.actions.newTab());
+        store2.dispatch(tabsSlice.actions.selectTab(store2.getState().tabs.queryTabCount + 1));
     }
-    return queryCount;
-};
+}));
+Array(10).fill(0).map((_, i)=>{
+    const code = i === 9 ? 10 : i + 1;
+    store2.dispatch(commandsSlice.actions.register({
+        id: "tabs.showTab" + code,
+        name: "Show tab " + code,
+        hotkey: [
+            "!Alt",
+            "Digit" + (i === 9 ? 0 : i + 1)
+        ],
+        tags: [
+            {
+                label: "Tabs",
+                color: "green"
+            }
+        ],
+        callback: ()=>{
+            store2.dispatch(tabsSlice.actions.selectTab(i));
+        }
+    }));
+});
+const EmptyTab = ()=>export_default4.createElement(export_default4.Fragment, null)
+;
 const MainTabs = ()=>{
-    const [tabCount, setTabCount] = qe(getQueryCount());
-    const { database , table  } = Ur((s)=>({
+    const dispatch = useAppDispatch();
+    const { database , table , queryTabCount , selected  } = Ur((s)=>({
             database: s.connection.database,
-            table: s.connection.table
+            table: s.connection.table,
+            queryTabCount: s.tabs.queryTabCount,
+            selected: s.tabs.selected
         })
     );
     return export_default4.createElement(Tabs, {
         onNewTab: ()=>{
-            setTabCount((count)=>{
-                localStorage.setItem("query-count", (count + 1).toString());
-                return count + 1;
-            });
+            dispatch(tabsSlice.actions.newTab());
         },
         onCloseTab: (index)=>{
-            setTabCount((count)=>{
-                let newCount = count - 1;
-                for(let i = index; i < newCount; i++){
-                    localStorage.setItem(`query-${i}`, localStorage.getItem(`query-${i + 1}`) ?? "");
-                }
-                localStorage.removeItem(`query-${newCount}`);
-                if (newCount === 0) {
-                    localStorage.setItem(`query-0`, "");
-                    newCount++;
-                }
-                localStorage.setItem("query-count", newCount.toString());
-                return newCount;
-            });
-        }
-    }, database && table && export_default4.createElement(TableTab, {
+            dispatch(tabsSlice.actions.closeTab(index));
+        },
+        selectedTabState: [
+            selected,
+            (tab)=>{
+                dispatch(tabsSlice.actions.selectTab(typeof tab === "number" ? tab : tab(selected)));
+            }, 
+        ]
+    }, database && table ? export_default4.createElement(TableTab, {
         key: table,
         label: export_default4.createElement(Label, {
             icon: "data_sheet"
         }, table),
         canClose: false
-    }), database && table && export_default4.createElement(TableDataTab, {
+    }) : export_default4.createElement(EmptyTab, null), database && table ? export_default4.createElement(TableDataTab, {
         key: table,
         label: export_default4.createElement(Label, {
             icon: "data_sheet"
         }, "Data"),
         canClose: false
-    }), Array(tabCount).fill(0).map((_, i)=>export_default4.createElement(QueryTab, {
-            key: `${tabCount}-${i}`,
+    }) : export_default4.createElement(EmptyTab, null), Array(queryTabCount).fill(0).map((_, i)=>export_default4.createElement(QueryTab, {
+            key: `${queryTabCount}-${i}`,
             id: i,
             label: export_default4.createElement(Label, {
                 icon: "document"
-            }, `Query #${i + 1}`)
+            }, `Query #${i + 1}`),
+            canClose: queryTabCount > 1
         })
     ));
 };
