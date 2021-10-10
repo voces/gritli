@@ -22,6 +22,7 @@ store.dispatch(commandsSlice.actions.register({
                 else if (isNaN(parseInt(port))) return;
                 store.dispatch(commandsSlice.actions.show({
                   placeholder: "Password",
+                  type: "password",
                   callback: (_, password) => {
                     store.dispatch(commandsSlice.actions.show({
                       placeholder: "Proxy (default http://localhost:3000)",

@@ -55,12 +55,6 @@ export const QueryTab = ({
                 localStorage.setItem(`query-${id}`, v);
                 dispatch(tabsSlice.actions.updateTab({ id, value: v }));
               }}
-              // onDidChangeCursorSelection={e => {
-              // }}
-              // onMount={(e: { focus: () => void }, next: any) => {
-              //   e.focus();
-              //   (window as any).editor = e;
-              // }}
               options={{ minimap: { enabled: false } }}
               loading={null}
               theme={theme.monaco}

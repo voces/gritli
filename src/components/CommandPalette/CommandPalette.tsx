@@ -7,14 +7,15 @@ import { usePreviousValue } from "../../hooks/usePreviousValue.ts";
 export const CommandPalette = () => {
   const [focusIndex, setFocusIndex] = useState(0);
   const {
-    commands,
-    input,
-    shown,
-    placeholder,
-    options: getOptions,
     callback,
-    showIndex,
+    commands,
     forceOption,
+    input,
+    options: getOptions,
+    placeholder,
+    showIndex,
+    shown,
+    type,
   } = useAppSelector((state) => state.commands);
   const dispatch = useAppDispatch();
 
@@ -74,6 +75,7 @@ export const CommandPalette = () => {
       }}
       options={options}
       placeholder={placeholder}
+      type={type}
       value={input}
     />
   );

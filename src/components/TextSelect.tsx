@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  HTMLInputTypeAttribute,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { usePreviousValue } from "../hooks/usePreviousValue.ts";
 import { theme } from "../theme.ts";
 import { Badge, BadgeColor } from "./vel/Badge.tsx";
@@ -29,7 +35,11 @@ export const TextSelectOption = ({
       ...(focused ? theme.textSelect?.optionFocused : undefined),
     }}
     title={option.description}
-    onClick={onSelect}
+    onClick={(e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      onSelect();
+    }}
     onMouseEnter={onFocus}
   >
     {option.tags?.map(({ label, color }) => (
@@ -71,6 +81,7 @@ type Props = {
   onSelect: (index: number) => void;
   options: Option[];
   placeholder?: string;
+  type?: HTMLInputTypeAttribute;
   value: string;
 };
 
@@ -85,6 +96,7 @@ export const TextSelect = React.forwardRef<HTMLInputElement, Props>(
       onSelect,
       options,
       placeholder,
+      type,
       value,
     }: Props,
     ref
@@ -182,6 +194,7 @@ export const TextSelect = React.forwardRef<HTMLInputElement, Props>(
             ...theme.textSelect?.input,
             ...(inputFocused ? theme.textSelect?.inputFocused : undefined),
           }}
+          type={type}
           value={value}
         />
         {options.map((option, index) => (

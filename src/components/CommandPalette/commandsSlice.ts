@@ -1,8 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { retrieve, store } from "../../helpers/persistStore.ts";
-import { isStringArray } from "../../helpers/typeguards.ts";
+import { isNumber, isRecord } from "../../helpers/typeguards.ts";
 import { BadgeColor } from "../vel/Badge.tsx";
 import { Command } from "./types.ts";
+import type { HTMLInputTypeAttribute } from "react";
 
 type Option = {
   callback?: () => void;
@@ -10,14 +11,6 @@ type Option = {
   hotkey?: string[];
   name: string;
   tags?: { label: string; color: BadgeColor }[];
-};
-
-const lru = <T>(array: T[], value: T, max?: number) => {
-  const oldIndex = array.indexOf(value);
-  if (oldIndex === 0) return;
-  if (oldIndex > 0) array.splice(oldIndex, 1);
-  array.unshift(value);
-  if (max && array.length > max) array.pop();
 };
 
 export const commandsSlice = createSlice({
@@ -34,7 +27,9 @@ export const commandsSlice = createSlice({
     ),
     showIndex: 0,
     forceOption: true,
-    lru: (retrieve("commands.lru", isStringArray) ?? []),
+    usage: (retrieve("commands.usage", (v): v is Record<string, number> =>
+      isRecord(v) && Object.values(v).every(isNumber)) ?? {}),
+    type: "text" as HTMLInputTypeAttribute,
   },
   reducers: {
     register: (state, action: PayloadAction<Command>) => {
@@ -54,6 +49,7 @@ export const commandsSlice = createSlice({
             | undefined
             | ((index: number, value: string, options?: Option) => void);
           forceOption?: boolean;
+          type?: HTMLInputTypeAttribute;
         }
       >,
     ) => {
@@ -64,13 +60,14 @@ export const commandsSlice = createSlice({
       state.callback = action?.payload.callback;
       state.showIndex++;
       state.forceOption = action?.payload.forceOption ?? !!state.options;
+      state.type = action?.payload.type ?? "text";
     },
     setValue: (state, action: PayloadAction<string>) => {
       state.input = action.payload;
     },
     metricUseCommand: (state, action: PayloadAction<string>) => {
-      lru(state.lru, action.payload, 10);
-      store("commands.lru", state.lru);
+      state.usage[action.payload] = Date.now();
+      store("commands.usage", state.usage);
     },
   },
 });

@@ -20,8 +20,8 @@ store.dispatch(commandsSlice.actions.register({
 
           const commandsSlice = store.getState().commands;
           const sort = (a: Command, b: Command) =>
-            (commandsSlice.lru.indexOf(b.id) ?? -Infinity) -
-            (commandsSlice.lru.indexOf(a.id) ?? -Infinity);
+            (commandsSlice.usage[b.id] ?? -Infinity) -
+            (commandsSlice.usage[a.id] ?? -Infinity);
 
           if (!query) {
             return commandsSlice.commands.filter((c) => !c.hidden).sort(sort);
