@@ -296,7 +296,7 @@ export const QueryResults = ({ results }: { results: Results }) => {
   const [contextMenu, setContextMenu] = useState<
     { x: number; y: number } | undefined
   >();
-  const [display, setDisplay] = useState<DisplayMode>("viz");
+  const [display, setDisplay] = useState<DisplayMode>("table");
 
   return (
     <>

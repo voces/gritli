@@ -16,14 +16,17 @@ export const QueryTab = ({
   canClose?: boolean;
 }) => {
   const [results, setResults] = useState<Results | undefined>();
-  const query = useAppSelector((s) => s.tabs.queryTabs[id]);
+  const { query, connection } = useAppSelector((s) => ({
+    query: s.tabs.queryTabs[id],
+    connection: s.connection.connection,
+  }));
   const dispatch = useAppDispatch();
   const queryFn = useQuery();
 
   useEffect(() => {
-    if (!query) return;
+    if (!query || !connection || results) return;
     queryFn(query, "force-cache").then(setResults);
-  }, []);
+  }, [connection]);
 
   useEffect(() => {
     const listener = async (e: KeyboardEvent) => {
