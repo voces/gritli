@@ -22246,7 +22246,8 @@ const isConnection = (v)=>isRecord(v) && Object.keys(v).every((k)=>connectionKey
 const isConnections = (v)=>isArray(v) && v.every(isConnection)
 ;
 const secureStore = (connections)=>{
-    if ("credentials" in navigator && navigator.credentials && PasswordCredential) {
+    if ("credentials" in navigator && navigator.credentials && PasswordCredential && connections.some((c)=>c.password
+    )) {
         const clone = connections.map((c)=>({
                 ...c
             })
