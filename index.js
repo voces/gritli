@@ -6543,7 +6543,7 @@ const theme = {
         "--background-tertiary": "#ececec",
         "--background-focus": "#0060C0",
         "--border-primary": "#eee",
-        "--border-secondary": "#eee"
+        "--border-secondary": "#ddd"
     },
     panel: {
         container: {
@@ -6589,7 +6589,7 @@ const theme = {
             backgroundColor: "var(--background-primary)"
         },
         option: {
-            color: "var(--color-secondary)"
+            color: "var(--color-tertiary)"
         },
         optionHovered: {
             backgroundColor: "var(--background-focus)",
@@ -6618,14 +6618,8 @@ const theme = {
     },
     textSelect: {
         container: {
-            backgroundColor: "var(--background-primary)",
-            boxShadow: "0 2px 4px 1px var(--background-secondary)"
-        },
-        input: {
-            backgroundColor: "var(--background-secondary)"
-        },
-        inputFocused: {
-            border: "1px solid var(--color-secondary)"
+            backgroundColor: "var(--background-secondary)",
+            boxShadow: "0 0 8px 2px var(--border-secondary)"
         },
         option: {
             color: "var(--color-primary)"
@@ -6635,8 +6629,13 @@ const theme = {
             backgroundColor: "var(--background-focus)"
         },
         optionHotkey: {
-            color: "var(--color-secondary)",
-            backgroundColor: "var(--background-tertiary)"
+            backgroundColor: "var(--background-tertiary)",
+            border: "1px solid var(--border-secondary)",
+            boxShadow: "0 1px 1px 0px var(--border-primary)"
+        },
+        optionHotkeyFocused: {
+            backgroundColor: "inherit",
+            boxShadow: "none"
         }
     },
     badge: {
@@ -15021,7 +15020,7 @@ const tabsSlice = Mr1({
     initialState: {
         queryTabCount: initialQueryTabs.length,
         queryTabs: initialQueryTabs,
-        selected: retrieve("tabs.selected", isNumber) ?? 0
+        selected: retrieve("tabs.selected", isNumber) ?? 2
     },
     reducers: {
         newTab: (state, query)=>{
@@ -21850,7 +21849,7 @@ const NoConnections = ()=>{
         style: {
             display: "inline"
         }
-    }, "⌘N"), " or", " ", export_default4.createElement("pre", {
+    }, "⌥N"), " or", " ", export_default4.createElement("pre", {
         style: {
             display: "inline"
         }
@@ -21962,20 +21961,11 @@ const usePreviousValue = (value)=>{
     ]);
     return ref.current;
 };
-const Badge = ({ children , color , ...props })=>export_default4.createElement("span", Object.assign({
-    }, props, {
-        style: {
-            padding: "1px 4px",
-            borderRadius: 4,
-            ...theme.badge?.[color],
-            ...props.style
-        }
-    }), children)
-;
 const TextSelectOption = ({ focused , onSelect , option , onFocus  })=>export_default4.createElement("div", {
         style: {
-            padding: 4,
+            padding: "4px 11px",
             cursor: "pointer",
+            fontSize: 13,
             ...theme.textSelect?.option,
             ...focused ? theme.textSelect?.optionFocused : undefined
         },
@@ -21986,13 +21976,7 @@ const TextSelectOption = ({ focused , onSelect , option , onFocus  })=>export_de
             onSelect();
         },
         onMouseEnter: onFocus
-    }, option.tags?.map(({ label , color  })=>export_default4.createElement(Badge, {
-            color: color,
-            style: {
-                marginRight: 4
-            }
-        }, label)
-    ), option.name, option.hotkey?.length && export_default4.createElement("span", {
+    }, option.name, option.hotkey?.length && export_default4.createElement("span", {
         style: {
             float: "right",
             marginTop: -1
@@ -22000,10 +21984,14 @@ const TextSelectOption = ({ focused , onSelect , option , onFocus  })=>export_de
     }, option.hotkey.map((key)=>export_default4.createElement("span", {
             style: {
                 borderRadius: 2,
-                fontSize: "80%",
+                display: "inline-block",
                 marginLeft: 3,
-                padding: "3px 6px",
-                ...theme.textSelect?.optionHotkey
+                padding: "1px 4px",
+                width: 11,
+                fontSize: 11,
+                textAlign: "center",
+                ...theme.textSelect?.optionHotkey,
+                ...focused ? theme.textSelect?.optionHotkeyFocused : undefined
             }
         }, key.replace(/^(Key|Digit)/, "").replace("!Meta", "⌘").replace("!Shift", "⇧").replace("!Alt", "⌥"))
     )))
@@ -22031,7 +22019,7 @@ const TextSelect = export_default4.forwardRef(({ autoFocus , focusedOption , onC
             return;
         }
         if (e.code === "ArrowUp") {
-            onFocusOption(focusedOption === options.length - 1 ? 0 : focusedOption + 1);
+            onFocusOption(focusedOption === 0 ? options.length - 1 : focusedOption - 1);
             e.preventDefault();
             e.stopPropagation();
             return;
@@ -22059,11 +22047,10 @@ const TextSelect = export_default4.forwardRef(({ autoFocus , focusedOption , onC
         style: {
             left: "50%",
             maxWidth: "90vw",
-            padding: 4,
             position: "absolute",
             top: 0,
             transform: "translateX(-50%)",
-            width: 600,
+            width: 450,
             zIndex: 1,
             ...theme.textSelect?.container
         }
@@ -22089,13 +22076,10 @@ const TextSelect = export_default4.forwardRef(({ autoFocus , focusedOption , onC
             color: "inherit",
             display: "block",
             fontFamily: "inherit",
-            fontSize: "90%",
-            outline: "none",
+            margin: "6px 6px 2px",
             padding: 4,
-            width: "calc(100% - 10px)",
-            ...theme.input,
-            ...theme.textSelect?.input,
-            ...inputFocused ? theme.textSelect?.inputFocused : undefined
+            width: "calc(100% - 22px)",
+            ...theme.input
         },
         type: type,
         value: value
@@ -22218,12 +22202,6 @@ store2.dispatch(commandsSlice.actions.register({
         "!Alt",
         "KeyN"
     ],
-    tags: [
-        {
-            label: "Connections",
-            color: "red"
-        }
-    ],
     callback: ()=>{
         store2.dispatch(commandsSlice.actions.show({
             placeholder: "Username (default root)",
@@ -22268,12 +22246,6 @@ store2.dispatch(commandsSlice.actions.register({
     id: "connections.remove",
     name: "Remove connection",
     description: "Removes a server to connect to",
-    tags: [
-        {
-            label: "Connections",
-            color: "red"
-        }
-    ],
     callback: ()=>{
         store2.dispatch(commandsSlice.actions.show({
             placeholder: "Connection to remove",
@@ -22319,7 +22291,6 @@ store2.dispatch(commandsSlice.actions.register({
                         ).sort(sort);
                     }
                     const matcher = fuzzyFilter(query, (c)=>[
-                            ...c.tags ?? [],
                             c.name,
                             c.description
                         ].filter((v)=>v
@@ -22347,12 +22318,6 @@ store2.dispatch(commandsSlice.actions.register({
         "!Alt",
         "KeyW"
     ],
-    tags: [
-        {
-            label: "Tabs",
-            color: "green"
-        }
-    ],
     callback: ()=>{
         store2.dispatch(tabsSlice.actions.closeTab(store2.getState().tabs.selected));
     }
@@ -22367,12 +22332,6 @@ store2.dispatch(commandsSlice.actions.register({
         "!Alt",
         "KeyT"
     ],
-    tags: [
-        {
-            label: "Tabs",
-            color: "green"
-        }
-    ],
     callback: ()=>{
         store2.dispatch(tabsSlice.actions.newTab());
         store2.dispatch(tabsSlice.actions.selectTab(store2.getState().tabs.queryTabCount + 1));
@@ -22386,12 +22345,6 @@ Array(10).fill(0).map((_, i)=>{
         hotkey: [
             "!Alt",
             "Digit" + (i === 9 ? 0 : i + 1)
-        ],
-        tags: [
-            {
-                label: "Tabs",
-                color: "green"
-            }
         ],
         callback: ()=>{
             store2.dispatch(tabsSlice.actions.selectTab(i));
