@@ -98,7 +98,7 @@ export const TextSelect = React.forwardRef<HTMLInputElement, Props>(
       type,
       value,
     }: Props,
-    ref
+    ref,
   ) => {
     const myRef = useRef<HTMLInputElement | null>(null);
     const myRefPrevious = usePreviousValue(myRef.current);
@@ -117,7 +117,7 @@ export const TextSelect = React.forwardRef<HTMLInputElement, Props>(
 
         if (e.code === "ArrowDown") {
           onFocusOption(
-            focusedOption === options.length - 1 ? 0 : focusedOption + 1
+            focusedOption === options.length - 1 ? 0 : focusedOption + 1,
           );
           e.preventDefault();
           e.stopPropagation();
@@ -126,7 +126,7 @@ export const TextSelect = React.forwardRef<HTMLInputElement, Props>(
 
         if (e.code === "ArrowUp") {
           onFocusOption(
-            focusedOption === 0 ? options.length - 1 : focusedOption - 1
+            focusedOption === 0 ? options.length - 1 : focusedOption - 1,
           );
           e.preventDefault();
           e.stopPropagation();
@@ -138,7 +138,7 @@ export const TextSelect = React.forwardRef<HTMLInputElement, Props>(
           return;
         }
       },
-      [focusedOption, onSelect]
+      [focusedOption, onSelect],
     );
 
     const onKeyDownPrev = usePreviousValue(onKeyDown);
@@ -202,5 +202,5 @@ export const TextSelect = React.forwardRef<HTMLInputElement, Props>(
         ))}
       </div>
     );
-  }
+  },
 );

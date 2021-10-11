@@ -50,7 +50,7 @@ const QueryContextMenu = ({
   setDisplay: (value: DisplayMode) => void;
 }) => {
   const options: Option[] = [];
-  if (rows)
+  if (rows) {
     options.push(
       {
         type: "option" as const,
@@ -60,7 +60,7 @@ const QueryContextMenu = ({
             [
               Object.keys(rows[0]).join("\t"),
               ...rows.map((row) => Object.values(row).join("\t")),
-            ].join("\n")
+            ].join("\n"),
           );
           handleHide();
         },
@@ -90,7 +90,7 @@ const QueryContextMenu = ({
           stringRows.splice(
             1,
             0,
-            columnWidths.map((w) => "-".repeat(w))
+            columnWidths.map((w) => "-".repeat(w)),
           );
 
           navigator.clipboard.writeText(
@@ -104,14 +104,15 @@ const QueryContextMenu = ({
                   )
                   .join(" | ")
               )
-              .join("\n")
+              .join("\n"),
           );
           handleHide();
         },
       },
-      { type: "option-separator" }
+      { type: "option-separator" },
     );
-  if (display !== "table")
+  }
+  if (display !== "table") {
     options.push({
       type: "option" as const,
       label: "Table",
@@ -120,7 +121,8 @@ const QueryContextMenu = ({
         handleHide();
       },
     });
-  if (display !== "viz")
+  }
+  if (display !== "viz") {
     options.push({
       type: "option" as const,
       label: "Viz",
@@ -129,6 +131,7 @@ const QueryContextMenu = ({
         handleHide();
       },
     });
+  }
   return <ContextMenu shown={shown} left={x} top={y} options={options} />;
 };
 
@@ -197,9 +200,8 @@ export const ResultTable = ({
                 style={{
                   ...tableCellStyle,
                   ...theme.table.cell,
-                  textAlign:
-                    (types[fields?.[i].fieldType ?? 0] === "number" &&
-                      "right") ||
+                  textAlign: (types[fields?.[i].fieldType ?? 0] === "number" &&
+                    "right") ||
                     (types[fields?.[i].fieldType ?? 0] === "boolean" &&
                       "center") ||
                     "inherit",
@@ -216,7 +218,7 @@ export const ResultTable = ({
                   (fields?.[i].fieldType === EDITOR_TYPE_REACT && d[1]) ||
                   d[1]?.toString()}
               </td>
-            )
+            ),
           )}
           <td style={{ width: "99%" }}></td>
         </tr>
@@ -231,9 +233,9 @@ export const ResultTable = ({
         </tr>
       )}
       <tr>
-        {(fields ? Object.keys(fields) : ["placeholder"]).map((i) => (
-          <td key={i} style={{ height: "99%" }}></td>
-        ))}
+        {(fields ? Object.keys(fields) : ["placeholder"]).map((
+          i,
+        ) => <td key={i} style={{ height: "99%" }}></td>)}
         <td style={{ height: "99%", width: "99%" }}></td>
       </tr>
     </tbody>
@@ -251,7 +253,7 @@ const ResultsComponent = ({
   handleClick: () => boolean;
   display: DisplayMode;
 }) => {
-  if (display === "table")
+  if (display === "table") {
     return (
       <ResultTable
         rows={results.rows}
@@ -261,6 +263,7 @@ const ResultsComponent = ({
         handleClick={handleClick}
       />
     );
+  }
 
   const rows = results.rows?.map((r) =>
     Object.fromEntries(
@@ -268,10 +271,11 @@ const ResultsComponent = ({
         if (
           types[results?.fields?.[i].fieldType ?? 0] === "date" &&
           (typeof value === "string" || typeof value === "number")
-        )
+        ) {
           return [column, new Date(value).getTime()];
+        }
         return [column, value];
-      })
+      }),
     )
   );
 

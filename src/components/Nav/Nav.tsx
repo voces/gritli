@@ -5,7 +5,7 @@ import { ConnectionNode } from "./ConnectionNode.tsx";
 
 const NoConnections = () => {
   const command = useAppSelector(
-    (s) => s.commands.commandMap["connection.add"]
+    (s) => s.commands.commandMap["connection.add"],
   );
   return (
     <div

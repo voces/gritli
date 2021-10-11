@@ -1,6 +1,6 @@
 import { useQuery } from "../../hooks/useQuery.tsx";
 import { QueryResults, Results } from "../results/QueryResults.tsx";
-import React, { useState, useEffect, useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useAppSelector } from "../../hooks/storeHooks.ts";
 
 export const TableDataTab = ({}: {
@@ -15,10 +15,11 @@ export const TableDataTab = ({}: {
   const query = useQuery();
 
   useEffect(() => {
-    if (table)
+    if (table) {
       query(`SELECT * FROM \`${database}\`.\`${table}\` LIMIT 1000;`).then(
-        setResults
+        setResults,
       );
+    }
   }, [table]);
 
   return results ? <QueryResults results={results} /> : null;

@@ -26,6 +26,7 @@ export const Divider = ({
       style={{ flexShrink: 0, zIndex: 1, ...style, ...theme.divider }}
       data-index={index}
       data-fixed={fixed}
-    ></div>
+    >
+    </div>
   );
 };

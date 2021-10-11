@@ -48,8 +48,7 @@ export const foreignKeyRowsToObjs = (rows: unknown): ForeignKey[] => {
   for (const row of rows) {
     if (!isForeignKeyRow(row)) continue;
 
-    const foreignKey =
-      foreignKeys[row.constraint_name] ??
+    const foreignKey = foreignKeys[row.constraint_name] ??
       (foreignKeys[row.constraint_name] = {
         columns: [],
         deleteRule: row.delete_rule,
@@ -119,9 +118,9 @@ export const ForeignKeyTab = ({
         <div style={{ margin: "2px 2px 4px" }}>Foreign columns</div>
         <div style={{ margin: "2px 2px 4px" }}>On UPDATE</div>
         <div style={{ margin: "2px 2px 4px" }}>On DELETE</div>
-        {foreignKeys.map((foreignKey) => (
-          <ForeignKeyRow foreignKey={foreignKey} />
-        ))}
+        {foreignKeys.map((
+          foreignKey,
+        ) => <ForeignKeyRow foreignKey={foreignKey} />)}
       </div>
     </Panel>
   </Panel>

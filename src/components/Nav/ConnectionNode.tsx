@@ -3,7 +3,7 @@ import {
   connectionSlice,
 } from "../../store/slices/connectionSlice.ts";
 import { useQuery } from "../../hooks/useQuery.tsx";
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../hooks/storeHooks.ts";
 import { TreeNode } from "./TreeNode.tsx";
 import { formatConnection } from "../../helpers/formatConnection.ts";
@@ -19,7 +19,7 @@ export const ConnectionNode = ({
   const query = useQuery(connection);
   const [databases, setDatabases] = useState<string[]>();
   const { database: selectedDatabase } = useAppSelector(
-    (state) => state.connection
+    (state) => state.connection,
   );
   const dispatch = useAppDispatch();
 
@@ -35,7 +35,7 @@ export const ConnectionNode = ({
             connectionSlice.actions.selectDatabase({
               connection,
               database: newDatabases[0],
-            })
+            }),
           );
           query(`USE \`${newDatabases[0]}\`;`);
         }
@@ -49,11 +49,11 @@ export const ConnectionNode = ({
 
   return (
     <TreeNode
-      label={
+      label={(
         <span style={{ fontWeight: selected ? "bold" : "inherit" }}>
           {formatConnection(connection)}
         </span>
-      }
+      )}
       onClick={() => {
         if (!selected) {
           dispatch(connectionSlice.actions.selectConnection({ connection }));
@@ -62,9 +62,9 @@ export const ConnectionNode = ({
         return true;
       }}
       onExpand={retrieveDatabases}
-      nodes={databases?.map((d) => (
-        <DatabaseNode connection={connection} database={d} />
-      ))}
+      nodes={databases?.map((
+        d,
+      ) => <DatabaseNode connection={connection} database={d} />)}
       showGuides={false}
       initialExpanded={selected}
     />

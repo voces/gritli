@@ -1,4 +1,4 @@
-import React, { useState, useRef, useMemo, useCallback } from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import { theme } from "../../theme.ts";
 import { Divider } from "./Divider.tsx";
 
@@ -32,11 +32,13 @@ export const Panel = ({
   const [childBasisOverrides, setChildBasisOverrides] = useState<
     (number | undefined)[]
   >(
-    React.Children.map(children, (child) =>
-      React.isValidElement(child)
-        ? getStoredPanelBasis(child.props.id)
-        : undefined
-    ) ?? []
+    React.Children.map(
+      children,
+      (child) =>
+        React.isValidElement(child)
+          ? getStoredPanelBasis(child.props.id)
+          : undefined,
+    ) ?? [],
   );
   const dragTarget = useRef<HTMLElement>();
   const childArr = useMemo(() => React.Children.toArray(children), [children]);
@@ -54,7 +56,7 @@ export const Panel = ({
         dragTarget.current = e.target;
       }
     },
-    []
+    [],
   );
 
   //
@@ -71,12 +73,12 @@ export const Panel = ({
       const parent = dragTarget.current.parentElement;
       if (!previous || !next || !parent) return;
 
-      const sizeProp =
-        direction === "horizontal" ? "clientWidth" : "clientHeight";
+      const sizeProp = direction === "horizontal"
+        ? "clientWidth"
+        : "clientHeight";
 
       // Ignore no-diffs
-      const diff =
-        (direction === "horizontal" ? e.movementX : e.movementY) /
+      const diff = (direction === "horizontal" ? e.movementX : e.movementY) /
         parent[sizeProp];
       if (diff === 0) return;
 
@@ -85,7 +87,7 @@ export const Panel = ({
       if (React.isValidElement(previousNode) && previousNode.props.id) {
         storePanelBasis(
           previousNode.props.id,
-          previous[sizeProp] / parent[sizeProp] + diff
+          previous[sizeProp] / parent[sizeProp] + diff,
         );
       }
 
@@ -93,7 +95,7 @@ export const Panel = ({
       if (React.isValidElement(nextNode) && nextNode.props.id) {
         storePanelBasis(
           nextNode.props.id,
-          next[sizeProp] / parent[sizeProp] - diff
+          next[sizeProp] / parent[sizeProp] - diff,
         );
       }
 
@@ -104,7 +106,7 @@ export const Panel = ({
         ...childBasisOverrides.slice(index + 2),
       ]);
     },
-    [childArr, childBasisOverrides]
+    [childArr, childBasisOverrides],
   );
 
   const handleMouseUp = useCallback(() => {
@@ -125,14 +127,13 @@ export const Panel = ({
     newChildren.push(
       childNode
         ? React.cloneElement(childNode, {
-            basis:
-              (typeof storedBasis === "number"
-                ? storedBasis * 100 + "%"
-                : undefined) ??
-              childNode.props.basis ??
-              childNode.props.style?.basis,
-          })
-        : child
+          basis: (typeof storedBasis === "number"
+            ? storedBasis * 100 + "%"
+            : undefined) ??
+            childNode.props.basis ??
+            childNode.props.style?.basis,
+        })
+        : child,
     );
     if (i < childArr.length - 1) {
       newChildren.push(
@@ -141,7 +142,7 @@ export const Panel = ({
           direction={direction === "vertical" ? "horizontal" : "vertical"}
           index={i}
           fixed={childNode?.props.fixed || nextChildNode?.props.fixed || false}
-        />
+        />,
       );
     }
   }

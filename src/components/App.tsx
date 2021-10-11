@@ -47,30 +47,30 @@ export const MainTabs = () => {
         (tab: number | ((selected: number) => number)) => {
           dispatch(
             tabsSlice.actions.selectTab(
-              typeof tab === "number" ? tab : tab(selected)
-            )
+              typeof tab === "number" ? tab : tab(selected),
+            ),
           );
         },
       ]}
     >
-      {database && table ? (
-        <TableTab
-          key={table}
-          label={<Label icon="data_sheet">{table}</Label>}
-          canClose={false}
-        />
-      ) : (
-        <EmptyTab />
-      )}
-      {database && table ? (
-        <TableDataTab
-          key={table}
-          label={<Label icon="data_sheet">Data</Label>}
-          canClose={false}
-        />
-      ) : (
-        <EmptyTab />
-      )}
+      {database && table
+        ? (
+          <TableTab
+            key={table}
+            label={<Label icon="data_sheet">{table}</Label>}
+            canClose={false}
+          />
+        )
+        : <EmptyTab />}
+      {database && table
+        ? (
+          <TableDataTab
+            key={table}
+            label={<Label icon="data_sheet">Data</Label>}
+            canClose={false}
+          />
+        )
+        : <EmptyTab />}
       {Array(queryTabCount)
         .fill(0)
         .map((_, i) => (

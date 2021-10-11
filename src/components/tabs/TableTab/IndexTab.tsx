@@ -37,8 +37,7 @@ export const indexRowsToObjs = (rows: unknown): Index[] => {
   for (const row of rows) {
     if (!isIndexRow(row)) continue;
 
-    const index =
-      indexes[row.Key_name] ??
+    const index = indexes[row.Key_name] ??
       (indexes[row.Key_name] = {
         name: row.Key_name,
         algorithm: row.Index_type,
@@ -84,7 +83,9 @@ const IndexRow = ({ index }: { index: Index }) => {
           {index.name}
         </Label>
         {expanded &&
-          index.columns.map((column) => (
+          index.columns.map((
+            column,
+          ) => (
             <Label icon="puzzle" style={{ marginLeft: 32, display: "flex" }}>
               {column}
             </Label>
@@ -116,9 +117,7 @@ export const IndexTab = ({
         <div style={{ margin: "2px 2px 4px" }}>Name</div>
         <div style={{ margin: "2px 2px 4px" }}>Type / Length</div>
         <div style={{ margin: "2px 2px 4px" }}>Algorithm</div>
-        {indexes.map((index) => (
-          <IndexRow index={index} />
-        ))}
+        {indexes.map((index) => <IndexRow index={index} />)}
       </div>
     </Panel>
   </Panel>

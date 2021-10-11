@@ -2,7 +2,7 @@ import React from "react";
 import { theme } from "../../../theme.ts";
 
 export const TextArea = (
-  props: React.TextareaHTMLAttributes<HTMLTextAreaElement>
+  props: React.TextareaHTMLAttributes<HTMLTextAreaElement>,
 ) => (
   <textarea
     {...props}

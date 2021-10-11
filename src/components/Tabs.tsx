@@ -1,5 +1,5 @@
 import { theme } from "../theme.ts";
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 export const Tabs = ({
   children,
@@ -19,7 +19,7 @@ export const Tabs = ({
   // We need an array to index into
   const childrenArr = useMemo(
     () => React.Children.toArray(children),
-    [children]
+    [children],
   );
 
   const actualSelectedTab = Math.min(selectedTab, childrenArr.length - 1);
@@ -63,7 +63,7 @@ export const Tabs = ({
                 ✕
               </span>
             )}
-          </span>
+          </span>,
         );
       }
     });
@@ -82,9 +82,7 @@ export const Tabs = ({
       }}
     >
       <div style={{ display: "flex" }}>
-        {labels.map((l, i) => (
-          <React.Fragment key={i}>{l}</React.Fragment>
-        ))}
+        {labels.map((l, i) => <React.Fragment key={i}>{l}</React.Fragment>)}
         {onNewTab && (
           <span
             title="New query (⌥T)"

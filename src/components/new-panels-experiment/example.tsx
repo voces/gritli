@@ -1,5 +1,5 @@
 import { randomUUID } from "../../helpers/uuid.ts";
-import { Panel, Node } from "./Panel.tsx";
+import { Node, Panel } from "./Panel.tsx";
 import { render } from "react-dom";
 import React from "react";
 

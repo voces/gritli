@@ -1,5 +1,5 @@
 import { theme } from "../../theme.ts";
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 export const TreeNode = ({
   label,

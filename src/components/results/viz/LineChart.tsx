@@ -1,15 +1,15 @@
 import {
-  select,
+  line as d3Line,
   scaleLinear,
   scaleOrdinal,
   schemeCategory10,
-  line as d3Line,
+  select,
 } from "d3";
 import React, { useCallback, useEffect, useRef } from "react";
 import { Rows } from "../types.ts";
 
 const deduceDataMap = (
-  data: Rows
+  data: Rows,
 ): { xAxis: string; yAxis: string; series: string[] } => {
   const columns = Object.keys(data[0]);
   const columnTypes = Object.values(data[0]).map((v) => typeof v);
@@ -42,7 +42,7 @@ export const LineChart = ({
 
     svgRef.current.setAttribute(
       "viewbox",
-      `0 0 ${parent.clientWidth} ${parent.clientHeight}`
+      `0 0 ${parent.clientWidth} ${parent.clientHeight}`,
     );
     svgRef.current.style.width = "100%";
     svgRef.current.style.height = "100%";
@@ -74,10 +74,10 @@ export const LineChart = ({
         if (!lines[series]) lines[series] = [];
         lines[series].push([row[dataMap.xAxis], row[dataMap.yAxis]] as [
           number,
-          number
+          number,
         ]);
         return lines;
-      }, {} as Record<string, [key: number, value: number][]>)
+      }, {} as Record<string, [key: number, value: number][]>),
     );
 
     svg

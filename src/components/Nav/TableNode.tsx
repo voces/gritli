@@ -13,7 +13,7 @@ export const TableNode = ({
 }) => (
   <TreeNode
     key={table}
-    label={
+    label={(
       <div style={{ display: "flex", alignItems: "center" }}>
         <Icon icon="data_sheet" />
         <span
@@ -24,7 +24,7 @@ export const TableNode = ({
           {table}
         </span>
       </div>
-    }
+    )}
     onClick={() => {
       if (!isSelected) {
         onSelect();

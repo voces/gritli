@@ -63,9 +63,7 @@ export const ContextMenu = ({
             ...theme.contextMenu.container,
           }}
         >
-          {options.map((o, i) => (
-            <OptionComponent key={i} option={o} />
-          ))}
+          {options.map((o, i) => <OptionComponent key={i} option={o} />)}
         </div>
       )}
     </>

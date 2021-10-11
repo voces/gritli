@@ -1,5 +1,5 @@
 import { randomUUID } from "../../helpers/uuid.ts";
-import React, { useState, useEffect, useReducer } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 
 export type Node = {
   id?: string;
@@ -36,7 +36,7 @@ const SimplePanelBody = ({
     number[]
   >(Array(node.children.length).fill(0));
   const [sizeOverrides, setSizeOverrides] = useState<number[]>(
-    Array(node.children.length).fill(0)
+    Array(node.children.length).fill(0),
   );
   const [activeElement, setActiveElement] = useState<number | undefined>();
 
@@ -45,7 +45,7 @@ const SimplePanelBody = ({
 
     if (typeof mouseDelta !== "number") {
       const newOverrides = persistedSizeOverrides.map(
-        (o, i) => o + sizeOverrides[i]
+        (o, i) => o + sizeOverrides[i],
       );
       setPersistedSizeOverrides(newOverrides);
       localStorage.setItem(
@@ -54,9 +54,9 @@ const SimplePanelBody = ({
           Object.fromEntries(
             node.children
               .map((c, i) => [c.id, newOverrides[i]])
-              .filter(([k]) => k)
-          )
-        )
+              .filter(([k]) => k),
+          ),
+        ),
       );
       setSizeOverrides(Array(node.children.length).fill(0));
       return;
@@ -77,9 +77,8 @@ const SimplePanelBody = ({
           ? `${child.size}px`
           : undefined ?? `${(1 / arr.length) * 100}%`;
 
-        const flexBasis = `calc(${baseBasis} - ${
-          persistedSizeOverrides[idx] + sizeOverrides[idx]
-        }px)`;
+        const flexBasis = `calc(${baseBasis} - ${persistedSizeOverrides[idx] +
+          sizeOverrides[idx]}px)`;
 
         const childStyle = {
           flexGrow: child.size ? 0 : 1,
@@ -89,8 +88,9 @@ const SimplePanelBody = ({
           minHeight: 19,
         };
 
-        if (idx === arr.length - 1)
+        if (idx === arr.length - 1) {
           return <Panel node={child} style={{ ...childStyle, flexBasis }} />;
+        }
 
         const dividerStyle: React.CSSProperties = {
           padding: direction === "horizontal" ? "0 3px" : "3px 0",
@@ -106,7 +106,8 @@ const SimplePanelBody = ({
               style={dividerStyle}
               data-divider
               onMouseDown={(e) => setActiveElement(idx)}
-            ></div>
+            >
+            </div>
           </>
         );
       })}
@@ -234,11 +235,12 @@ export const Panel = ({ node, style }: PanelProps): PanelElement => {
         }
       }}
       onMouseMove={(e) => {
-        if (typeof mouseDelta === "number")
+        if (typeof mouseDelta === "number") {
           setMouseDelta(
             mouseDelta -
-              (direction === "horizontal" ? e.movementX : e.movementY)
+              (direction === "horizontal" ? e.movementX : e.movementY),
           );
+        }
       }}
       onMouseUp={() => setMouseDelta(undefined)}
       onMouseLeave={() => setMouseDelta(undefined)}
@@ -260,16 +262,15 @@ export const Panel = ({ node, style }: PanelProps): PanelElement => {
         const xRel = (e.clientX - rect.left) / rect.width;
         const yRel = (e.clientY - rect.top) / rect.height;
 
-        const newDragState =
-          xRel < 0.2
-            ? "left"
-            : xRel > 0.8
-            ? "right"
-            : yRel < 0.2
-            ? "top"
-            : yRel > 0.8
-            ? "bottom"
-            : "center";
+        const newDragState = xRel < 0.2
+          ? "left"
+          : xRel > 0.8
+          ? "right"
+          : yRel < 0.2
+          ? "top"
+          : yRel > 0.8
+          ? "bottom"
+          : "center";
 
         setDragState(newDragState);
       }}
@@ -286,8 +287,8 @@ export const Panel = ({ node, style }: PanelProps): PanelElement => {
       onDrop={(e) => {
         setDragState(undefined);
 
-        const originalTarget =
-          e.target instanceof HTMLElement && e.target.parentElement;
+        const originalTarget = e.target instanceof HTMLElement &&
+          e.target.parentElement;
 
         if (originalTarget === e.currentTarget) {
           const oldParent = dragged.parent;
@@ -296,12 +297,12 @@ export const Panel = ({ node, style }: PanelProps): PanelElement => {
           let inserted = false;
 
           if (dragState !== "center") {
-            const index =
-              dragState === "left" || dragState === "top" ? 0 : undefined;
-            const direction =
-              dragState === "left" || dragState === "right"
-                ? "horizontal"
-                : "vertical";
+            const index = dragState === "left" || dragState === "top"
+              ? 0
+              : undefined;
+            const direction = dragState === "left" || dragState === "right"
+              ? "horizontal"
+              : "vertical";
 
             if (cur.tabs && cur.parent) {
               if (cur.parent.direction === direction) cur = cur.parent;
@@ -325,9 +326,9 @@ export const Panel = ({ node, style }: PanelProps): PanelElement => {
             // Not a tabbed panel
             if (!cur.tabs) {
               // If we have no children (we're a leaf) and parent is tabbed, use it
-              if (!Array.isArray(cur.children) && cur.parent?.tabs)
+              if (!Array.isArray(cur.children) && cur.parent?.tabs) {
                 cur = cur.parent;
-              // Else insert a tabbed panel
+              } // Else insert a tabbed panel
               else if (cur.parent) {
                 const oldIndex = cur.parent.children.indexOf(cur);
                 const newNode = {
@@ -361,19 +362,21 @@ export const Panel = ({ node, style }: PanelProps): PanelElement => {
           {node.title}
         </div>
       )}
-      {typeof node.children === "object" ? (
-        node.tabs ? (
-          <TabPanelBody children={node.children} />
-        ) : (
-          <SimplePanelBody
-            direction={direction}
-            mouseDelta={mouseDelta}
-            node={{ ...node, children: node.children }}
-          />
+      {typeof node.children === "object"
+        ? (
+          node.tabs
+            ? <TabPanelBody children={node.children} />
+            : (
+              <SimplePanelBody
+                direction={direction}
+                mouseDelta={mouseDelta}
+                node={{ ...node, children: node.children }}
+              />
+            )
         )
-      ) : (
-        node.children
-      )}
+        : (
+          node.children
+        )}
       {dragState && (
         <div
           data-panel-hover
@@ -384,12 +387,15 @@ export const Panel = ({ node, style }: PanelProps): PanelElement => {
             left: dragState === "left" ? 0 : undefined,
             right: dragState === "right" ? 0 : undefined,
             bottom: dragState === "bottom" ? 0 : undefined,
-            width:
-              dragState === "left" || dragState === "right" ? "50%" : "100%",
-            height:
-              dragState === "top" || dragState === "bottom" ? "50%" : "100%",
+            width: dragState === "left" || dragState === "right"
+              ? "50%"
+              : "100%",
+            height: dragState === "top" || dragState === "bottom"
+              ? "50%"
+              : "100%",
           }}
-        ></div>
+        >
+        </div>
       )}
     </div>
   );

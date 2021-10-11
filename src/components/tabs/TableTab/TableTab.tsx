@@ -4,7 +4,7 @@ import {
   MYSQL_TYPE_SHORT,
   MYSQL_TYPE_VARCHAR,
 } from "../../../constants.ts";
-import React, { useState, useEffect, useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   SqlColumn,
   sqlColumnTransform,
@@ -76,11 +76,11 @@ const TableTabInner = ({
     query(
       // maybe use: SHOW FULL COLUMNS FROM `database`.`table`;
       // `SELECT * FROM \`information_schema\`.\`COLUMNS\` WHERE TABLE_SCHEMA = '${database}' AND TABLE_NAME = '${table}';`
-      `SHOW FULL COLUMNS FROM \`${database}\`.\`${table}\``
+      `SHOW FULL COLUMNS FROM \`${database}\`.\`${table}\``,
     ).then((ret) => setColumns(sqlColumnTransform(ret.rows) ?? []));
 
     query(
-      `SELECT * FROM \`information_schema\`.\`TABLES\` WHERE TABLE_SCHEMA = '${database}' AND TABLE_NAME = '${table}';`
+      `SELECT * FROM \`information_schema\`.\`TABLES\` WHERE TABLE_SCHEMA = '${database}' AND TABLE_NAME = '${table}';`,
     ).then((ret) => {
       const row = ret.rows?.[0];
       if (row) {
@@ -99,19 +99,19 @@ const TableTabInner = ({
         const checksum = row.CHECKSUM;
 
         setOptionsData({
-          autoIncrement:
-            typeof autoIncrement === "number"
-              ? autoIncrement
-              : optionsData.autoIncrement,
-          defaultCollation:
-            typeof defaultCollation === "string"
-              ? defaultCollation
-              : optionsData.defaultCollation,
+          autoIncrement: typeof autoIncrement === "number"
+            ? autoIncrement
+            : optionsData.autoIncrement,
+          defaultCollation: typeof defaultCollation === "string"
+            ? defaultCollation
+            : optionsData.defaultCollation,
           engine: typeof engine === "string" ? engine : optionsData.engine,
-          rowFormat:
-            typeof rowFormat === "string" ? rowFormat : optionsData.rowFormat,
-          checksum:
-            typeof checksum === "boolean" ? checksum : optionsData.checksum,
+          rowFormat: typeof rowFormat === "string"
+            ? rowFormat
+            : optionsData.rowFormat,
+          checksum: typeof checksum === "boolean"
+            ? checksum
+            : optionsData.checksum,
         });
       }
 

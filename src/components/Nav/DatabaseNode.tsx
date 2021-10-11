@@ -4,7 +4,7 @@ import {
 } from "../../store/slices/connectionSlice.ts";
 import { useAppDispatch, useAppSelector } from "../../hooks/storeHooks.ts";
 import { useQuery } from "../../hooks/useQuery.tsx";
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { TreeNode } from "./TreeNode.tsx";
 import { Icon } from "../vel/Icon.tsx";
 import { TableNode } from "./TableNode.tsx";
@@ -24,8 +24,8 @@ export const DatabaseNode = ({
   const dispatch = useAppDispatch();
   const query = useQuery(connection);
   const [tables, setTables] = useState<string[]>([]);
-  const isSelected =
-    connection === selectedConnection && database === selectedDatabase;
+  const isSelected = connection === selectedConnection &&
+    database === selectedDatabase;
   const [localSelectedTable, setLocalSelectedTable] = useState<
     string | undefined
   >();
@@ -40,7 +40,11 @@ export const DatabaseNode = ({
         if (typeof table === "string") {
           setLocalSelectedTable(table);
           dispatch(
-            connectionSlice.actions.selectTable({ connection, database, table })
+            connectionSlice.actions.selectTable({
+              connection,
+              database,
+              table,
+            }),
           );
           if (selectedDatabase !== database) query(`USE \`${database}\`;`);
         }
@@ -51,14 +55,14 @@ export const DatabaseNode = ({
   return (
     <TreeNode
       initialExpanded={isSelected}
-      label={
+      label={(
         <div style={{ display: "flex", alignItems: "center" }}>
           <Icon icon="database" />
           <span style={{ fontWeight: isSelected ? "bold" : "inherit" }}>
             {database}
           </span>
         </div>
-      }
+      )}
       onClick={(_: React.MouseEvent, expanded: boolean) => {
         if (!isSelected && expanded) {
           dispatch(
@@ -66,7 +70,7 @@ export const DatabaseNode = ({
               connection,
               database,
               table: localSelectedTable,
-            })
+            }),
           );
           query(`USE \`${database}\`;`);
           // Don't collapse if just reselecting
@@ -80,7 +84,7 @@ export const DatabaseNode = ({
             connection,
             database,
             table: localSelectedTable,
-          })
+          }),
         );
         query(`USE \`${database}\`;`);
       }}
@@ -95,7 +99,7 @@ export const DatabaseNode = ({
                 connection,
                 database,
                 table,
-              })
+              }),
             );
             if (selectedDatabase !== database) query(`USE \`${database}\`;`);
           }}
