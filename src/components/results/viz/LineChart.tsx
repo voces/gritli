@@ -5,13 +5,8 @@ import {
   schemeCategory10,
   line as d3Line,
 } from "d3";
-import React, { useEffect, useRef } from "react";
-
-type Row = Record<
-  string,
-  string | number | undefined | boolean | React.ReactElement
->;
-type Rows = Row[];
+import React, { useCallback, useEffect, useRef } from "react";
+import { Rows } from "../types.ts";
 
 const deduceDataMap = (
   data: Rows
@@ -28,10 +23,18 @@ const deduceDataMap = (
   return { xAxis, yAxis, series };
 };
 
-export const LineChart = ({ data }: { data: Rows }) => {
+export const LineChart = ({
+  data,
+  handleContextMenu,
+  handleClick,
+}: {
+  data: Rows;
+  handleContextMenu?: (value: { x: number; y: number }) => void;
+  handleClick?: () => boolean;
+}) => {
   const svgRef = useRef<SVGSVGElement>(null);
 
-  useEffect(() => {
+  const render = useCallback(() => {
     if (!data[0]) return;
     if (!svgRef.current) return;
     const parent = svgRef.current.parentElement?.parentElement;
@@ -90,5 +93,23 @@ export const LineChart = ({ data }: { data: Rows }) => {
       .attr("d", (d) => line(d[1]));
   }, [data, svgRef.current]);
 
-  return <svg style={{ width: 0, height: 0 }} ref={svgRef} />;
+  useEffect(() => {
+    render();
+  }, [data, svgRef.current]);
+
+  return (
+    <svg
+      style={{ width: 0, height: 0 }}
+      ref={svgRef}
+      onContextMenu={(e) => {
+        handleContextMenu?.({ x: e.pageX, y: e.pageY });
+        e.preventDefault();
+      }}
+      onClick={(e) => {
+        if (handleClick?.()) {
+          e.preventDefault();
+        }
+      }}
+    />
+  );
 };

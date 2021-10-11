@@ -20,7 +20,8 @@ export type IconType =
   | "up"
   | "down"
   | "puzzle"
-  | "link";
+  | "link"
+  | "menu";
 
 export const Icon = ({
   icon,

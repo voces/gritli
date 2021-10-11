@@ -3,7 +3,8 @@ import React, { useState } from "react";
 import { theme } from "../../theme.ts";
 import { ContextMenu } from "vel/ContextMenu.tsx";
 import type { Option } from "vel/ContextMenu.tsx";
-import { LineChart } from "./viz/LineChart.tsx";
+import { Rows } from "./types.ts";
+import { Viz } from "./viz/Viz.tsx";
 
 type FieldDef = {
   readonly catalog?: "def";
@@ -29,18 +30,24 @@ export type Results = {
   fields?: FieldDef[];
 };
 
+type DisplayMode = "viz" | "table";
+
 const QueryContextMenu = ({
   shown,
   x,
   y,
   rows,
   handleHide,
+  display,
+  setDisplay,
 }: {
   shown: boolean;
   x: number | undefined;
   y: number | undefined;
   rows?: Results["rows"];
   handleHide: () => void;
+  display: DisplayMode;
+  setDisplay: (value: DisplayMode) => void;
 }) => {
   const options: Option[] = [];
   if (rows)
@@ -101,8 +108,27 @@ const QueryContextMenu = ({
           );
           handleHide();
         },
-      }
+      },
+      { type: "option-separator" }
     );
+  if (display !== "table")
+    options.push({
+      type: "option" as const,
+      label: "Table",
+      onClick: () => {
+        setDisplay("table");
+        handleHide();
+      },
+    });
+  if (display !== "viz")
+    options.push({
+      type: "option" as const,
+      label: "Viz",
+      onClick: () => {
+        setDisplay("viz");
+        handleHide();
+      },
+    });
   return <ContextMenu shown={shown} left={x} top={y} options={options} />;
 };
 
@@ -124,11 +150,7 @@ export const ResultTable = ({
   handleContextMenu?: (value: { x: number; y: number }) => void;
   handleClick?: () => boolean;
   error?: Results["error"];
-  rows?: ReadonlyArray<
-    Readonly<
-      Record<string, string | number | undefined | boolean | React.ReactElement>
-    >
-  >;
+  rows?: Rows;
   fields: Results["fields"];
 }) => (
   <table
@@ -222,13 +244,13 @@ const ResultsComponent = ({
   results,
   handleContextMenu,
   handleClick,
+  display,
 }: {
   results: Results;
   handleContextMenu: (value: { x: number; y: number }) => void;
   handleClick: () => boolean;
+  display: DisplayMode;
 }) => {
-  const [display, setDisplay] = useState<"table" | "line">("table");
-
   if (display === "table")
     return (
       <ResultTable
@@ -253,8 +275,14 @@ const ResultsComponent = ({
     )
   );
 
-  if (display === "line" && rows) {
-    return <LineChart data={rows} />;
+  if (display === "viz" && rows) {
+    return (
+      <Viz
+        data={rows}
+        handleContextMenu={handleContextMenu}
+        handleClick={handleClick}
+      />
+    );
   }
 
   return <>Other</>;
@@ -264,6 +292,7 @@ export const QueryResults = ({ results }: { results: Results }) => {
   const [contextMenu, setContextMenu] = useState<
     { x: number; y: number } | undefined
   >();
+  const [display, setDisplay] = useState<DisplayMode>("viz");
 
   return (
     <>
@@ -273,8 +302,11 @@ export const QueryResults = ({ results }: { results: Results }) => {
         y={contextMenu?.y}
         rows={results.rows}
         handleHide={() => setContextMenu(undefined)}
+        display={display}
+        setDisplay={setDisplay}
       />
       <ResultsComponent
+        display={display}
         results={results}
         handleContextMenu={({ x, y }) => {
           setContextMenu({ x, y });
