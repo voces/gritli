@@ -35,7 +35,8 @@ export const isConnections = (v: unknown): v is Connection[] =>
 
 const secureStore = (connections: Connection[]) => {
   if (
-    "credentials" in navigator && navigator.credentials && PasswordCredential
+    "credentials" in navigator && navigator.credentials && PasswordCredential &&
+    connections.some((c) => c.password)
   ) {
     const clone = connections.map((c) => ({ ...c }));
     const passwords = JSON.stringify(clone.map((c) => c.password));
