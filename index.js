@@ -14703,9 +14703,9 @@ const deduceDataMap = (data)=>{
         series
     };
 };
-const LineChart = ({ data  })=>{
+const LineChart = ({ data , handleContextMenu , handleClick  })=>{
     const svgRef = Le2(null);
-    xe(()=>{
+    const render = je(()=>{
         if (!data[0]) return;
         if (!svgRef.current) return;
         const parent = svgRef.current.parentElement?.parentElement;
@@ -14756,15 +14756,39 @@ const LineChart = ({ data  })=>{
         data,
         svgRef.current
     ]);
+    xe(()=>{
+        render();
+    }, [
+        data,
+        svgRef.current
+    ]);
     return export_default4.createElement("svg", {
         style: {
             width: 0,
             height: 0
         },
-        ref: svgRef
+        ref: svgRef,
+        onContextMenu: (e)=>{
+            handleContextMenu?.({
+                x: e.pageX,
+                y: e.pageY
+            });
+            e.preventDefault();
+        },
+        onClick: (e)=>{
+            if (handleClick?.()) {
+                e.preventDefault();
+            }
+        }
     });
 };
-const QueryContextMenu = ({ shown , x , y , rows , handleHide  })=>{
+const Viz = ({ data , handleContextMenu , handleClick  })=>export_default4.createElement(LineChart, {
+        data: data,
+        handleContextMenu: handleContextMenu,
+        handleClick: handleClick
+    })
+;
+const QueryContextMenu = ({ shown , x , y , rows , handleHide , display , setDisplay  })=>{
     const options = [];
     if (rows) options.push({
         type: "option",
@@ -14804,6 +14828,24 @@ const QueryContextMenu = ({ shown , x , y , rows , handleHide  })=>{
             navigator.clipboard.writeText(stringRows.map((row)=>row.map((v, i)=>columnTypes[i] === "number" ? v.padStart(columnWidths[i], " ") : v.padEnd(columnWidths[i], " ")
                 ).join(" | ")
             ).join("\n"));
+            handleHide();
+        }
+    }, {
+        type: "option-separator"
+    });
+    if (display !== "table") options.push({
+        type: "option",
+        label: "Table",
+        onClick: ()=>{
+            setDisplay("table");
+            handleHide();
+        }
+    });
+    if (display !== "viz") options.push({
+        type: "option",
+        label: "Viz",
+        onClick: ()=>{
+            setDisplay("viz");
             handleHide();
         }
     });
@@ -14904,8 +14946,7 @@ const ResultTable = ({ handleContextMenu , handleClick , error , rows , fields  
         }
     }))))
 ;
-const ResultsComponent = ({ results , handleContextMenu , handleClick  })=>{
-    const [display, setDisplay] = qe("table");
+const ResultsComponent = ({ results , handleContextMenu , handleClick , display  })=>{
     if (display === "table") return export_default4.createElement(ResultTable, {
         rows: results.rows,
         fields: results.fields,
@@ -14924,22 +14965,29 @@ const ResultsComponent = ({ results , handleContextMenu , handleClick  })=>{
             ];
         }))
     );
-    if (display === "line" && rows) {
-        return export_default4.createElement(LineChart, {
-            data: rows
+    if (display === "viz" && rows) {
+        return export_default4.createElement(Viz, {
+            data: rows,
+            handleContextMenu: handleContextMenu,
+            handleClick: handleClick
         });
     }
     return export_default4.createElement(export_default4.Fragment, null, "Other");
 };
 const QueryResults = ({ results  })=>{
     const [contextMenu, setContextMenu] = qe();
+    const [display, setDisplay] = qe("viz");
     return export_default4.createElement(export_default4.Fragment, null, export_default4.createElement(QueryContextMenu, {
         shown: !!contextMenu,
         x: contextMenu?.x,
         y: contextMenu?.y,
         rows: results.rows,
         handleHide: ()=>setContextMenu(undefined)
+        ,
+        display: display,
+        setDisplay: setDisplay
     }), export_default4.createElement(ResultsComponent, {
+        display: display,
         results: results,
         handleContextMenu: ({ x , y  })=>{
             setContextMenu({
@@ -21895,8 +21943,9 @@ const Log = ({ children , time  })=>export_default4.createElement("div", {
     }, "[", formatter.format(time), "]"), children)
 ;
 const Output = ()=>{
-    const log = Ur((state)=>state.output
+    let log = Ur((state)=>state.output
     );
+    if (log.length > 1000) log = log.slice(0, 1000);
     return export_default4.createElement("pre", {
         style: {
             margin: 0
