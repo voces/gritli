@@ -1,4 +1,4 @@
-import { Connection } from "../features/connectionSlice.ts";
+import { Connection } from "../store/slices/connectionSlice.ts";
 
 export const formatConnection = (
   connection: Connection,

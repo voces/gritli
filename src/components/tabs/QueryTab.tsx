@@ -6,7 +6,7 @@ import { QueryResults, Results } from "../results/QueryResults.tsx";
 import { ErrorBoundary } from "../ErrorBoundary.tsx";
 import { theme } from "../../theme.ts";
 import { useAppDispatch, useAppSelector } from "../../hooks/storeHooks.ts";
-import { tabsSlice } from "../../features/tabsSlice.ts";
+import { tabsSlice } from "../../store/slices/tabsSlice.ts";
 
 export const QueryTab = ({
   id,

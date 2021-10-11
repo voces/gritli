@@ -2,7 +2,7 @@ import { commandsSlice } from "../components/CommandPalette/commandsSlice.ts";
 import { Command } from "../components/CommandPalette/types.ts";
 import { fuzzyFilter } from "../helpers/search.ts";
 import { hasString } from "../helpers/typeguards.ts";
-import { store } from "../store.ts";
+import { store } from "../store/store.ts";
 
 store.dispatch(commandsSlice.actions.register({
   id: "commandPalette.show",

@@ -1,6 +1,6 @@
 import { commandsSlice } from "../components/CommandPalette/commandsSlice.ts";
-import { connectionsSlice } from "../features/connectionsSlice.ts";
-import { store } from "../store.ts";
+import { connectionsSlice } from "../store/slices/connectionsSlice.ts";
+import { store } from "../store/store.ts";
 
 store.dispatch(commandsSlice.actions.register({
   id: "connections.add",

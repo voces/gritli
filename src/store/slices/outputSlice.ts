@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { randomUUID } from "../helpers/uuid.ts";
+import { randomUUID } from "../../helpers/uuid.ts";
 
 export const outputSlice = createSlice({
   name: "output",

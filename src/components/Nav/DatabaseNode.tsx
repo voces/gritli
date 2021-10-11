@@ -1,4 +1,7 @@
-import { Connection, connectionSlice } from "../../features/connectionSlice.ts";
+import {
+  Connection,
+  connectionSlice,
+} from "../../store/slices/connectionSlice.ts";
 import { useAppDispatch, useAppSelector } from "../../hooks/storeHooks.ts";
 import { useQuery } from "../../hooks/useQuery.tsx";
 import React, { useState, useEffect } from "react";

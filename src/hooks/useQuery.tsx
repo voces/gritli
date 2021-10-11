@@ -1,8 +1,8 @@
 import { Results } from "../components/results/QueryResults.tsx";
 import React, { useState } from "react";
 import { useAppDispatch, useAppSelector } from "./storeHooks.ts";
-import { outputSlice } from "../features/outputSlice.ts";
-import { Connection } from "../features/connectionSlice.ts";
+import { outputSlice } from "../store/slices/outputSlice.ts";
+import { Connection } from "../store/slices/connectionSlice.ts";
 
 const formatDuration = (ms: number) => {
   if (ms < 1000) return `${ms}ms`;

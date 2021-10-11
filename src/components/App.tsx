@@ -8,10 +8,10 @@ import React, { useState } from "react";
 import { Nav } from "./Nav/Nav.tsx";
 import { Output } from "./Output.tsx";
 import { CommandPalette } from "./CommandPalette/CommandPalette.tsx";
-import { store } from "../store.ts";
+import { store } from "../store/store.ts";
 import { Provider } from "react-redux";
 import { useAppDispatch, useAppSelector } from "../hooks/storeHooks.ts";
-import { tabsSlice } from "../features/tabsSlice.ts";
+import { tabsSlice } from "../store/slices/tabsSlice.ts";
 
 // const getQueryCount = () => {
 //   const queryCount = parseInt(localStorage.getItem("query-count") ?? "0");

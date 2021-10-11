@@ -1,6 +1,6 @@
 import { commandsSlice } from "../components/CommandPalette/commandsSlice.ts";
-import { tabsSlice } from "../features/tabsSlice.ts";
-import { store } from "../store.ts";
+import { tabsSlice } from "../store/slices/tabsSlice.ts";
+import { store } from "../store/store.ts";
 
 store.dispatch(commandsSlice.actions.register({
   id: "tabs.closeTab",

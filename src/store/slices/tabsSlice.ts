@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { retrieve, store } from "../helpers/persistStore.ts";
-import { isNumber, isStringArray } from "../helpers/typeguards.ts";
+import { retrieve, store } from "../../helpers/persistStore.ts";
+import { isNumber, isStringArray } from "../../helpers/typeguards.ts";
 
 const initialQueryTabs = retrieve("tabs.queryTabs", isStringArray) ??
   [] as string[];

@@ -1,9 +1,9 @@
 import { commandsSlice } from "../components/CommandPalette/commandsSlice.ts";
-import { connectionsSlice } from "../features/connectionsSlice.ts";
+import { connectionsSlice } from "../store/slices/connectionsSlice.ts";
 import { formatConnection } from "../helpers/formatConnection.ts";
 import { fuzzyFilter } from "../helpers/search.ts";
 import { hasNumber } from "../helpers/typeguards.ts";
-import { store } from "../store.ts";
+import { store } from "../store/store.ts";
 
 store.dispatch(commandsSlice.actions.register({
   id: "connections.remove",
